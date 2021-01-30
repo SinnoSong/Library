@@ -1,9 +1,8 @@
-﻿using Library.API.Models;
+﻿using Library.API.Data;
+using Library.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Library.API.Data;
 
 namespace Library.API.Services
 {

@@ -1,20 +1,14 @@
 using Library.API.Entities;
-using Library.API.Services;
+using Library.API.Repository;
+using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Library.API
 {
@@ -39,8 +33,7 @@ namespace Library.API
             {
                 option.UseSqlServer(Configuration.GetConnectionString("LiBraryAPIDbConnection"));
             });
-            services.AddScoped<IAuthorRepository, AuthorMockRepository>();
-            services.AddScoped<IBookRepository, BookMockRepository>();
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.API", Version = "v1" });
