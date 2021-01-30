@@ -12,7 +12,7 @@ namespace Library.API.Entities
                 {
                     Id = new Guid("E4A08DAF-1FF5-40B9-B4CA-F1ED5AC868BF"),
                     Name = "author1",
-                    BirthData = new DateTimeOffset(new DateTime(1993, 12, 30)),
+                    BirthDate = new DateTimeOffset(new DateTime(1993, 12, 30)),
                     BirthPlace = "上海",
                     Email = "author1@e.com"
                 },
@@ -20,7 +20,7 @@ namespace Library.API.Entities
                 {
                     Id = new Guid("A6053251-D1C6-4B9C-86BE-A2FE8124A80F"),
                     Name = "author2",
-                    BirthData = new DateTimeOffset(new DateTime(1994, 12, 30)),
+                    BirthDate = new DateTimeOffset(new DateTime(1994, 12, 30)),
                     BirthPlace = "北京",
                     Email = "author2@e.com"
                 },
@@ -28,7 +28,7 @@ namespace Library.API.Entities
                 {
                     Id = new Guid("058DDAC3-C6F5-42C2-A8EC-4A8000802990"),
                     Name = "author3",
-                    BirthData = new DateTimeOffset(new DateTime(1995, 12, 30)),
+                    BirthDate = new DateTimeOffset(new DateTime(1995, 12, 30)),
                     BirthPlace = "成都",
                     Email = "author3@e.com"
                 });
