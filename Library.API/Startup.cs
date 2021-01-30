@@ -1,4 +1,5 @@
 using AutoMapper;
+using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Repository;
 using Library.API.Repository.Interface;
@@ -41,6 +42,7 @@ namespace Library.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.API", Version = "v1" });
             });
+            services.AddScoped<CheckAuthorExistFilterAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

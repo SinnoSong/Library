@@ -16,7 +16,7 @@ namespace Library.API.Configs
             CreateMap<Book, BookDto>();
             CreateMap<AuthorForCreationDto, Author>();
             CreateMap<BookForCreationDto, Book>();
-            CreateMap<BookForUpdateDto, Book>();
+            CreateMap<BookForUpdateDto, Book>().ReverseMap();
         }
     }
 }
