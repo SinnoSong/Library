@@ -1,3 +1,4 @@
+using AutoMapper;
 using Library.API.Entities;
 using Library.API.Repository;
 using Library.API.Repository.Interface;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace Library.API
 {
@@ -34,6 +36,7 @@ namespace Library.API
                 option.UseSqlServer(Configuration.GetConnectionString("LiBraryAPIDbConnection"));
             });
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.API", Version = "v1" });
