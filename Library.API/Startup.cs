@@ -1,12 +1,16 @@
+using Library.API.Entities;
+using Library.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +30,17 @@ namespace Library.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
+            services.AddControllers(config =>
+            {
+                config.ReturnHttpNotAcceptable = true;
+            }).AddNewtonsoftJson(setup =>
+            setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()).AddXmlDataContractSerializerFormatters();
+            services.AddDbContext<LibraryDbContext>(option =>
+            {
+                option.UseSqlServer(Configuration.GetConnectionString("LiBraryAPIDbConnection"));
+            });
+            services.AddScoped<IAuthorRepository, AuthorMockRepository>();
+            services.AddScoped<IBookRepository, BookMockRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.API", Version = "v1" });
@@ -49,7 +62,6 @@ namespace Library.API
             app.UseRouting();
 
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
