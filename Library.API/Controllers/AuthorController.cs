@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Library.API.Entities;
 using Library.API.Configs;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Library.API.Controllers
 {
@@ -18,12 +19,14 @@ namespace Library.API.Controllers
     public class AuthorController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly ILogger<AuthorController> _logger;
         private readonly IAuthorRepository _authorRepository;
 
-        public AuthorController(IRepositoryWrapper repositoryWrapper, IMapper mapper)
+        public AuthorController(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILogger<AuthorController> logger)
         {
             this._authorRepository = repositoryWrapper.Author;
             this._mapper = mapper;
+            this._logger = logger;
         }
 
         [HttpGet(Name = (nameof(GetAuthorsAsync)))]
@@ -41,14 +44,16 @@ namespace Library.API.Controllers
                     pageNumber = pagedList.CurrentPage - 1,
                     pageSize = pagedList.PageSize,
                     birthPlace = parameters.BirthPlace,
-                    searchQuery = parameters.SearchQuery
+                    searchQuery = parameters.SearchQuery,
+                    sortBy = parameters.SortBy
                 }) : null,
                 nextPageLink = pagedList.HasNext ? Url.Link(nameof(GetAuthorsAsync), new
                 {
                     pageNumber = pagedList.CurrentPage + 1,
                     pageSize = pagedList.PageSize,
                     birthPlace = parameters.BirthPlace,
-                    searchQuery = parameters.SearchQuery
+                    searchQuery = parameters.SearchQuery,
+                    sortBy = parameters.SortBy
                 }) : null
             };
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetaData));

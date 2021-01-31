@@ -21,5 +21,10 @@
         /// 搜索属性
         /// </summary>
         public string SearchQuery { get; set; }
+
+        /// <summary>
+        /// 排序属性
+        /// </summary>
+        public string SortBy { get; set; } = "Name";
     }
 }

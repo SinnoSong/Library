@@ -5,13 +5,24 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Collections.Generic;
+using Library.API.Extentions;
 
 namespace Library.API.Repository
 {
     public class AuthorRepository : RepositoryBase<Author, Guid>, IAuthorRepository
     {
+        private Dictionary<string, PropertyMapping> mappingDict = null;
+
         public AuthorRepository(LibraryDbContext dbContext) : base(dbContext)
         {
+            mappingDict = new Dictionary<string, PropertyMapping>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Name", new PropertyMapping("Name") },
+                { "Age", new PropertyMapping("BirthDate", true) },
+                { "BirthPlace", new PropertyMapping("BirthPlace") }
+            };
         }
 
         public Task<PagedList<Author>> GetAllAsync(AuthorResourceParameters parameters)
@@ -27,7 +38,8 @@ namespace Library.API.Repository
                                 m.Name.ToLower().Contains(parameters.SearchQuery.ToLower()
                 ));
             }
-            return PagedList<Author>.CreateAsync(authors, parameters.PageNumber, parameters.PageSize);
+            var orderAuthors = authors.Sort(parameters.SortBy, mappingDict);
+            return PagedList<Author>.CreateAsync(orderAuthors, parameters.PageNumber, parameters.PageSize);
         }
     }
 }
