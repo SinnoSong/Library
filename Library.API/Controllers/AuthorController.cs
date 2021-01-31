@@ -8,6 +8,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Library.API.Entities;
+using Library.API.Configs;
+using Newtonsoft.Json;
 
 namespace Library.API.Controllers
 {
@@ -24,11 +26,33 @@ namespace Library.API.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthorsAsync()
+        [HttpGet(Name = (nameof(GetAuthorsAsync)))]
+        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthorsAsync([FromQuery] AuthorResourceParameters parameters)
         {
-            var authors = (await _authorRepository.GetAllAsync()).OrderBy(a => a.Name);
-            var authorDtoList = _mapper.Map<IEnumerable<AuthorDto>>(authors);
+            var pagedList = await _authorRepository.GetAllAsync(parameters);
+            var paginationMetaData = new
+            {
+                totalCount = pagedList.TotalCount,
+                pageSize = pagedList.PageSize,
+                currentPage = pagedList.CurrentPage,
+                totalPages = pagedList.TotalPages,
+                previousePageLink = pagedList.HasPrevious ? Url.Link(nameof(GetAuthorsAsync), new
+                {
+                    pageNumber = pagedList.CurrentPage - 1,
+                    pageSize = pagedList.PageSize,
+                    birthPlace = parameters.BirthPlace,
+                    searchQuery = parameters.SearchQuery
+                }) : null,
+                nextPageLink = pagedList.HasNext ? Url.Link(nameof(GetAuthorsAsync), new
+                {
+                    pageNumber = pagedList.CurrentPage + 1,
+                    pageSize = pagedList.PageSize,
+                    birthPlace = parameters.BirthPlace,
+                    searchQuery = parameters.SearchQuery
+                }) : null
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetaData));
+            var authorDtoList = _mapper.Map<IEnumerable<AuthorDto>>(pagedList);
             return authorDtoList.ToList();
         }
 
