@@ -33,6 +33,7 @@ namespace Library.API
             services.AddControllers(config =>
             {
                 config.ReturnHttpNotAcceptable = true;
+                config.Filters.Add<JsonExceptionFilter>();
             }).AddNewtonsoftJson(setup =>
             setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()).AddXmlDataContractSerializerFormatters();
             services.AddDbContext<LibraryDbContext>(option =>
