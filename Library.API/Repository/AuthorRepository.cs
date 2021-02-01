@@ -1,13 +1,12 @@
 ﻿using Library.API.Configs;
 using Library.API.Entities;
+using Library.API.Extentions;
 using Library.API.Repository.Interface;
 using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Collections.Generic;
-using Library.API.Extentions;
+using System.Threading.Tasks;
 
 namespace Library.API.Repository
 {

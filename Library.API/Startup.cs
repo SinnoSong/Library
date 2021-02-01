@@ -5,15 +5,13 @@ using Library.API.Repository;
 using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using NLog.Extensions.Logging;
-using NLog.Web;
 using System;
 
 namespace Library.API
@@ -34,6 +32,7 @@ namespace Library.API
             {
                 config.ReturnHttpNotAcceptable = true;
                 config.Filters.Add<JsonExceptionFilter>();
+                config.CacheProfiles.Add("Default", new CacheProfile { Duration = 60 });
             }).AddNewtonsoftJson(setup =>
             setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()).AddXmlDataContractSerializerFormatters();
             services.AddDbContext<LibraryDbContext>(option =>
@@ -47,6 +46,11 @@ namespace Library.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.API", Version = "v1" });
             });
             services.AddScoped<CheckAuthorExistFilterAttribute>();
+            services.AddResponseCaching(options =>
+            {
+                options.UseCaseSensitivePaths = true;
+                options.MaximumBodySize = 1024;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +65,7 @@ namespace Library.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseResponseCaching();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

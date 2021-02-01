@@ -1,16 +1,18 @@
 ﻿using AutoMapper;
+using Library.API.Configs;
+using Library.API.Entities;
+using Library.API.Helper;
 using Library.API.Models;
 using Library.API.Repository.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using Library.API.Entities;
-using Library.API.Configs;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
 
 namespace Library.API.Controllers
 {
@@ -62,12 +64,20 @@ namespace Library.API.Controllers
         }
 
         [HttpGet("{authorId}", Name = nameof(GetAuthorAsync))]
+        //[ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        [ResponseCache(CacheProfileName = "Default")]
         public async Task<ActionResult<AuthorDto>> GetAuthorAsync(Guid authorId)
         {
             var author = await _authorRepository.GetByIdAsync(authorId);
             if (author == null)
             {
                 return NotFound();
+            }
+            var entityHash = HashFactory.GetHash(author);
+            Response.Headers[HeaderNames.ETag] = entityHash;
+            if (Request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out var requestETag) && entityHash == requestETag)
+            {
+                return StatusCode(StatusCodes.Status304NotModified);
             }
             return _mapper.Map<AuthorDto>(author);
         }
