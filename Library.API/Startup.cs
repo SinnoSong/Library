@@ -6,6 +6,7 @@ using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,6 +63,13 @@ namespace Library.API
                 options.AssumeDefaultVersionWhenUnspecified = true; //配置客户端未指定版本时是否只用默认值
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ReportApiVersions = true; //配置响应中是否展示支持和不支持的版本列表
+                //options.ApiVersionReader = new QueryStringApiVersionReader("ver"); //自定义api版本查询参数名称
+                //options.ApiVersionReader = new HeaderApiVersionReader("api-version"); // 添加api-version消息头
+                //options.ApiVersionReader = new MediaTypeApiVersionReader(); //添加Accept或Content-Type指定Api版本
+                options.ApiVersionReader = ApiVersionReader.Combine(
+                    new MediaTypeApiVersionReader(),
+                    new QueryStringApiVersionReader("api-version")
+                    );
             });
         }
 
