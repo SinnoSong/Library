@@ -36,7 +36,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet(Name = (nameof(GetAuthorsAsync)))]
-        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthorsAsync([FromQuery] AuthorResourceParameters parameters)
+        public async Task<ActionResult<ResourceCollection<AuthorDto>>> GetAuthorsAsync([FromQuery] AuthorResourceParameters parameters)
         {
             PagedList<Author> pagedList = default;
             if (string.IsNullOrWhiteSpace(parameters.BirthPlace) && string.IsNullOrWhiteSpace(parameters.SearchQuery))
@@ -90,7 +90,9 @@ namespace Library.API.Controllers
             };
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetaData));
             var authorDtoList = _mapper.Map<IEnumerable<AuthorDto>>(pagedList);
-            return authorDtoList.ToList();
+            authorDtoList = authorDtoList.Select(author => CreateLinksForAuthor(author));
+            var resourceList = new ResourceCollection<AuthorDto>(authorDtoList.ToList());
+            return CreateLinksForAuthors(resourceList, parameters, paginationMetaData);
         }
 
         [HttpGet("{authorId}", Name = nameof(GetAuthorAsync))]
@@ -109,7 +111,8 @@ namespace Library.API.Controllers
             {
                 return StatusCode(StatusCodes.Status304NotModified);
             }
-            return _mapper.Map<AuthorDto>(author);
+            var authorDto = _mapper.Map<AuthorDto>(author);
+            return CreateLinksForAuthor(authorDto);
         }
 
         [HttpPost]
@@ -123,7 +126,7 @@ namespace Library.API.Controllers
                 throw new Exception("创建资源author失败");
             }
             var authorCreated = _mapper.Map<AuthorDto>(author);
-            return CreatedAtRoute(nameof(GetAuthorAsync), new { authorID = authorCreated.Id }, authorCreated);
+            return CreatedAtRoute(nameof(GetAuthorAsync), new { authorID = authorCreated.Id }, CreateLinksForAuthor(authorCreated));
         }
 
         [HttpDelete("{authorId}")]
@@ -141,6 +144,55 @@ namespace Library.API.Controllers
                 throw new Exception("删除资源author失败");
             }
             return NoContent();
+        }
+
+        private AuthorDto CreateLinksForAuthor(AuthorDto author)
+        {
+            author.Links.Clear();
+            author.Links.Add(new Link(HttpMethods.Get,
+                "self",
+                Url.Link(nameof(GetAuthorAsync), new { authorId = author.Id })
+                ));
+            author.Links.Add(new Link(HttpMethods.Delete,
+                "delete author",
+                Url.Link(nameof(DeleteAuthorAsync), new { authorId = author.Id })
+                ));
+            author.Links.Add(new Link(HttpMethods.Get,
+                "author's books",
+                Url.Link(nameof(BookController.GetBooksAsync), new { authorId = author.Id })
+                ));
+            return author;
+        }
+
+        private ResourceCollection<AuthorDto> CreateLinksForAuthors(ResourceCollection<AuthorDto> authors, AuthorResourceParameters parameters = null, dynamic paginationData = null)
+        {
+            authors.Links.Clear();
+            authors.Links.Add(new Link(HttpMethods.Get,
+                "self",
+                Url.Link(nameof(GetAuthorsAsync), parameters)
+                ));
+            authors.Links.Add(new Link(HttpMethods.Post,
+                "create author",
+                Url.Link(nameof(CreateAuthorAsync), null)
+                ));
+            if (paginationData != null)
+            {
+                if (paginationData.previousePageLink != null)
+                {
+                    authors.Links.Add(new Link(HttpMethods.Get,
+                        "previous page",
+                        paginationData.previousePageLink
+                        ));
+                }
+                if (paginationData.nextPageLink != null)
+                {
+                    authors.Links.Add(new Link(HttpMethods.Get,
+                        "next page",
+                        paginationData.nextPageLink
+                        ));
+                }
+            }
+            return authors;
         }
     }
 }
