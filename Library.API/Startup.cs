@@ -50,7 +50,13 @@ namespace Library.API
             {
                 options.UseCaseSensitivePaths = true;
                 options.MaximumBodySize = 1024;
-            });
+            }); //添加服务器响应缓存
+            services.AddMemoryCache(); //添加内存缓存
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = Configuration["Caching:Host"];
+                options.InstanceName = Configuration["Caching:Instance"];
+            }); //添加分布式Redis缓存
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

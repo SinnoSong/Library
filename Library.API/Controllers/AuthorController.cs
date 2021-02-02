@@ -6,6 +6,7 @@ using Library.API.Models;
 using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -22,19 +23,48 @@ namespace Library.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ILogger<AuthorController> _logger;
+        private readonly IDistributedCache _distributedCache;
         private readonly IAuthorRepository _authorRepository;
 
-        public AuthorController(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILogger<AuthorController> logger)
+        public AuthorController(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILogger<AuthorController> logger,
+            IDistributedCache distributedCache)
         {
             this._authorRepository = repositoryWrapper.Author;
             this._mapper = mapper;
             this._logger = logger;
+            this._distributedCache = distributedCache;
         }
 
         [HttpGet(Name = (nameof(GetAuthorsAsync)))]
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthorsAsync([FromQuery] AuthorResourceParameters parameters)
         {
-            var pagedList = await _authorRepository.GetAllAsync(parameters);
+            PagedList<Author> pagedList = default;
+            if (string.IsNullOrWhiteSpace(parameters.BirthPlace) && string.IsNullOrWhiteSpace(parameters.SearchQuery))
+            {
+                string cacheKey = $"authors_page_{parameters.PageNumber}_pageSize_{parameters.PageSize}_{parameters.SortBy}"; //生成缓存键
+                string cachedContent = await _distributedCache.GetStringAsync(cacheKey);
+                JsonSerializerSettings settings = new JsonSerializerSettings();
+                settings.Converters.Add(new PagedListConverter<Author>());
+                settings.Formatting = Formatting.Indented;
+                if (string.IsNullOrWhiteSpace(cachedContent))
+                {
+                    pagedList = await _authorRepository.GetAllAsync(parameters);
+                    DistributedCacheEntryOptions options = new DistributedCacheEntryOptions
+                    {
+                        SlidingExpiration = TimeSpan.FromMinutes(5)
+                    };
+                    var serizlizedContent = JsonConvert.SerializeObject(pagedList, settings);
+                    await _distributedCache.SetStringAsync(cacheKey, serizlizedContent);
+                }
+                else
+                {
+                    pagedList = JsonConvert.DeserializeObject<PagedList<Author>>(cachedContent, settings);
+                }
+            }
+            else
+            {
+                pagedList = await _authorRepository.GetAllAsync(parameters);
+            }
             var paginationMetaData = new
             {
                 totalCount = pagedList.TotalCount,

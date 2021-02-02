@@ -5,6 +5,7 @@ using Library.API.Models;
 using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,20 +21,35 @@ namespace Library.API.Controllers
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memoryCache;
 
-        public BookController(IRepositoryWrapper repositoryWrapper, IMapper mapper)
+        public BookController(IRepositoryWrapper repositoryWrapper, IMapper mapper,
+            IMemoryCache memoryCache)
         {
             this._bookRepository = repositoryWrapper.Book;
             this._authorRepository = repositoryWrapper.Author;
             this._mapper = mapper;
+            this._memoryCache = memoryCache;
         }
 
         [HttpGet(Name = nameof(GetBooksAsync))]
         public async Task<ActionResult<List<BookDto>>> GetBooksAsync(Guid authorId)
         {
-            var books = await _bookRepository.GetBooksAsync(authorId);
-            var bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books);
-            return bookDtoList.ToList();
+            List<BookDto> bookDtoList = new List<BookDto>();
+            string key = $"{authorId}_books";
+            if (!_memoryCache.TryGetValue(key, out bookDtoList))
+            {
+                var books = await _bookRepository.GetBooksAsync(authorId);
+                bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
+                // 设置缓存有效时间和优先级
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(10),
+                    Priority = CacheItemPriority.Normal
+                };
+                _memoryCache.Set(key, bookDtoList, options);
+            }
+            return bookDtoList;
         }
 
         [HttpGet("{bookId}", Name = nameof(GetBookAsync))]
