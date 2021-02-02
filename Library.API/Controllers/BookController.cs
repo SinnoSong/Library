@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
+using Library.API.Helper;
 using Library.API.Models;
 using Library.API.Repository.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +63,8 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
+            var entityNewHash = HashFactory.GetHash(book);
+            Response.Headers[HeaderNames.ETag] = entityNewHash;
             var bookDto = _mapper.Map<BookDto>(book);
             return bookDto;
         }
@@ -115,12 +120,18 @@ namespace Library.API.Controllers
         }
 
         [HttpPut("{bookId}")]
+        [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> UpdateBookAsync(Guid authorId, Guid bookId, BookForUpdateDto updateBook)
         {
             var book = await _bookRepository.GetBookAsync(authorId, bookId);
             if (book == null)
             {
                 return NotFound();
+            }
+            var entityHash = HashFactory.GetHash(book);
+            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
+            {
+                return StatusCode(StatusCodes.Status412PreconditionFailed);
             }
             _mapper.Map(updateBook, book, typeof(BookForUpdateDto), typeof(Book));
             _bookRepository.Update(book);
@@ -129,16 +140,24 @@ namespace Library.API.Controllers
             {
                 throw new Exception("更新资源Book失败");
             }
+            var entityNewHash = HashFactory.GetHash(book);
+            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
 
         [HttpPatch("{bookId}")]
+        [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> PartiallyUpdateBookAsync(Guid authorId, Guid bookId, JsonPatchDocument<BookForUpdateDto> patchDocument)
         {
             var book = await _bookRepository.GetBookAsync(authorId, bookId);
             if (book == null)
             {
                 return NotFound();
+            }
+            var entityHash = HashFactory.GetHash(book);
+            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
+            {
+                return StatusCode(StatusCodes.Status412PreconditionFailed);
             }
             var bookUpdateDto = _mapper.Map<BookForUpdateDto>(book);
             patchDocument.ApplyTo(bookUpdateDto, ModelState);
@@ -153,6 +172,8 @@ namespace Library.API.Controllers
             {
                 throw new Exception("更新资源Book失败");
             }
+            var entityNewHash = HashFactory.GetHash(book);
+            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
     }

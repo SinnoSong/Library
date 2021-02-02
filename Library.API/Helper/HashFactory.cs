@@ -13,7 +13,8 @@ namespace Library.API.Helper
         internal static string GetHash(object entity)
         {
             string result;
-            var json = JsonConvert.SerializeObject(entity);
+            // 配置忽略引用的集合属性
+            var json = JsonConvert.SerializeObject(entity, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             var bytes = Encoding.UTF8.GetBytes(json);
             using (var hasher = MD5.Create())
             {
