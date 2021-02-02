@@ -1,7 +1,7 @@
 ﻿using Library.API.Models;
 using System.Collections.Generic;
 
-namespace Library.API.Controllers
+namespace Library.API.Entities
 {
     public class BookForCreationCollectionDto
     {

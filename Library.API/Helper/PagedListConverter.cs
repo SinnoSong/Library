@@ -27,11 +27,13 @@ namespace Library.API.Helper
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             PagedList<T> result = (PagedList<T>)value;
-            JObject jsonObj = new JObject();
-            jsonObj.Add("totalCount", result.TotalCount);
-            jsonObj.Add("pageNumber", result.CurrentPage);
-            jsonObj.Add("pageSize", result.PageSize);
-            jsonObj.Add("Items", JArray.FromObject(result.ToArray(), serializer));
+            JObject jsonObj = new JObject
+            {
+                { "totalCount", result.TotalCount },
+                { "pageNumber", result.CurrentPage },
+                { "pageSize", result.PageSize },
+                { "Items", JArray.FromObject(result.ToArray(), serializer) }
+            };
             jsonObj.WriteTo(writer);
         }
     }

@@ -38,9 +38,8 @@ namespace Library.API.Controllers
         [HttpGet(Name = nameof(GetBooksAsync))]
         public async Task<ActionResult<List<BookDto>>> GetBooksAsync(Guid authorId)
         {
-            List<BookDto> bookDtoList = new List<BookDto>();
             string key = $"{authorId}_books";
-            if (!_memoryCache.TryGetValue(key, out bookDtoList))
+            if (!_memoryCache.TryGetValue(key, out List<BookDto> bookDtoList))
             {
                 var books = await _bookRepository.GetBooksAsync(authorId);
                 bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
@@ -99,7 +98,7 @@ namespace Library.API.Controllers
                 throw new Exception("创建资源Book失败");
             }
             var bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
-            return CreatedAtRoute(nameof(GetBooksAsync), new { authorId = authorId }, bookDtoList);
+            return CreatedAtRoute(nameof(GetBooksAsync), new { authorId }, bookDtoList);
         }
 
         [HttpDelete("{bookId}")]

@@ -57,6 +57,12 @@ namespace Library.API
                 options.Configuration = Configuration["Caching:Host"];
                 options.InstanceName = Configuration["Caching:Instance"];
             }); //添加分布式Redis缓存
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true; //配置客户端未指定版本时是否只用默认值
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true; //配置响应中是否展示支持和不支持的版本列表
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
