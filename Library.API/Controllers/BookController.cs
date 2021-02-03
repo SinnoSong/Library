@@ -26,14 +26,16 @@ namespace Library.API.Controllers
         private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
+        private readonly HashFactory _hashFactory;
 
         public BookController(IRepositoryWrapper repositoryWrapper, IMapper mapper,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache, HashFactory hashFactory)
         {
             this._bookRepository = repositoryWrapper.Book;
             this._authorRepository = repositoryWrapper.Author;
             this._mapper = mapper;
             this._memoryCache = memoryCache;
+            this._hashFactory = hashFactory;
         }
 
         [HttpGet(Name = nameof(GetBooksAsync))]
@@ -63,7 +65,7 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            var entityNewHash = HashFactory.GetHash(book);
+            var entityNewHash = _hashFactory.GetHash(book);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             var bookDto = _mapper.Map<BookDto>(book);
             return bookDto;
@@ -128,7 +130,7 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            var entityHash = HashFactory.GetHash(book);
+            var entityHash = _hashFactory.GetHash(book);
             if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
             {
                 return StatusCode(StatusCodes.Status412PreconditionFailed);
@@ -140,7 +142,7 @@ namespace Library.API.Controllers
             {
                 throw new Exception("更新资源Book失败");
             }
-            var entityNewHash = HashFactory.GetHash(book);
+            var entityNewHash = _hashFactory.GetHash(book);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
@@ -154,7 +156,7 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            var entityHash = HashFactory.GetHash(book);
+            var entityHash = _hashFactory.GetHash(book);
             if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
             {
                 return StatusCode(StatusCodes.Status412PreconditionFailed);
@@ -172,7 +174,7 @@ namespace Library.API.Controllers
             {
                 throw new Exception("更新资源Book失败");
             }
-            var entityNewHash = HashFactory.GetHash(book);
+            var entityNewHash = _hashFactory.GetHash(book);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Library.API.Helper
 {
-    public static class HashFactory
+    public class HashFactory
     {
-        internal static string GetHash(object entity)
+        public string GetHash(object entity)
         {
             string result;
             // 配置忽略引用的集合属性

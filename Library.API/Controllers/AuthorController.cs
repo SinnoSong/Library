@@ -25,15 +25,17 @@ namespace Library.API.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<AuthorController> _logger;
         private readonly IDistributedCache _distributedCache;
+        private readonly HashFactory _hashFactory;
         private readonly IAuthorRepository _authorRepository;
 
         public AuthorController(IRepositoryWrapper repositoryWrapper, IMapper mapper, ILogger<AuthorController> logger,
-            IDistributedCache distributedCache)
+            IDistributedCache distributedCache, HashFactory hashFactory)
         {
             this._authorRepository = repositoryWrapper.Author;
             this._mapper = mapper;
             this._logger = logger;
             this._distributedCache = distributedCache;
+            this._hashFactory = hashFactory;
         }
 
         [HttpGet(Name = (nameof(GetAuthorsAsync)))]
@@ -106,7 +108,7 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            var entityHash = HashFactory.GetHash(author);
+            var entityHash = _hashFactory.GetHash(author);
             Response.Headers[HeaderNames.ETag] = entityHash;
             if (Request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out var requestETag) && entityHash == requestETag)
             {

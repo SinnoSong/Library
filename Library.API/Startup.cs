@@ -18,6 +18,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using Library.API.Helper;
 
 namespace Library.API
 {
@@ -50,6 +51,7 @@ namespace Library.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.API", Version = "v1" });
             });
+            services.AddSingleton<HashFactory>();
             services.AddScoped<CheckAuthorExistFilterAttribute>();
             services.AddResponseCaching(options =>
             {
