@@ -1,6 +1,7 @@
 using AutoMapper;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
+using Library.API.Extentions;
 using Library.API.Repository;
 using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.Builder;
@@ -71,6 +72,7 @@ namespace Library.API
                     new QueryStringApiVersionReader("api-version")
                     );
             });
+            services.AddGraphQLSchemaAndTypes();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
