@@ -4,6 +4,7 @@ using Library.API.Entities;
 using Library.API.Helper;
 using Library.API.Models;
 using Library.API.Repository.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 namespace Library.API.Controllers
 {
     [Route("api/authors/{authorId}/books")]
-    [ApiController]
+    [ApiController, Authorize]
     [ServiceFilter(typeof(CheckAuthorExistFilterAttribute))]
     public class BookController : ControllerBase
     {

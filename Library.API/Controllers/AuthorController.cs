@@ -4,6 +4,7 @@ using Library.API.Entities;
 using Library.API.Helper;
 using Library.API.Models;
 using Library.API.Repository.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 namespace Library.API.Controllers
 {
     [Route("api/authors")]
-    [ApiController]
+    [ApiController, Authorize]
     public class AuthorController : ControllerBase
     {
         private readonly IMapper _mapper;

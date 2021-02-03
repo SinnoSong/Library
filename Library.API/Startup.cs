@@ -4,6 +4,7 @@ using Library.API.Entities;
 using Library.API.Extentions;
 using Library.API.Repository;
 using Library.API.Repository.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 namespace Library.API
 {
@@ -73,6 +76,25 @@ namespace Library.API
                     );
             });
             services.AddGraphQLSchemaAndTypes();
+            var tokenSection = Configuration.GetSection("Security:Token");
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuer = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = tokenSection["Issuer"],
+                    ValidAudience = tokenSection["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSection["Key"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            }); //添加基于JwtToken的认证
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,7 +107,7 @@ namespace Library.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library.API v1"));
             }
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseRouting();
             app.UseResponseCaching();
             app.UseAuthorization();
