@@ -2,6 +2,7 @@ using AutoMapper;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Extentions;
+using Library.API.Helper;
 using Library.API.Repository;
 using Library.API.Repository.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,12 +14,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
-using Library.API.Helper;
 
 namespace Library.API
 {

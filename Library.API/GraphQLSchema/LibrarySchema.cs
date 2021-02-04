@@ -1,5 +1,4 @@
 ﻿using GraphQL.Types;
-using GraphQL.Utilities;
 using System;
 
 namespace Library.API.GraphQLSchema
