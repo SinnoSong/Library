@@ -79,6 +79,7 @@ namespace Library.API
             });
             services.AddGraphQLSchemaAndTypes();
             var tokenSection = Configuration.GetSection("Security:Token");
+            services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

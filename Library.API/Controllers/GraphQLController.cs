@@ -18,7 +18,7 @@ namespace Library.API.Controllers
             _librarySchema = librarySchema;
             _documentExecuter = documentExecuter;
         }
-
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] GraphQLRequest query)
         {
             var result = await _documentExecuter.ExecuteAsync(options =>
