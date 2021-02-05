@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Library.API</name>
+    </assembly>
+    <members>
+        <member name="P:Library.API.Configs.AuthorResourceParameters.BirthPlace">
+            <summary>
+            过滤出生地属性
+            </summary>
+        </member>
+        <member name="P:Library.API.Configs.AuthorResourceParameters.SearchQuery">
+            <summary>
+            搜索属性
+            </summary>
+        </member>
+        <member name="P:Library.API.Configs.AuthorResourceParameters.SortBy">
+            <summary>
+            排序属性
+            </summary>
+        </member>
+        <member name="T:Library.API.Configs.PropertyMapping">
+            <summary>
+            描述要映射的实体类属性
+            </summary>
+        </member>
+        <member name="P:Library.API.Configs.PropertyMapping.TargetProperty">
+            <summary>
+            要映射的目标属性
+            </summary>
+        </member>
+        <member name="M:Library.API.Controllers.AuthorController.GetAuthorsAsync(Library.API.Configs.AuthorResourceParameters)">
+            <summary>
+            获取全部作者
+            </summary>
+            <param name="parameters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.API.Controllers.AuthorController.CreateAuthorAsync(Library.API.Models.AuthorForCreationDto)">
+            <summary>
+            添加一个新作者
+            </summary>
+            <param name="authorForCreationDto"></param>
+            <returns>添加结果</returns>
+            <response code="201">返回新创建的资源</response>
+        </member>
+    </members>
+</doc>

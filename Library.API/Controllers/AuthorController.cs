@@ -38,6 +38,11 @@ namespace Library.API.Controllers
             this._hashFactory = hashFactory;
         }
 
+        /// <summary>
+        /// 获取全部作者
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         [HttpGet(Name = (nameof(GetAuthorsAsync)))]
         public async Task<ActionResult<ResourceCollection<AuthorDto>>> GetAuthorsAsync([FromQuery] AuthorResourceParameters parameters)
         {
@@ -118,6 +123,12 @@ namespace Library.API.Controllers
             return CreateLinksForAuthor(authorDto);
         }
 
+        /// <summary>
+        /// 添加一个新作者
+        /// </summary>
+        /// <param name="authorForCreationDto"></param>
+        /// <returns>添加结果</returns>
+        /// <response code="201">返回新创建的资源</response>
         [HttpPost]
         public async Task<IActionResult> CreateAuthorAsync(AuthorForCreationDto authorForCreationDto)
         {
