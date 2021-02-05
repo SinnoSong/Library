@@ -1,5 +1,6 @@
 ﻿using Library.API.Entities;
 using Library.API.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

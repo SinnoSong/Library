@@ -98,6 +98,12 @@ namespace Library.API
                     ClockSkew = TimeSpan.Zero
                 };
             }); //添加基于JwtToken的认证
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowMethodsPolicy", builder => builder.WithOrigins("https://localhost:6001").AllowAnyMethod());
+                options.AddPolicy("AllowAnyOriginPolicy", builder => builder.AllowAnyOrigin());
+                options.AddDefaultPolicy(builder => builder.WithOrigins("https://localhost:6001"));
+            }); // 添加跨域请求
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -112,6 +118,7 @@ namespace Library.API
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();
+            app.UseCors(builder => builder.WithOrigins("https://localhost:6001"));
             app.UseResponseCaching();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
