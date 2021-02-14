@@ -1,4 +1,4 @@
-using AutoMapper;
+ï»¿using AutoMapper;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Extentions;
@@ -59,21 +59,21 @@ namespace Library.API
             {
                 options.UseCaseSensitivePaths = true;
                 options.MaximumBodySize = 1024;
-            }); //Ìí¼Ó·şÎñÆ÷ÏìÓ¦»º´æ
-            services.AddMemoryCache(); //Ìí¼ÓÄÚ´æ»º´æ
+            }); //æ·»åŠ æœåŠ¡å™¨å“åº”ç¼“å­˜
+            services.AddMemoryCache(); //æ·»åŠ å†…å­˜ç¼“å­˜
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = Configuration["Caching:Host"];
                 options.InstanceName = Configuration["Caching:Instance"];
-            }); //Ìí¼Ó·Ö²¼Ê½Redis»º´æ
+            }); //æ·»åŠ åˆ†å¸ƒå¼Redisç¼“å­˜
             services.AddApiVersioning(options =>
             {
-                options.AssumeDefaultVersionWhenUnspecified = true; //ÅäÖÃ¿Í»§¶ËÎ´Ö¸¶¨°æ±¾Ê±ÊÇ·ñÖ»ÓÃÄ¬ÈÏÖµ
+                options.AssumeDefaultVersionWhenUnspecified = true; //é…ç½®å®¢æˆ·ç«¯æœªæŒ‡å®šç‰ˆæœ¬æ—¶æ˜¯å¦åªç”¨é»˜è®¤å€¼
                 options.DefaultApiVersion = new ApiVersion(1, 0);
-                options.ReportApiVersions = true; //ÅäÖÃÏìÓ¦ÖĞÊÇ·ñÕ¹Ê¾Ö§³ÖºÍ²»Ö§³ÖµÄ°æ±¾ÁĞ±í
-                //options.ApiVersionReader = new QueryStringApiVersionReader("ver"); //×Ô¶¨Òåapi°æ±¾²éÑ¯²ÎÊıÃû³Æ
-                //options.ApiVersionReader = new HeaderApiVersionReader("api-version"); // Ìí¼Óapi-versionÏûÏ¢Í·
-                //options.ApiVersionReader = new MediaTypeApiVersionReader(); //Ìí¼ÓAccept»òContent-TypeÖ¸¶¨Api°æ±¾
+                options.ReportApiVersions = true; //é…ç½®å“åº”ä¸­æ˜¯å¦å±•ç¤ºæ”¯æŒå’Œä¸æ”¯æŒçš„ç‰ˆæœ¬åˆ—è¡¨
+                //options.ApiVersionReader = new QueryStringApiVersionReader("ver"); //è‡ªå®šä¹‰apiç‰ˆæœ¬æŸ¥è¯¢å‚æ•°åç§°
+                //options.ApiVersionReader = new HeaderApiVersionReader("api-version"); // æ·»åŠ api-versionæ¶ˆæ¯å¤´
+                //options.ApiVersionReader = new MediaTypeApiVersionReader(); //æ·»åŠ Acceptæˆ–Content-TypeæŒ‡å®šApiç‰ˆæœ¬
                 options.ApiVersionReader = ApiVersionReader.Combine(
                     new MediaTypeApiVersionReader(),
                     new QueryStringApiVersionReader("api-version")
@@ -99,13 +99,13 @@ namespace Library.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSection["Key"])),
                     ClockSkew = TimeSpan.Zero
                 };
-            }); //Ìí¼Ó»ùÓÚJwtTokenµÄÈÏÖ¤
+            }); //æ·»åŠ åŸºäºJwtTokençš„è®¤è¯
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowMethodsPolicy", builder => builder.WithOrigins("https://localhost:6001").AllowAnyMethod());
                 options.AddPolicy("AllowAnyOriginPolicy", builder => builder.AllowAnyOrigin());
                 options.AddDefaultPolicy(builder => builder.WithOrigins("https://localhost:6001"));
-            }); // Ìí¼Ó¿çÓòÇëÇó
+            }); // æ·»åŠ è·¨åŸŸè¯·æ±‚
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
