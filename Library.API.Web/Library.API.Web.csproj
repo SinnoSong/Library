@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AntDesign" Version="0.10.7" />
+  </ItemGroup>
+
 </Project>
