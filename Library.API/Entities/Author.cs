@@ -25,6 +25,10 @@ namespace Library.API.Entities
         [EmailAddress]
         public string Email { get; set; }
 
-        public ICollection<Book> Books { get; set; } = new List<Book>();
+        [MaxLength(250)]
+        public string? Bio { get; set; } = null;
+
+        public ICollection<Book> Books { get; set; } = new HashSet<Book>();
+
     }
 }

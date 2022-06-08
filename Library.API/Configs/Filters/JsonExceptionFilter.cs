@@ -10,14 +10,14 @@ namespace Library.API.Configs.Filters
 {
     public class JsonExceptionFilter : IExceptionFilter
     {
-        public JsonExceptionFilter(IWebHostEnvironment env, ILogger<Program> logger)
+
+        public IWebHostEnvironment Env { get; }
+        public ILogger<JsonExceptionFilter> Logger { get; }
+        public JsonExceptionFilter(IWebHostEnvironment env, ILogger<JsonExceptionFilter> logger)
         {
             Env = env;
             Logger = logger;
         }
-
-        public IWebHostEnvironment Env { get; }
-        public ILogger<Program> Logger { get; }
 
         public void OnException(ExceptionContext context)
         {
@@ -36,10 +36,10 @@ namespace Library.API.Configs.Filters
             {
                 StatusCode = StatusCodes.Status500InternalServerError
             };
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine($"服务器发生异常：{context.Exception.Message}");
             sb.AppendLine(context.Exception.ToString());
-            Logger.LogCritical(sb.ToString());
+            Logger.LogCritical(message: sb.ToString());
         }
     }
 }
