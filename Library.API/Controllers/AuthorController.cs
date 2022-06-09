@@ -46,7 +46,7 @@ namespace Library.API.Controllers
         [HttpGet(Name = (nameof(GetAuthorsAsync)))]
         public async Task<ActionResult<ResourceCollection<AuthorDto>>> GetAuthorsAsync([FromQuery] AuthorResourceParameters parameters)
         {
-            PagedList<Author> pagedList = default;
+            PagedList<Author>? pagedList = default;
             if (string.IsNullOrWhiteSpace(parameters.BirthPlace) && string.IsNullOrWhiteSpace(parameters.SearchQuery))
             {
                 string cacheKey = $"authors_page_{parameters.PageNumber}_pageSize_{parameters.PageSize}_{parameters.SortBy}"; //生成缓存键

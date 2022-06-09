@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Library.API.Entities;
+using Microsoft.OpenApi.Models;
 using Library.API.Repository.Interface;
 using Library.API.Repository;
 using Library.API.Configs;
@@ -29,6 +30,28 @@ builder.Services.AddDbContext<LibraryDbContext>(options => options.UseSqlServer(
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 // 添加swagger
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "输入token，格式为Bearer xxx(中间必须有空格)",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme{
+                Reference =new OpenApiReference{
+                    Type = ReferenceType.SecurityScheme,
+                    Id ="Bearer"
+                }
+            },new string[]{ }
+        }
+    });
+});
 
 // 添加identityCore，基于user和role
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
@@ -110,7 +133,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library.API v1"));
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
@@ -121,7 +143,6 @@ app.UseCors("AllowAnyOriginPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRouting();
 
 app.UseResponseCaching();
 

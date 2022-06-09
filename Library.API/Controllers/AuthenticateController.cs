@@ -1,6 +1,5 @@
 ﻿using Library.API.Entities;
 using Library.API.Models;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -32,34 +31,7 @@ namespace Library.API.Controllers
 
         public IConfiguration Configuration { get; }
 
-        [HttpPost("token", Name = nameof(GenerateToken))]
-        public IActionResult GenerateToken(LoginUser loginUser)
-        {
-            if (loginUser.UserName != "demouser" || loginUser.Password != "demopassword")
-            {
-                return Unauthorized();
-            }
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub,loginUser.UserName)
-            };
-            var tokenConfigSection = Configuration.GetSection("Security:Token");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigSection["Key"]));
-            var signCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var jwtToken = new JwtSecurityToken(
-                issuer: tokenConfigSection["Issuer"],
-                audience: tokenConfigSection["Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(3),
-                signingCredentials: signCredential);
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                expiration = TimeZoneInfo.ConvertTimeFromUtc(jwtToken.ValidTo, TimeZoneInfo.Local)
-            });
-        }
-
-        [HttpPost("token2")]
+        [HttpPost("token")]
         public async Task<IActionResult> GenerateTokenAsync(LoginUser loginUser)
         {
             var user = await _userManager.FindByEmailAsync(loginUser.UserName);
@@ -92,7 +64,7 @@ namespace Library.API.Controllers
                 issuer: tokenConfigSection["Issuer"],
                 audience: tokenConfigSection["Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(3),
+                expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: signCredential);
             return Ok(new
             {

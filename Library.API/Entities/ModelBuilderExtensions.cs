@@ -40,6 +40,7 @@ namespace Library.API.Entities
                     Title = "book1 Title",
                     Summary = "book1 Description",
                     Pages = 100,
+                    Isbn="12345667",
                     AuthorId = new Guid("E4A08DAF-1FF5-40B9-B4CA-F1ED5AC868BF")
                 },
                 new Book
@@ -48,6 +49,7 @@ namespace Library.API.Entities
                     Title = "book2 Title",
                     Summary = "book2 Description",
                     Pages = 100,
+                    Isbn = "12384298",
                     AuthorId = new Guid("A6053251-D1C6-4B9C-86BE-A2FE8124A80F")
                 },
                 new Book
