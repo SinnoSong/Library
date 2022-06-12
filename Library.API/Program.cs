@@ -72,7 +72,6 @@ builder.Host.UseSerilog((ctx, lc) =>
     lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 //添加内存缓存
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<CheckAuthorExistFilterAttribute>();
 //添加服务器响应缓存
 builder.Services.AddResponseCaching(options =>
 {

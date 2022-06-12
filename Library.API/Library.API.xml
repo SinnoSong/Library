@@ -29,20 +29,15 @@
             要映射的目标属性
             </summary>
         </member>
-        <member name="M:Library.API.Controllers.AuthorController.GetAuthorsAsync(Library.API.Configs.AuthorResourceParameters)">
+        <member name="P:Library.API.Entities.User.StudentId">
             <summary>
-            获取全部作者
+            学号
             </summary>
-            <param name="parameters"></param>
-            <returns></returns>
         </member>
-        <member name="M:Library.API.Controllers.AuthorController.CreateAuthorAsync(Library.API.Models.AuthorForCreationDto)">
+        <member name="P:Library.API.Entities.User.Grade">
             <summary>
-            添加一个新作者
+            年级1,2,3,4
             </summary>
-            <param name="authorForCreationDto"></param>
-            <returns>添加结果</returns>
-            <response code="201">返回新创建的资源</response>
         </member>
     </members>
 </doc>

@@ -19,11 +19,10 @@ namespace Library.API.Controllers
 {
     [Route("api/authors/{authorId}/books")]
     [ApiController, Authorize]
-    [ServiceFilter(typeof(CheckAuthorExistFilterAttribute))]
+    //[ServiceFilter(typeof(CheckAuthorExistFilterAttribute))]
     public class BookController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
-        private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly HashFactory _hashFactory;
@@ -32,19 +31,18 @@ namespace Library.API.Controllers
             IMemoryCache memoryCache, HashFactory hashFactory)
         {
             this._bookRepository = repositoryWrapper.Book;
-            this._authorRepository = repositoryWrapper.Author;
             this._mapper = mapper;
             this._memoryCache = memoryCache;
             this._hashFactory = hashFactory;
         }
 
         [HttpGet(Name = nameof(GetBooksAsync))]
-        public async Task<ActionResult<List<BookDto>>> GetBooksAsync(Guid authorId)
+        public async Task<ActionResult<List<BookDto>>> GetBooksAsync(string author)
         {
-            string key = $"{authorId}_books";
+            string key = $"{author}_books";
             if (!_memoryCache.TryGetValue(key, out List<BookDto> bookDtoList))
             {
-                var books = await _bookRepository.GetBooksAsync(authorId);
+                var books = await _bookRepository.GetBooksAsync(author);
                 bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
                 // 设置缓存有效时间和优先级
                 MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
@@ -58,9 +56,9 @@ namespace Library.API.Controllers
         }
 
         [HttpGet("{bookId}", Name = nameof(GetBookAsync))]
-        public async Task<ActionResult<BookDto>> GetBookAsync(Guid authorId, Guid bookId)
+        public async Task<ActionResult<BookDto>> GetBookAsync(string author, Guid bookId)
         {
-            var book = await _bookRepository.GetBookAsync(authorId, bookId);
+            var book = await _bookRepository.GetBookAsync(author, bookId);
             if (book == null)
             {
                 return NotFound();
@@ -75,7 +73,6 @@ namespace Library.API.Controllers
         public async Task<IActionResult> AddBookAsync(Guid authorId, BookForCreationDto bookForCreationDto)
         {
             var book = _mapper.Map<Book>(bookForCreationDto);
-            book.AuthorId = authorId;
             _bookRepository.Create(book);
             var result = await _bookRepository.SaveAsync();
             if (!result)
@@ -87,12 +84,12 @@ namespace Library.API.Controllers
         }
 
         [HttpPost("books")]
-        public async Task<IActionResult> AddBooksAsync(Guid authorId, BookForCreationCollectionDto Books)
+        public async Task<IActionResult> AddBooksAsync(string author, BookForCreationCollectionDto Books)
         {
             var books = _mapper.Map<IEnumerable<Book>>(Books.Books);
             foreach (var book in books)
             {
-                book.AuthorId = authorId;
+                book.Author = author;
                 _bookRepository.Create(book);
             }
             var result = await _bookRepository.SaveAsync();
@@ -101,13 +98,13 @@ namespace Library.API.Controllers
                 throw new Exception("创建资源Book失败");
             }
             var bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
-            return CreatedAtRoute(nameof(GetBooksAsync), new { authorId }, bookDtoList);
+            return CreatedAtRoute(nameof(GetBooksAsync), new { author }, bookDtoList);
         }
 
         [HttpDelete("{bookId}")]
-        public async Task<IActionResult> DeleteBookAsync(Guid authorId, Guid bookId)
+        public async Task<IActionResult> DeleteBookAsync(string author, Guid bookId)
         {
-            var book = await _bookRepository.GetBookAsync(authorId, bookId);
+            var book = await _bookRepository.GetBookAsync(author, bookId);
             if (book == null)
             {
                 return NotFound();
@@ -123,9 +120,9 @@ namespace Library.API.Controllers
 
         [HttpPut("{bookId}")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> UpdateBookAsync(Guid authorId, Guid bookId, BookForUpdateDto updateBook)
+        public async Task<IActionResult> UpdateBookAsync(string author, Guid bookId, BookForUpdateDto updateBook)
         {
-            var book = await _bookRepository.GetBookAsync(authorId, bookId);
+            var book = await _bookRepository.GetBookAsync(author, bookId);
             if (book == null)
             {
                 return NotFound();
@@ -149,9 +146,9 @@ namespace Library.API.Controllers
 
         [HttpPatch("{bookId}")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> PartiallyUpdateBookAsync(Guid authorId, Guid bookId, JsonPatchDocument<BookForUpdateDto> patchDocument)
+        public async Task<IActionResult> PartiallyUpdateBookAsync(string author, Guid bookId, JsonPatchDocument<BookForUpdateDto> patchDocument)
         {
-            var book = await _bookRepository.GetBookAsync(authorId, bookId);
+            var book = await _bookRepository.GetBookAsync(author, bookId);
             if (book == null)
             {
                 return NotFound();

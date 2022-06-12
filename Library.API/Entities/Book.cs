@@ -6,7 +6,7 @@ namespace Library.API.Entities
 {
     public class Book
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [Required]
@@ -24,10 +24,15 @@ namespace Library.API.Entities
         [MaxLength(250)]
         public string? Image { get; set; }
         public int Pages { get; set; }
+        public string Author { get; set; }
+        public Guid CategoryId { get; set; }
+        #region ctor
 
-        [ForeignKey("AuthorId")]
-        public Author? Author { get; set; }
-
-        public Guid AuthorId { get; set; }
+        public Book(string title, string author)
+        {
+            Title = title;
+            Author = author;
+        }
+        #endregion
     }
 }

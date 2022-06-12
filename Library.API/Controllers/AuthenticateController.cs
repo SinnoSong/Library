@@ -80,7 +80,6 @@ namespace Library.API.Controllers
             {
                 UserName = registerUser.UserName,
                 Email = registerUser.Email,
-                BirthDate = registerUser.BirthDate
             };
             IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
             if (result.Succeeded)

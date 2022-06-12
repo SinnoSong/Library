@@ -9,9 +9,7 @@ namespace Library.API.Configs
     {
         public MappingProfile()
         {
-            CreateMap<Author, AuthorDto>().ForMember(dest => dest.Age, config => config.MapFrom(src => DateTime.Now.Year - src.BirthDate.Year));
             CreateMap<Book, BookDto>();
-            CreateMap<AuthorForCreationDto, Author>();
             CreateMap<BookForCreationDto, Book>();
             CreateMap<BookForUpdateDto, Book>().ReverseMap();
         }

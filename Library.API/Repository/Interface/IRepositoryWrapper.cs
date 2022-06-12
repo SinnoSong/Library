@@ -3,6 +3,5 @@
     public interface IRepositoryWrapper
     {
         IBookRepository Book { get; }
-        IAuthorRepository Author { get; }
     }
 }

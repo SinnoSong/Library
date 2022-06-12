@@ -7,8 +7,8 @@ namespace Library.API.Repository.Interface
 {
     public interface IBookRepository : IRepositoryBase<Book, Guid>
     {
-        Task<IEnumerable<Book>> GetBooksAsync(Guid authorId);
+        Task<IEnumerable<Book>> GetBooksAsync(string author);
 
-        Task<Book> GetBookAsync(Guid authorId, Guid bookId);
+        Task<Book> GetBookAsync(string author, Guid bookId);
     }
 }

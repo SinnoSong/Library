@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 
 namespace Library.API.Entities
 {
     public class User : IdentityUser
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTimeOffset BirthDate { get; set; }
+        /// <summary>
+        /// 学号
+        /// </summary>
+        public ulong? StudentId { get; set; }
+        /// <summary>
+        /// 年级1,2,3,4
+        /// </summary>
+        public byte? Grade { get; set; }
     }
 }

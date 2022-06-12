@@ -14,14 +14,14 @@ namespace Library.API.Repository
         {
         }
 
-        public async Task<Book> GetBookAsync(Guid authorId, Guid bookId)
+        public async Task<Book> GetBookAsync(string author, Guid bookId)
         {
-            return await Table.SingleOrDefaultAsync(Book => Book.AuthorId == authorId && Book.Id == bookId);
+            return await Table.SingleOrDefaultAsync(Book => Book.Author == author && Book.Id == bookId);
         }
 
-        public Task<IEnumerable<Book>> GetBooksAsync(Guid authorId)
+        public Task<IEnumerable<Book>> GetBooksAsync(string author)
         {
-            return Task.FromResult(Table.Where(book => book.AuthorId == authorId).AsEnumerable());
+            return Task.FromResult(Table.Where(book => book.Author == author).AsEnumerable());
         }
     }
 }
