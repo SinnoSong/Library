@@ -3,7 +3,7 @@ using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Helper;
 using Library.API.Models;
-using Library.API.Repository.Interface;
+using Library.API.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -22,15 +22,15 @@ namespace Library.API.Controllers
     //[ServiceFilter(typeof(CheckAuthorExistFilterAttribute))]
     public class BookController : ControllerBase
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly IBookServices _bookServices;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly HashFactory _hashFactory;
 
-        public BookController(IRepositoryWrapper repositoryWrapper, IMapper mapper,
+        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper,
             IMemoryCache memoryCache, HashFactory hashFactory)
         {
-            this._bookRepository = repositoryWrapper.Book;
+            this._bookServices = repositoryWrapper.Book;
             this._mapper = mapper;
             this._memoryCache = memoryCache;
             this._hashFactory = hashFactory;
@@ -42,7 +42,7 @@ namespace Library.API.Controllers
             string key = $"{author}_books";
             if (!_memoryCache.TryGetValue(key, out List<BookDto> bookDtoList))
             {
-                var books = await _bookRepository.GetBooksAsync(author);
+                var books = await _bookServices.GetBooksAsync(author);
                 bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
                 // 设置缓存有效时间和优先级
                 MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
@@ -58,7 +58,7 @@ namespace Library.API.Controllers
         [HttpGet("{bookId}", Name = nameof(GetBookAsync))]
         public async Task<ActionResult<BookDto>> GetBookAsync(string author, Guid bookId)
         {
-            var book = await _bookRepository.GetBookAsync(author, bookId);
+            var book = await _bookServices.GetBookAsync(author, bookId);
             if (book == null)
             {
                 return NotFound();
@@ -73,9 +73,8 @@ namespace Library.API.Controllers
         public async Task<IActionResult> AddBookAsync(Guid authorId, BookForCreationDto bookForCreationDto)
         {
             var book = _mapper.Map<Book>(bookForCreationDto);
-            _bookRepository.Create(book);
-            var result = await _bookRepository.SaveAsync();
-            if (!result)
+            var result = await _bookServices.AddAsync(book);
+            if (result == null)
             {
                 throw new Exception("创建资源Book失败");
             }
@@ -90,9 +89,9 @@ namespace Library.API.Controllers
             foreach (var book in books)
             {
                 book.Author = author;
-                _bookRepository.Create(book);
+                await _bookServices.AddAsync(book);
             }
-            var result = await _bookRepository.SaveAsync();
+            var result = await _bookServices.SaveAsync();
             if (!result)
             {
                 throw new Exception("创建资源Book失败");
@@ -109,7 +108,7 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            _bookRepository.Delete(book);
+            _bookRepository.DeleteAsync(book);
             var result = await _bookRepository.SaveAsync();
             if (!result)
             {
@@ -133,7 +132,7 @@ namespace Library.API.Controllers
                 return StatusCode(StatusCodes.Status412PreconditionFailed);
             }
             _mapper.Map(updateBook, book, typeof(BookForUpdateDto), typeof(Book));
-            _bookRepository.Update(book);
+            _bookRepository.UpdateAsync(book);
             var result = await _bookRepository.SaveAsync();
             if (!result)
             {
@@ -165,7 +164,7 @@ namespace Library.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(bookUpdateDto, book, typeof(BookForUpdateDto), typeof(Book));
-            _bookRepository.Update(book);
+            _bookRepository.UpdateAsync(book);
             var result = await _bookRepository.SaveAsync();
             if (!result)
             {

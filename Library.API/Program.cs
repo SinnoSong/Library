@@ -1,23 +1,23 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Library.API.Entities;
-using Microsoft.OpenApi.Models;
-using Library.API.Repository.Interface;
-using Library.API.Repository;
 using Library.API.Configs;
-using Library.API.Helper;
 using Library.API.Configs.Filters;
+using Library.API.Entities;
+using Library.API.Helper;
+using Library.API.Services;
+using Library.API.Services.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Serilog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,7 +57,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
 
 // Ìí¼Órepository°ü×°
-builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+builder.Services.AddScoped<IServicesWrapper, ServicesWrapper>();
 builder.Services.AddSingleton<HashFactory>();
 builder.Services.AddControllers(config =>
 {

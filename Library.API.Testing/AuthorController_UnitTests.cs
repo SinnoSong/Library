@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Library.API.Configs;
-using Library.API.Controllers;
-using Library.API.Entities;
 using Library.API.Helper;
-using Library.API.Models;
-using Library.API.Repository.Interface;
+using Library.API.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -24,14 +21,14 @@ namespace Library.API.Testing
         private Mock<HashFactory> _mockHashFactory;
         private Mock<ILogger<AuthorController>> _mockILogger;
         private Mock<IMapper> _mockMapper;
-        private Mock<IRepositoryWrapper> _mockRepositoryWrapper;
+        private Mock<IServicesWrapper> _mockRepositoryWrapper;
         private Mock<IUrlHelper> _mockUrlHelper;
 
         public AuthorController_UnitTests()
         {
             _mockDistributedCache = new Mock<IDistributedCache>();
             _mockUrlHelper = new Mock<IUrlHelper>();
-            _mockRepositoryWrapper = new Mock<IRepositoryWrapper>();
+            _mockRepositoryWrapper = new Mock<IServicesWrapper>();
             _mockHashFactory = new Mock<HashFactory>();
             _mockILogger = new Mock<ILogger<AuthorController>>();
             _mockMapper = new Mock<IMapper>();

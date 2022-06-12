@@ -1,10 +1,11 @@
-﻿using Library.API.Models;
+﻿using Library.API.Entities;
+using Library.API.Models;
 using System;
 using System.Collections.Generic;
 
-namespace Library.API.Services
+namespace Library.API.Services.Interface
 {
-    public interface IBookRepository
+    public interface IBookServices : IBaseServices<Book, Guid>
     {
         IEnumerable<BookDto> GetBooksForAuthor(Guid authorId);
 

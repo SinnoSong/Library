@@ -24,14 +24,19 @@ namespace Library.API.Entities
         [MaxLength(250)]
         public string? Image { get; set; }
         public int Pages { get; set; }
+        [MaxLength(100)]
         public string Author { get; set; }
+        [MaxLength(250)]
+        public string Location { get; set; }
+        public bool IsLend { get; set; }
         public Guid CategoryId { get; set; }
         #region ctor
 
-        public Book(string title, string author)
+        public Book(string title, string author, string location)
         {
             Title = title;
             Author = author;
+            Location = location;
         }
         #endregion
     }
