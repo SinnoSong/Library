@@ -39,5 +39,16 @@
             年级1,2,3,4
             </summary>
         </member>
+        <member name="M:Library.API.Repository.BASE.BaseRepository`2.AttachIfNot(`0)">
+            <summary>
+            检查实体是否处于跟踪状态，如果是，则返回；如果不是，则添加跟踪状态
+            </summary>
+            <param name="entity"></param>
+        </member>
+        <member name="P:Library.API.Services.BaseServices`2.BaseDal">
+            <summary>
+            通过在子类的构造函数中注入，这里是基类，不用构造函数
+            </summary>
+        </member>
     </members>
 </doc>

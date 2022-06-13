@@ -25,11 +25,6 @@ namespace Library.API.Repository.BASE
 
         #region protected methods
 
-        protected async Task<bool> SaveAsync()
-        {
-            return await _dbContext.SaveChangesAsync() > 0;
-        }
-
         /// <summary>
         /// 检查实体是否处于跟踪状态，如果是，则返回；如果不是，则添加跟踪状态
         /// </summary>
@@ -125,6 +120,13 @@ namespace Library.API.Repository.BASE
         public async Task<int> CountByConditionAsync(Expression<Func<T, bool>> expression)
         {
             return (await GetByConditionAsync(expression)).Count();
+        }
+        #endregion
+
+        #region save
+        public async Task<bool> SaveAsync()
+        {
+            return await _dbContext.SaveChangesAsync() > 0;
         }
         #endregion
     }

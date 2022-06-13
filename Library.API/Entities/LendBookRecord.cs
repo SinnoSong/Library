@@ -15,13 +15,13 @@ namespace Library.API.Entities
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public DateTime RealReturnTime { get; set; }
-        public string Operator { get; set; }
+        public string Processer { get; set; }
 
         #region ctor
 
-        public LendBookRecord(string operatorStr)
+        public LendBookRecord(string processer)
         {
-            Operator = operatorStr;
+            Processer = processer;
         }
 
         #endregion

@@ -68,5 +68,10 @@ namespace Library.API.Services
         {
             return await BaseDal.UpdateAsync(entity);
         }
+
+        public async Task<bool> SaveAsync()
+        {
+            return await BaseDal.SaveAsync();
+        }
     }
 }

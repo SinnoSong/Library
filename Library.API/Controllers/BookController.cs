@@ -17,8 +17,10 @@ using System.Threading.Tasks;
 
 namespace Library.API.Controllers
 {
-    [Route("api/authors/{authorId}/books")]
-    [ApiController, Authorize]
+    [Route("api/books")]
+    [ApiController]
+    [AllowAnonymous]
+    //[Authorize]
     //[ServiceFilter(typeof(CheckAuthorExistFilterAttribute))]
     public class BookController : ControllerBase
     {
@@ -30,35 +32,48 @@ namespace Library.API.Controllers
         public BookController(IServicesWrapper repositoryWrapper, IMapper mapper,
             IMemoryCache memoryCache, HashFactory hashFactory)
         {
-            this._bookServices = repositoryWrapper.Book;
-            this._mapper = mapper;
-            this._memoryCache = memoryCache;
-            this._hashFactory = hashFactory;
+            _bookServices = repositoryWrapper.Book;
+            _mapper = mapper;
+            _memoryCache = memoryCache;
+            _hashFactory = hashFactory;
         }
 
         [HttpGet(Name = nameof(GetBooksAsync))]
-        public async Task<ActionResult<List<BookDto>>> GetBooksAsync(string author)
+        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 0, int pageSize = 25)
         {
-            string key = $"{author}_books";
-            if (!_memoryCache.TryGetValue(key, out List<BookDto> bookDtoList))
+            var books = await _bookServices.GetAllAsync();
+            if (books != null)
             {
-                var books = await _bookServices.GetBooksAsync(author);
-                bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
-                // 设置缓存有效时间和优先级
-                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                if (category != null)
                 {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(10),
-                    Priority = CacheItemPriority.Normal
-                };
-                _memoryCache.Set(key, bookDtoList, options);
+                    books = books.Where(book => book.CategoryId == category);
+                }
+                if (title != null)
+                {
+                    books = books.Where(book => book.Title == title || book.Title.Contains(title));
+                }
+                if (author != null)
+                {
+                    books = books.Where(book => book.Author == author || book.Author.Contains(author));
+                }
+                if (ibsn != null)
+                {
+                    books = books.Where(book => book.Isbn == ibsn);
+                }
             }
-            return bookDtoList;
+            else
+            {
+                throw new ArgumentException("当前没有书籍在库");
+            }
+            // todo mapper异常
+            var bookDtoList = _mapper.Map<IQueryable<Book>, IQueryable<BookDto>>(books);
+            return await PagedList<BookDto>.CreateAsync(bookDtoList, page, pageSize);
         }
 
         [HttpGet("{bookId}", Name = nameof(GetBookAsync))]
-        public async Task<ActionResult<BookDto>> GetBookAsync(string author, Guid bookId)
+        public async Task<ActionResult<BookDto>> GetBookAsync(Guid bookId)
         {
-            var book = await _bookServices.GetBookAsync(author, bookId);
+            var book = await _bookServices.GetByIdAsync(bookId);
             if (book == null)
             {
                 return NotFound();
@@ -79,7 +94,7 @@ namespace Library.API.Controllers
                 throw new Exception("创建资源Book失败");
             }
             var bookDto = _mapper.Map<BookDto>(book);
-            return CreatedAtRoute(nameof(GetBookAsync), new { authorId = bookDto.AuthorId, bookId = bookDto.Id }, bookDto);
+            return CreatedAtRoute(nameof(GetBookAsync), new { bookId = bookDto.Id }, bookDto);
         }
 
         [HttpPost("books")]
@@ -101,15 +116,15 @@ namespace Library.API.Controllers
         }
 
         [HttpDelete("{bookId}")]
-        public async Task<IActionResult> DeleteBookAsync(string author, Guid bookId)
+        public async Task<IActionResult> DeleteBookAsync(Guid bookId)
         {
-            var book = await _bookRepository.GetBookAsync(author, bookId);
+            var book = await _bookServices.GetByIdAsync(bookId);
             if (book == null)
             {
                 return NotFound();
             }
-            _bookRepository.DeleteAsync(book);
-            var result = await _bookRepository.SaveAsync();
+            await _bookServices.DeleteAsync(book);
+            var result = await _bookServices.SaveAsync();
             if (!result)
             {
                 throw new Exception("删除资源Book失败");
@@ -119,9 +134,9 @@ namespace Library.API.Controllers
 
         [HttpPut("{bookId}")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> UpdateBookAsync(string author, Guid bookId, BookForUpdateDto updateBook)
+        public async Task<IActionResult> UpdateBookAsync(Guid bookId, BookForUpdateDto updateBook)
         {
-            var book = await _bookRepository.GetBookAsync(author, bookId);
+            var book = await _bookServices.GetByIdAsync(bookId);
             if (book == null)
             {
                 return NotFound();
@@ -132,12 +147,7 @@ namespace Library.API.Controllers
                 return StatusCode(StatusCodes.Status412PreconditionFailed);
             }
             _mapper.Map(updateBook, book, typeof(BookForUpdateDto), typeof(Book));
-            _bookRepository.UpdateAsync(book);
-            var result = await _bookRepository.SaveAsync();
-            if (!result)
-            {
-                throw new Exception("更新资源Book失败");
-            }
+            await _bookServices.UpdateAsync(book);
             var entityNewHash = _hashFactory.GetHash(book);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
@@ -145,9 +155,9 @@ namespace Library.API.Controllers
 
         [HttpPatch("{bookId}")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> PartiallyUpdateBookAsync(string author, Guid bookId, JsonPatchDocument<BookForUpdateDto> patchDocument)
+        public async Task<IActionResult> PartiallyUpdateBookAsync(Guid bookId, JsonPatchDocument<BookForUpdateDto> patchDocument)
         {
-            var book = await _bookRepository.GetBookAsync(author, bookId);
+            var book = await _bookServices.GetByIdAsync(bookId);
             if (book == null)
             {
                 return NotFound();
@@ -164,12 +174,7 @@ namespace Library.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(bookUpdateDto, book, typeof(BookForUpdateDto), typeof(Book));
-            _bookRepository.UpdateAsync(book);
-            var result = await _bookRepository.SaveAsync();
-            if (!result)
-            {
-                throw new Exception("更新资源Book失败");
-            }
+            await _bookServices.UpdateAsync(book);
             var entityNewHash = _hashFactory.GetHash(book);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();

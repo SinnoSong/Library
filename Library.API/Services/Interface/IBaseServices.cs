@@ -36,5 +36,9 @@ namespace Library.API.Services.Interface
         #region exist
         Task<bool> IsExistAsync(TId id);
         #endregion
+
+        #region save
+        Task<bool> SaveAsync();
+        #endregion
     }
 }
