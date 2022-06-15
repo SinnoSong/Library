@@ -25,6 +25,9 @@ namespace Library.API.Models
             Location = location;
         }
 
+        public BookDto()
+        {
+        }
         #endregion
     }
 }

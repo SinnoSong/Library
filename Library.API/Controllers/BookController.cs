@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Library.API.Configs;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
+using Library.API.Extentions;
 using Library.API.Helper;
 using Library.API.Models;
 using Library.API.Services.Interface;
@@ -13,6 +16,7 @@ using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Library.API.Controllers
@@ -28,6 +32,7 @@ namespace Library.API.Controllers
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly HashFactory _hashFactory;
+        private Dictionary<string, PropertyMapping> mappingDict = null;
 
         public BookController(IServicesWrapper repositoryWrapper, IMapper mapper,
             IMemoryCache memoryCache, HashFactory hashFactory)
@@ -36,38 +41,44 @@ namespace Library.API.Controllers
             _mapper = mapper;
             _memoryCache = memoryCache;
             _hashFactory = hashFactory;
+            mappingDict = new Dictionary<string, PropertyMapping>();
+            mappingDict.Add("title", new PropertyMapping("Title"));
+            mappingDict.Add("author", new PropertyMapping("Author"));
+            mappingDict.Add("ibsn", new PropertyMapping(targetProperty: "Ibsn"));
+            mappingDict.Add("category", new PropertyMapping(targetProperty: "Category"));
         }
 
         [HttpGet(Name = nameof(GetBooksAsync))]
-        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 0, int pageSize = 25)
+        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(string sort, string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
         {
             var books = await _bookServices.GetAllAsync();
+            books.Sort(sort, mappingDict);
+            // 只能查询
+            Expression<Func<Book, bool>> select = book => !book.IsLend;
             if (books != null)
             {
                 if (category != null)
                 {
-                    books = books.Where(book => book.CategoryId == category);
+                    select = select.And(book => book.CategoryId == category);
                 }
                 if (title != null)
                 {
-                    books = books.Where(book => book.Title == title || book.Title.Contains(title));
+                    select = select.And(book => book.Title == title || book.Title.Contains(title));
                 }
                 if (author != null)
                 {
-                    books = books.Where(book => book.Author == author || book.Author.Contains(author));
+                    select = select.And(book => book.Author == author || book.Author.Contains(author));
                 }
                 if (ibsn != null)
                 {
-                    books = books.Where(book => book.Isbn == ibsn);
+                    select = select.And(book => book.Isbn == ibsn);
                 }
             }
             else
             {
                 throw new ArgumentException("当前没有书籍在库");
             }
-            // todo mapper异常
-            var bookDtoList = _mapper.Map<IQueryable<Book>, IQueryable<BookDto>>(books);
-            return await PagedList<BookDto>.CreateAsync(bookDtoList, page, pageSize);
+            return await PagedList<BookDto>.CreateAsync(books.ProjectTo<BookDto>(_mapper.ConfigurationProvider), page, pageSize);
         }
 
         [HttpGet("{bookId}", Name = nameof(GetBookAsync))]
