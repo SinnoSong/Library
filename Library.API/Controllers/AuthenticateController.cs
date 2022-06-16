@@ -1,5 +1,6 @@
 ﻿using Library.API.Entities;
 using Library.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ namespace Library.API.Controllers
 {
     [Route("auth")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthenticateController : ControllerBase
     {
         private readonly UserManager<User> _userManager;

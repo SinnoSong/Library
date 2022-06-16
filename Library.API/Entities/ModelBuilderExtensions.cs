@@ -74,9 +74,9 @@ namespace Library.API.Entities
                 {
                     Id = "32A61BDD-DF3C-4B71-9444-F5730F8A619B",
                     Email = "super@library.com",
-                    NormalizedEmail = "SUPER@@LIBRARY.COM",
+                    NormalizedEmail = "SUPER@LIBRARY.COM",
                     UserName = "super@library.com",
-                    NormalizedUserName = "SUPER@@LIBRARY.COM",
+                    NormalizedUserName = "SUPER@LIBRARY.COM",
                     PasswordHash = hasher.HashPassword(null, "12345678")
                 });
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(

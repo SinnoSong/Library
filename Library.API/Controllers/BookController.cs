@@ -23,16 +23,14 @@ namespace Library.API.Controllers
 {
     [Route("api/books")]
     [ApiController]
-    [AllowAnonymous]
-    //[Authorize]
-    //[ServiceFilter(typeof(CheckAuthorExistFilterAttribute))]
+    [Authorize]
     public class BookController : ControllerBase
     {
         private readonly IBookServices _bookServices;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly HashFactory _hashFactory;
-        private Dictionary<string, PropertyMapping> mappingDict = null;
+        private readonly Dictionary<string, PropertyMapping> mappingDict;
 
         public BookController(IServicesWrapper repositoryWrapper, IMapper mapper,
             IMemoryCache memoryCache, HashFactory hashFactory)
@@ -41,12 +39,15 @@ namespace Library.API.Controllers
             _mapper = mapper;
             _memoryCache = memoryCache;
             _hashFactory = hashFactory;
-            mappingDict = new Dictionary<string, PropertyMapping>();
-            mappingDict.Add("title", new PropertyMapping("Title"));
-            mappingDict.Add("author", new PropertyMapping("Author"));
-            mappingDict.Add("ibsn", new PropertyMapping(targetProperty: "Ibsn"));
-            mappingDict.Add("category", new PropertyMapping(targetProperty: "Category"));
+            mappingDict = new Dictionary<string, PropertyMapping>
+            {
+                { "title", new PropertyMapping("Title") },
+                { "author", new PropertyMapping("Author") },
+                { "ibsn", new PropertyMapping(targetProperty: "Ibsn") },
+                { "category", new PropertyMapping(targetProperty: "Category") }
+            };
         }
+        #region Get
 
         [HttpGet(Name = nameof(GetBooksAsync))]
         public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(string sort, string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
@@ -94,9 +95,13 @@ namespace Library.API.Controllers
             var bookDto = _mapper.Map<BookDto>(book);
             return bookDto;
         }
+        #endregion
+
+        #region Post
 
         [HttpPost]
-        public async Task<IActionResult> AddBookAsync(Guid authorId, BookForCreationDto bookForCreationDto)
+        [Authorize(Roles = "Administrator,SuperAdministrator")]
+        public async Task<IActionResult> AddBookAsync(BookForCreationDto bookForCreationDto)
         {
             var book = _mapper.Map<Book>(bookForCreationDto);
             var result = await _bookServices.AddAsync(book);
@@ -125,6 +130,8 @@ namespace Library.API.Controllers
             var bookDtoList = _mapper.Map<IEnumerable<BookDto>>(books).ToList();
             return CreatedAtRoute(nameof(GetBooksAsync), new { author }, bookDtoList);
         }
+
+        #endregion
 
         [HttpDelete("{bookId}")]
         public async Task<IActionResult> DeleteBookAsync(Guid bookId)
@@ -164,31 +171,5 @@ namespace Library.API.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{bookId}")]
-        [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> PartiallyUpdateBookAsync(Guid bookId, JsonPatchDocument<BookForUpdateDto> patchDocument)
-        {
-            var book = await _bookServices.GetByIdAsync(bookId);
-            if (book == null)
-            {
-                return NotFound();
-            }
-            var entityHash = _hashFactory.GetHash(book);
-            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
-            {
-                return StatusCode(StatusCodes.Status412PreconditionFailed);
-            }
-            var bookUpdateDto = _mapper.Map<BookForUpdateDto>(book);
-            patchDocument.ApplyTo(bookUpdateDto, ModelState);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            _mapper.Map(bookUpdateDto, book, typeof(BookForUpdateDto), typeof(Book));
-            await _bookServices.UpdateAsync(book);
-            var entityNewHash = _hashFactory.GetHash(book);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
-            return NoContent();
-        }
     }
 }

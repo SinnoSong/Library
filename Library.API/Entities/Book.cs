@@ -38,10 +38,6 @@ namespace Library.API.Entities
             Author = author;
             Location = location;
         }
-
-        public Book()
-        {
-        }
         #endregion
     }
 }

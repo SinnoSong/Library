@@ -64,8 +64,7 @@ builder.Services.AddControllers(config =>
     config.ReturnHttpNotAcceptable = true;
     config.Filters.Add<JsonExceptionFilter>();
     config.CacheProfiles.Add("Default", new CacheProfile { Duration = 60 });
-}).AddNewtonsoftJson(setup =>
-setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()).AddXmlDataContractSerializerFormatters();
+});
 
 // 添加Serilog
 builder.Host.UseSerilog((ctx, lc) =>
@@ -125,6 +124,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowMethodsPolicy", builder => builder.WithOrigins("https://localhost:5001").AllowAnyMethod());
     options.AddPolicy("AllowAnyOriginPolicy", builder => builder.AllowAnyOrigin());
     options.AddDefaultPolicy(builder => builder.WithOrigins("https://localhost:5001"));
+});
+// 添加支持名称带async的方法名称
+builder.Services.AddMvc(options =>
+{
+    options.SuppressAsyncSuffixInActionNames = false;
 });
 
 var app = builder.Build();
