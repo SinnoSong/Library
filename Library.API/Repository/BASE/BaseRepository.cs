@@ -47,7 +47,6 @@ namespace Library.API.Repository.BASE
         public async Task AddAsync(IEnumerable<T> entities)
         {
             await Table.AddRangeAsync(entities);
-            await SaveAsync();
         }
 
         public async Task<T> AddAsync(T entity)
@@ -61,12 +60,11 @@ namespace Library.API.Repository.BASE
 
         #region delete
 
-        public async Task<bool> DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
             AttachIfNot(entity);
             var entry = Table.Remove(entity);
             await SaveAsync();
-            return entry.State == EntityState.Deleted;
         }
 
         public async Task DeleteByConditionAsync(Expression<Func<T, bool>> expression)

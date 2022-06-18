@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Library.API.Services.Interface
+namespace Library.API.Service.Interface
 {
-    public interface IBaseServices<T, TId>
+    public interface IBaseService<T, TId>
     {
         #region query
         Task<IQueryable<T>> GetAllAsync();
@@ -24,7 +24,7 @@ namespace Library.API.Services.Interface
         #endregion
 
         #region delete
-        Task<bool> DeleteAsync(T entity);
+        Task DeleteAsync(T entity);
         Task DeleteByConditionAsync(Expression<Func<T, bool>> expression);
         #endregion
 

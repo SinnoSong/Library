@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.API.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20220616144746_MidifySeedData")]
-    partial class MidifySeedData
+    [Migration("20220618032506_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,21 +233,21 @@ namespace Library.API.Migrations
                         new
                         {
                             Id = "77967ECF-0A18-4993-A243-FDCC86F7EC1B",
-                            ConcurrencyStamp = "6a998a07-4dcd-4d4e-a253-dcfbf450ff98",
+                            ConcurrencyStamp = "e4ea8c87-4177-4ab3-9c04-69007e38e13a",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "2093BF77-ED2E-453B-911F-325BC99C4504",
-                            ConcurrencyStamp = "4448fc24-cc16-403b-b84b-9cf55a27f2ff",
+                            ConcurrencyStamp = "ce42bf24-129c-49b1-9a36-cbafb409ab80",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "BCC4BFC0-6252-4A32-B5B8-9005E4560402",
-                            ConcurrencyStamp = "878eafa9-acd2-459a-9119-1b1be74cf204",
+                            ConcurrencyStamp = "79f2c179-7014-4970-b5ef-5f12de8c1f6d",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         });
@@ -328,15 +328,15 @@ namespace Library.API.Migrations
                         {
                             Id = "8e448afa-f008-446e-a52f-13c449803c2e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0d49fc34-4cf9-43d7-912d-b7e3206b3d2f",
+                            ConcurrencyStamp = "bcf6023c-a00e-4d28-88ff-f6551953acd8",
                             Email = "admin@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LIBRARY.COM",
                             NormalizedUserName = "ADMIN@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE6SvJJc+2bNXC92cDcaZJ7n5VKOs7/U8nxxP3LcKV3QOVGqJEZzJ3qO1pd1pUIX/g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGpwxeytobmwHQ2VE4mT1q6lwpZ1ACGcwnLeIeSjwezgkjJ8xnTE7G4IKz95QpT/AQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "df7fdc7a-20ad-4c7d-8125-9f5944f7ef8b",
+                            SecurityStamp = "06013371-1ad4-4411-b484-d920dc218401",
                             TwoFactorEnabled = false,
                             UserName = "admin@library.com"
                         },
@@ -344,15 +344,15 @@ namespace Library.API.Migrations
                         {
                             Id = "30a24107-d279-4e37-96fd-01af5b38cb27",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9a81d5c9-5be6-4c52-bd26-2c9e7cb35053",
+                            ConcurrencyStamp = "837dfaaf-cd11-4d4b-9edf-547ac32a588c",
                             Email = "user@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@LIBRARY.COM",
                             NormalizedUserName = "USER@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEITjFTRo593ISjTyppcqpJJHezOeW9lU5q7bUVcU3xjwSxAVyxQI/bRq+ss1zGYZEQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDH6foVLNk0LHqA/GWA2uf1Q98ZFRdXG2tEVs11V8n0cv1ifGFBN0js3EbyKa5ZYOA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "88f32663-9994-4374-9916-a68ce3ac58e0",
+                            SecurityStamp = "72dbc1c9-758a-4e0c-9f30-91f94d5a50cf",
                             TwoFactorEnabled = false,
                             UserName = "user@library.com"
                         },
@@ -360,15 +360,15 @@ namespace Library.API.Migrations
                         {
                             Id = "32A61BDD-DF3C-4B71-9444-F5730F8A619B",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cdec30dd-4a7d-4143-a9af-d549e24d108a",
+                            ConcurrencyStamp = "c7225c34-5b35-4e45-aaa8-7642d96057e2",
                             Email = "super@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "SUPER@LIBRARY.COM",
                             NormalizedUserName = "SUPER@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELp0lg/b/gj3uS5E86+By1fQzsCUB/VI7KuupNjn9ENSZ0EG5iRtk7PXJ+WsYcJFAQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJtYBiZ+GvvM1GGXlRZjsK/EVz6LHNo0kSZKfTVP4urpXhyTBAk7A6TtVtuGj/fymA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "eca57ad7-8bb6-47f0-b7ba-0a2cd8b492bf",
+                            SecurityStamp = "80523e6f-0a91-4486-9a12-9204921257f6",
                             TwoFactorEnabled = false,
                             UserName = "super@library.com"
                         });

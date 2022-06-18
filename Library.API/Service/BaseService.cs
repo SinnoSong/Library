@@ -1,14 +1,14 @@
 ﻿using Library.API.Repository.Interface;
-using Library.API.Services.Interface;
+using Library.API.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Library.API.Services
+namespace Library.API.Service
 {
-    public abstract class BaseServices<T, TId> : IBaseServices<T, TId>
+    public abstract class BaseService<T, TId> : IBaseService<T, TId>
     {
         /// <summary>
         /// 通过在子类的构造函数中注入，这里是基类，不用构造函数
@@ -34,9 +34,9 @@ namespace Library.API.Services
             return await BaseDal.CountByConditionAsync(expression);
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-            return await BaseDal.DeleteAsync(entity);
+            await BaseDal.DeleteAsync(entity);
         }
 
         public async Task DeleteByConditionAsync(Expression<Func<T, bool>> expression)

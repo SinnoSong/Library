@@ -24,7 +24,7 @@ namespace Library.API.Repository.Interface
         #endregion
 
         #region delete
-        Task<bool> DeleteAsync(T entity);
+        Task DeleteAsync(T entity);
         Task DeleteByConditionAsync(Expression<Func<T, bool>> expression);
         #endregion
 

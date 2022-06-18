@@ -239,9 +239,9 @@ namespace Library.API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2093BF77-ED2E-453B-911F-325BC99C4504", "fd9decbd-e935-42f3-971c-474592252b77", "Administrator", "ADMINISTRATOR" },
-                    { "77967ECF-0A18-4993-A243-FDCC86F7EC1B", "c929e066-e8ab-468a-98e5-2793cc4b095e", "User", "USER" },
-                    { "BCC4BFC0-6252-4A32-B5B8-9005E4560402", "4e79ca88-1584-422b-9b67-46dc769aedad", "SuperAdministrator", "SUPERADMINISTRATOR" }
+                    { "2093BF77-ED2E-453B-911F-325BC99C4504", "ce42bf24-129c-49b1-9a36-cbafb409ab80", "Administrator", "ADMINISTRATOR" },
+                    { "77967ECF-0A18-4993-A243-FDCC86F7EC1B", "e4ea8c87-4177-4ab3-9c04-69007e38e13a", "User", "USER" },
+                    { "BCC4BFC0-6252-4A32-B5B8-9005E4560402", "79f2c179-7014-4970-b5ef-5f12de8c1f6d", "SuperAdministrator", "SUPERADMINISTRATOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -249,9 +249,9 @@ namespace Library.API.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "Grade", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StudentId", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "30a24107-d279-4e37-96fd-01af5b38cb27", 0, "2f9ac718-d2b2-4aa0-af82-0a0d03714dda", "user@library.com", false, null, false, null, "USER@LIBRARY.COM", "USER@LIBRARY.COM", "AQAAAAEAACcQAAAAEOFCmrBC4oSYAOMQagAe6r5IopsgXAryteT7RjGavqCDmV161sSUVp8u2Hn6WOJEyw==", null, false, "2a3f7700-883b-4265-99c5-6cd93ef42d3b", null, false, "user@library.com" },
-                    { "32A61BDD-DF3C-4B71-9444-F5730F8A619B", 0, "7cda2562-2745-4ba9-8c2a-65770e745dbd", "super@library.com", false, null, false, null, "SUPER@@LIBRARY.COM", "SUPER@@LIBRARY.COM", "AQAAAAEAACcQAAAAEAlYRxvIAFBkkPlDvql/Iot9hzX6hJ+wFt6gDxOVBHnhP5gUAw4cZJD3mmsAN8YhHQ==", null, false, "7f9fd223-debf-462b-a13e-fb42f910d1ee", null, false, "super@library.com" },
-                    { "8e448afa-f008-446e-a52f-13c449803c2e", 0, "d1872c47-dced-40e0-a7bc-a67f1110be80", "admin@library.com", false, null, false, null, "ADMIN@LIBRARY.COM", "ADMIN@LIBRARY.COM", "AQAAAAEAACcQAAAAEAA0yWheiRDwWeHX+f2JWDHC+UQHplf5fCGoCmGHH4b2MK27lqBvV9ci1OF3JbcTmQ==", null, false, "eeb12188-b54b-4c91-92c0-97e4c785757c", null, false, "admin@library.com" }
+                    { "30a24107-d279-4e37-96fd-01af5b38cb27", 0, "837dfaaf-cd11-4d4b-9edf-547ac32a588c", "user@library.com", false, null, false, null, "USER@LIBRARY.COM", "USER@LIBRARY.COM", "AQAAAAEAACcQAAAAEDH6foVLNk0LHqA/GWA2uf1Q98ZFRdXG2tEVs11V8n0cv1ifGFBN0js3EbyKa5ZYOA==", null, false, "72dbc1c9-758a-4e0c-9f30-91f94d5a50cf", null, false, "user@library.com" },
+                    { "32A61BDD-DF3C-4B71-9444-F5730F8A619B", 0, "c7225c34-5b35-4e45-aaa8-7642d96057e2", "super@library.com", false, null, false, null, "SUPER@LIBRARY.COM", "SUPER@LIBRARY.COM", "AQAAAAEAACcQAAAAEJtYBiZ+GvvM1GGXlRZjsK/EVz6LHNo0kSZKfTVP4urpXhyTBAk7A6TtVtuGj/fymA==", null, false, "80523e6f-0a91-4486-9a12-9204921257f6", null, false, "super@library.com" },
+                    { "8e448afa-f008-446e-a52f-13c449803c2e", 0, "bcf6023c-a00e-4d28-88ff-f6551953acd8", "admin@library.com", false, null, false, null, "ADMIN@LIBRARY.COM", "ADMIN@LIBRARY.COM", "AQAAAAEAACcQAAAAEGpwxeytobmwHQ2VE4mT1q6lwpZ1ACGcwnLeIeSjwezgkjJ8xnTE7G4IKz95QpT/AQ==", null, false, "06013371-1ad4-4411-b484-d920dc218401", null, false, "admin@library.com" }
                 });
 
             migrationBuilder.InsertData(

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Library.API.Configs;
 using Library.API.Helper;
-using Library.API.Services.Interface;
+using Library.API.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
