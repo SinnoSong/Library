@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.API.Entities
 {
-    public class LendBookRecord
+    public class LendRecord
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
@@ -19,7 +19,7 @@ namespace Library.API.Entities
 
         #region ctor
 
-        public LendBookRecord(string processer)
+        public LendRecord(string processer)
         {
             Processer = processer;
         }

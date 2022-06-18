@@ -13,6 +13,8 @@ namespace Library.API.Configs
             CreateMap<BookForUpdateDto, Book>().ReverseMap();
             CreateMap<Category, CategoryVo>().ReverseMap();
             CreateMap<CategoryForCreationDto, Category>();
+            CreateMap<LendConfig, LendConfigVo>().ReverseMap();
+            CreateMap<LendConfigForCreationDto, LendConfig>();
         }
     }
 }

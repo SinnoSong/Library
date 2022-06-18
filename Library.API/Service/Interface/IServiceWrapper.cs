@@ -3,5 +3,7 @@
     public interface IServicesWrapper
     {
         IBookService Book { get; }
+        ICategoryService Category { get; }
+        ILendConfigService LendConfig { get; }
     }
 }
