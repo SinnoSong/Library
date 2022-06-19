@@ -49,10 +49,9 @@ namespace Library.API.Controllers
         #region Get
 
         [HttpGet(Name = nameof(GetBooksAsync))]
-        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(string sort, string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(bool isLend, string sort, string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
         {
-            // 只能查询出没有借出的书籍
-            Expression<Func<Book, bool>> select = book => !book.IsLend;
+            Expression<Func<Book, bool>> select = book => isLend;
             if (category != null)
             {
                 select = select.And(book => book.CategoryId == category);
@@ -70,7 +69,7 @@ namespace Library.API.Controllers
                 select = select.And(book => book.Isbn == ibsn);
             }
             var books = await _bookServices.GetByConditionAsync(select);
-            books.Sort(sort, mappingDict);
+            books = books.Sort(sort, mappingDict);
             return await PagedList<BookDto>.CreateAsync(books.ProjectTo<BookDto>(_mapper.ConfigurationProvider), page, pageSize);
         }
 

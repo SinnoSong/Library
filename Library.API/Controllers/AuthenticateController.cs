@@ -27,8 +27,8 @@ namespace Library.API.Controllers
             UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             Configuration = configuration;
-            this._userManager = userManager;
-            this._roleManager = roleManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IConfiguration Configuration { get; }

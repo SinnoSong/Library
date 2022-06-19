@@ -15,6 +15,11 @@ namespace Library.API.Configs
             CreateMap<CategoryForCreationDto, Category>();
             CreateMap<LendConfig, LendConfigVo>().ReverseMap();
             CreateMap<LendConfigForCreationDto, LendConfig>();
+            CreateMap<LendRecord, LendRecordVo>().ReverseMap();
+            CreateMap<LendRecordForCreationDto, LendRecord>();
+            CreateMap<Notice, NoticeVo>().ReverseMap();
+            CreateMap<Notice, NoticeNoContentVo>();
+            CreateMap<NoticeForCreationDto, Notice>();
         }
     }
 }
