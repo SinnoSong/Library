@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library.API.Controllers
@@ -31,9 +32,9 @@ namespace Library.API.Controllers
         #endregion
 
         #region ctor
-        public CategoryController(ICategoryService categoryService, IMapper mapper, HashFactory hashFactory)
+        public CategoryController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
         {
-            _categoryService = categoryService;
+            _categoryService = repositoryWrapper.Category;
             _mapper = mapper;
             _hashFactory = hashFactory;
             mappingDict = new Dictionary<string, PropertyMapping>()
@@ -48,10 +49,18 @@ namespace Library.API.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<ActionResult<PagedList<CategoryVo>>> Get(string search, string sort, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<CategoryVo>>> Get(string sort, string? search = null, int page = 1, int pageSize = 25)
         {
-            var categories = await _categoryService.GetByConditionAsync(category => category.Name.Contains(search));
-            categories.Sort(sort, mappingDict);
+            IQueryable<Category>? categories = default;
+            if (search == null)
+            {
+                categories = await _categoryService.GetAllAsync();
+            }
+            else
+            {
+                categories = await _categoryService.GetByConditionAsync(category => category.Name.Contains(search));
+            }
+            categories = categories.Sort(sort, mappingDict);
             return await PagedList<CategoryVo>.CreateAsync(categories.ProjectTo<CategoryVo>(_mapper.ConfigurationProvider), page, pageSize);
         }
 

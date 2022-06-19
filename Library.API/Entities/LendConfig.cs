@@ -9,6 +9,8 @@ namespace Library.API.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
+        public byte ReaderGrade { get; set; }
+        [Required]
         public int MaxLendNumber { get; set; }
         [Required]
         public int MaxLendDays { get; set; }

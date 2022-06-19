@@ -23,8 +23,7 @@ namespace Library.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
-        public AuthenticateController(IConfiguration configuration,
-            UserManager<User> userManager, RoleManager<Role> roleManager)
+        public AuthenticateController(IConfiguration configuration, UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             Configuration = configuration;
             _userManager = userManager;

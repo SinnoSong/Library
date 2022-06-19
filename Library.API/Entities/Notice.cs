@@ -23,6 +23,9 @@ namespace Library.API.Entities
             CreateTime = createTime;
         }
 
+        public Notice()
+        {
+        }
         #endregion
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.API.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20220618032506_Init")]
-    partial class Init
+    [Migration("20220619105316_InitData")]
+    partial class InitData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -132,7 +132,27 @@ namespace Library.API.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Library.API.Entities.LendBookRecord", b =>
+            modelBuilder.Entity("Library.API.Entities.LendConfig", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("MaxLendDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxLendNumber")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ReaderGrade")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LendConfigs");
+                });
+
+            modelBuilder.Entity("Library.API.Entities.LendRecord", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,23 +180,6 @@ namespace Library.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LendBookRecords");
-                });
-
-            modelBuilder.Entity("Library.API.Entities.LendConfig", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("MaxLendDays")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxLendNumber")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LendConfigs");
                 });
 
             modelBuilder.Entity("Library.API.Entities.Notice", b =>
@@ -233,21 +236,21 @@ namespace Library.API.Migrations
                         new
                         {
                             Id = "77967ECF-0A18-4993-A243-FDCC86F7EC1B",
-                            ConcurrencyStamp = "e4ea8c87-4177-4ab3-9c04-69007e38e13a",
+                            ConcurrencyStamp = "f6f4b977-3e0e-45d0-9261-a00c0413a4c7",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "2093BF77-ED2E-453B-911F-325BC99C4504",
-                            ConcurrencyStamp = "ce42bf24-129c-49b1-9a36-cbafb409ab80",
+                            ConcurrencyStamp = "f732b8c6-486e-45ad-af74-9e477028080f",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "BCC4BFC0-6252-4A32-B5B8-9005E4560402",
-                            ConcurrencyStamp = "79f2c179-7014-4970-b5ef-5f12de8c1f6d",
+                            ConcurrencyStamp = "4c57bdf8-3391-4cd4-8033-0d759bd82372",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         });
@@ -301,9 +304,6 @@ namespace Library.API.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("StudentId")
-                        .HasColumnType("decimal(20,0)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -328,15 +328,15 @@ namespace Library.API.Migrations
                         {
                             Id = "8e448afa-f008-446e-a52f-13c449803c2e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bcf6023c-a00e-4d28-88ff-f6551953acd8",
+                            ConcurrencyStamp = "edd2c020-56a9-4419-85db-2f8f83497340",
                             Email = "admin@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LIBRARY.COM",
                             NormalizedUserName = "ADMIN@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGpwxeytobmwHQ2VE4mT1q6lwpZ1ACGcwnLeIeSjwezgkjJ8xnTE7G4IKz95QpT/AQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBr6gQn6yawom5qQUYgktYkIlgmnVyZrBxpH/jP/2dOlmCfTCf9Eeg3OBn5crO/otw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "06013371-1ad4-4411-b484-d920dc218401",
+                            SecurityStamp = "0d00579f-3a57-48d4-aef3-b367cce45ed5",
                             TwoFactorEnabled = false,
                             UserName = "admin@library.com"
                         },
@@ -344,15 +344,15 @@ namespace Library.API.Migrations
                         {
                             Id = "30a24107-d279-4e37-96fd-01af5b38cb27",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "837dfaaf-cd11-4d4b-9edf-547ac32a588c",
+                            ConcurrencyStamp = "710230d9-590a-41f8-859c-82a7adb68ac0",
                             Email = "user@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@LIBRARY.COM",
                             NormalizedUserName = "USER@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDH6foVLNk0LHqA/GWA2uf1Q98ZFRdXG2tEVs11V8n0cv1ifGFBN0js3EbyKa5ZYOA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELbSR9VQJsVVjdhmR8xg82A4oh+XTlIw53PTIvrMQJXMnNvR5awoPTn5Y5pWSgy08g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "72dbc1c9-758a-4e0c-9f30-91f94d5a50cf",
+                            SecurityStamp = "de7865cc-05cd-4e25-b4ea-3bfa39ac347e",
                             TwoFactorEnabled = false,
                             UserName = "user@library.com"
                         },
@@ -360,15 +360,15 @@ namespace Library.API.Migrations
                         {
                             Id = "32A61BDD-DF3C-4B71-9444-F5730F8A619B",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c7225c34-5b35-4e45-aaa8-7642d96057e2",
+                            ConcurrencyStamp = "fb07aa59-dc4a-4992-afc6-f4ea01045e72",
                             Email = "super@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "SUPER@LIBRARY.COM",
                             NormalizedUserName = "SUPER@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJtYBiZ+GvvM1GGXlRZjsK/EVz6LHNo0kSZKfTVP4urpXhyTBAk7A6TtVtuGj/fymA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE4z+qY0a3tzseE/mx3DXI4RUGg9phvWdi143fAj6mlKc/j5wSUvbw5mUCcf+LMmbQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "80523e6f-0a91-4486-9a12-9204921257f6",
+                            SecurityStamp = "98c990d9-42e5-4d26-b443-7758c81a2791",
                             TwoFactorEnabled = false,
                             UserName = "super@library.com"
                         });

@@ -19,6 +19,10 @@ namespace Library.API.Entities
             Id = id;
             Name = name;
         }
+
+        public Category()
+        {
+        }
         #endregion
     }
 }

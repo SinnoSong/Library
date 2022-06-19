@@ -51,7 +51,7 @@ namespace Library.API.Controllers
         [HttpGet(Name = nameof(GetBooksAsync))]
         public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(bool isLend, string sort, string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
         {
-            Expression<Func<Book, bool>> select = book => isLend;
+            Expression<Func<Book, bool>> select = book => book.IsLend == isLend;
             if (category != null)
             {
                 select = select.And(book => book.CategoryId == category);

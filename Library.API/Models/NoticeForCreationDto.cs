@@ -9,12 +9,10 @@ namespace Library.API.Models
         public string Title { get; set; }
         [Required, MaxLength(1000)]
         public string Content { get; set; }
-        public DateTime CreateTime { get; set; }
-        public NoticeForCreationDto(string title, string content, DateTime createTime)
+        public NoticeForCreationDto(string title, string content)
         {
             Title = title;
             Content = content;
-            CreateTime = createTime;
         }
     }
 }

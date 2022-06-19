@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Library.API.Configs;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
@@ -9,6 +8,7 @@ using Library.API.Models;
 using Library.API.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -26,6 +26,7 @@ namespace Library.API.Controllers
     {
         #region field
         private readonly ILendRecordService _lendRecordService;
+        private readonly UserManager<User> _userManager;
         private readonly IBookService _bookService;
         private readonly IMapper _mapper;
         private readonly HashFactory _hashFactory;
@@ -35,16 +36,17 @@ namespace Library.API.Controllers
 
         #region ctor
 
-        public LendRecordController(IBookService bookService, ILendRecordService lendRecordService, IMapper mapper, HashFactory hashFactory)
+        public LendRecordController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory, UserManager<User> userManager)
         {
-            _lendRecordService = lendRecordService;
-            _bookService = bookService;
+            _lendRecordService = repositoryWrapper.LendRecord;
+            _bookService = repositoryWrapper.Book;
+            _userManager = userManager;
             _mapper = mapper;
             _hashFactory = hashFactory;
             mappingDict = new Dictionary<string, PropertyMapping>
             {
                 {"id",new PropertyMapping("Id")},
-                {"studentId",new PropertyMapping("StudentId") },
+                {"userId",new PropertyMapping("UserId") },
                 {"bookId",new PropertyMapping("BookId") },
                 {"startTime",new PropertyMapping("StartTime") },
                 {"endTime",new PropertyMapping("EndTime") },
@@ -56,13 +58,13 @@ namespace Library.API.Controllers
         #region Get
 
         [HttpGet(Name = nameof(GetLendRecordsAsync))]
-        public async Task<ActionResult<PagedList<LendRecordVo>>> GetLendRecordsAsync(string sort, ulong? studentId = null, string? lendTime = null, string? returnTime = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<LendRecordVo>>> GetLendRecordsAsync(string sort, Guid? userId = null, string? lendTime = null, string? returnTime = null, int page = 1, int pageSize = 25)
         {
             var records = await _lendRecordService.GetAllAsync();
             Expression<Func<LendRecord, bool>>? select = default;
-            if (studentId != null)
+            if (userId != null)
             {
-                select = record => record.StudentId == studentId;
+                select = record => record.UserId == userId;
             }
             if (lendTime != null)
             {
@@ -123,7 +125,14 @@ namespace Library.API.Controllers
             {
                 throw new Exception("该书籍已经被租借！");
             }
-            var result = await _lendRecordService.AddAsync(_mapper.Map<LendRecord>(dto));
+            var lendRecord = _mapper.Map<LendRecord>(dto);
+            lendRecord.StartTime = DateTime.Now;
+            //var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            // todo 需要从token中获取当前调用接口的用户
+            //lendRecord.Processer = Guid.Parse(user.Id);
+            var result = await _lendRecordService.AddAsync(lendRecord);
+            book.IsLend = true;
+            await _bookService.UpdateAsync(book);
             if (result == null)
             {
                 throw new Exception("租借失败，请稍后再试！");

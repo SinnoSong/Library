@@ -29,11 +29,6 @@
             要映射的目标属性
             </summary>
         </member>
-        <member name="P:Library.API.Entities.User.StudentId">
-            <summary>
-            学号
-            </summary>
-        </member>
         <member name="P:Library.API.Entities.User.Grade">
             <summary>
             年级1,2,3,4

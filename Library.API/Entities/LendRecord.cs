@@ -9,19 +9,23 @@ namespace Library.API.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
-        public ulong StudentId { get; set; }
+        public Guid UserId { get; set; }
         [Required]
         public Guid BookId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public DateTime RealReturnTime { get; set; }
-        public string Processer { get; set; }
+        public Guid Processer { get; set; }
 
         #region ctor
 
-        public LendRecord(string processer)
+        public LendRecord(Guid processer)
         {
             Processer = processer;
+        }
+
+        public LendRecord()
+        {
         }
 
         #endregion

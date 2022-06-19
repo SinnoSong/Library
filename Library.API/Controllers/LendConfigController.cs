@@ -28,9 +28,9 @@ namespace Library.API.Controllers
         #endregion
 
         #region ctor
-        public LendConfigController(ILendConfigService lendConfigService, IMapper mapper, HashFactory hashFactory)
+        public LendConfigController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
         {
-            _lendConfigService = lendConfigService;
+            _lendConfigService = repositoryWrapper.LendConfig;
             _mapper = mapper;
             _hashFactory = hashFactory;
         }
@@ -55,7 +55,7 @@ namespace Library.API.Controllers
             }
             var entityNewHash = _hashFactory.GetHash(lendConfig);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
-            return _mapper.Map<LendConfigVo>(entityNewHash);
+            return _mapper.Map<LendConfigVo>(lendConfig);
         }
         #endregion
 

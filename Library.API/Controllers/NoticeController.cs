@@ -25,9 +25,9 @@ namespace Library.API.Controllers
         #endregion
 
         #region ctor
-        public NoticeController(INoticeService noticeService, IMapper mapper, HashFactory hashFactory)
+        public NoticeController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
         {
-            _noticeService = noticeService;
+            _noticeService = repositoryWrapper.Notice;
             _mapper = mapper;
             _hashFactory = hashFactory;
         }
@@ -62,7 +62,9 @@ namespace Library.API.Controllers
         [Authorize(Roles = "Administrator,SuperAdministrator")]
         public async Task<IActionResult> AddNotice(NoticeForCreationDto dto)
         {
-            var result = await _noticeService.AddAsync(_mapper.Map<Notice>(dto));
+            var notice = _mapper.Map<Notice>(dto);
+            notice.CreateTime = DateTime.Now;
+            var result = await _noticeService.AddAsync(notice);
             if (result == null)
             {
                 throw new Exception("创建资源Notice失败！");
