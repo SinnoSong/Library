@@ -69,7 +69,7 @@ namespace Library.API.Controllers
                 signingCredentials: signCredential);
             return Ok(new
             {
-                token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 expiration = TimeZoneInfo.ConvertTimeFromUtc(jwtToken.ValidTo, TimeZoneInfo.Local)
             });
         }
