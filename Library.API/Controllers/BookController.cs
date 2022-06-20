@@ -49,7 +49,7 @@ namespace Library.API.Controllers
         #region Get
 
         [HttpGet(Name = nameof(GetBooksAsync))]
-        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(bool isLend, string sort, string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(bool isLend, string sort = "title", string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1, int pageSize = 25)
         {
             Expression<Func<Book, bool>> select = book => book.IsLend == isLend;
             if (category != null)

@@ -65,6 +65,15 @@ namespace Library.API.Controllers
         [Authorize(Roles = "Administrator,SuperAdministrator")]
         public async Task<IActionResult> AddLendConfigAsync(LendConfigForCreationDto dto)
         {
+            if (dto.ReaderGrade == 0 || dto.ReaderGrade > 4)
+            {
+                throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
+            }
+            var count = await _lendConfigService.CountByConditionAsync(config => config.ReaderGrade == dto.ReaderGrade);
+            if (count != 0)
+            {
+                throw new ArgumentException("该Grade已经存在一个规则，请修改原有规则！");
+            }
             var lendConfig = await _lendConfigService.AddAsync(_mapper.Map<LendConfig>(dto));
             if (lendConfig == null)
             {

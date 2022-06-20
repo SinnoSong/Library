@@ -77,10 +77,15 @@ namespace Library.API.Controllers
         [HttpPost("register", Name = nameof(AddUserAsync))]
         public async Task<IActionResult> AddUserAsync(RegisterUser registerUser)
         {
+            if (registerUser.Grade > 4 || registerUser.Grade == 0)
+            {
+                throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
+            }
             var user = new User
             {
                 UserName = registerUser.UserName,
                 Email = registerUser.Email,
+                Grade = registerUser.Grade,
             };
             IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
             if (result.Succeeded)

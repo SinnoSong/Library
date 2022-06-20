@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Library.API.Models
 {
@@ -13,7 +12,6 @@ namespace Library.API.Models
 
         [MinLength(6)]
         public string Password { get; set; }
-
-        public DateTimeOffset BirthDate { get; set; }
+        public byte Grade { get; set; }
     }
 }

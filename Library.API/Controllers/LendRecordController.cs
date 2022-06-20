@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -28,18 +29,19 @@ namespace Library.API.Controllers
         private readonly ILendRecordService _lendRecordService;
         private readonly UserManager<User> _userManager;
         private readonly IBookService _bookService;
+        private readonly ILendConfigService _lendConfigService;
         private readonly IMapper _mapper;
         private readonly HashFactory _hashFactory;
         private readonly Dictionary<string, PropertyMapping> mappingDict;
         #endregion
 
-
         #region ctor
 
-        public LendRecordController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory, UserManager<User> userManager)
+        public LendRecordController(IServicesWrapper serviceWrapper, IMapper mapper, HashFactory hashFactory, UserManager<User> userManager)
         {
-            _lendRecordService = repositoryWrapper.LendRecord;
-            _bookService = repositoryWrapper.Book;
+            _lendConfigService = serviceWrapper.LendConfig;
+            _lendRecordService = serviceWrapper.LendRecord;
+            _bookService = serviceWrapper.Book;
             _userManager = userManager;
             _mapper = mapper;
             _hashFactory = hashFactory;
@@ -48,8 +50,7 @@ namespace Library.API.Controllers
                 {"id",new PropertyMapping("Id")},
                 {"userId",new PropertyMapping("UserId") },
                 {"bookId",new PropertyMapping("BookId") },
-                {"startTime",new PropertyMapping("StartTime") },
-                {"endTime",new PropertyMapping("EndTime") },
+                {"lendTime",new PropertyMapping("StartTime") },
                 {"returnTime",new PropertyMapping("RealReturnTime") },
             };
         }
@@ -58,7 +59,7 @@ namespace Library.API.Controllers
         #region Get
 
         [HttpGet(Name = nameof(GetLendRecordsAsync))]
-        public async Task<ActionResult<PagedList<LendRecordVo>>> GetLendRecordsAsync(string sort, Guid? userId = null, string? lendTime = null, string? returnTime = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<LendRecordVo>>> GetLendRecordsAsync(string sort = "id", Guid? userId = null, string? lendTime = null, string? returnTime = null, int page = 1, int pageSize = 25)
         {
             var records = await _lendRecordService.GetAllAsync();
             Expression<Func<LendRecord, bool>>? select = default;
@@ -127,15 +128,33 @@ namespace Library.API.Controllers
             }
             var lendRecord = _mapper.Map<LendRecord>(dto);
             lendRecord.StartTime = DateTime.Now;
-            //var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            // todo 需要从token中获取当前调用接口的用户
-            //lendRecord.Processer = Guid.Parse(user.Id);
+            var token = new JwtSecurityToken(Request.Headers.Authorization[0].Substring("Bearer ".Length));
+            var email = token.Claims.Where(claim => claim.Type == JwtRegisteredClaimNames.Email).FirstOrDefault()!.Value;
+            var processer = await _userManager.FindByEmailAsync(email);
+            lendRecord.Processer = new Guid(processer.Id);
+            var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
+            if (user.Grade == null)
+            {
+                throw new Exception("用户没有对应借阅规则，请设置用户等级");
+            }
+            var lendConfigs = await _lendConfigService.GetByConditionAsync(config => config.ReaderGrade == user.Grade);
+            var config = lendConfigs.FirstOrDefault();
+            var maxCount = config!.MaxLendNumber;
+            var realCount = await _lendRecordService.CountByConditionAsync(record => record.UserId == dto.UserId && record.RealReturnTime == DateTime.MinValue);
+            if (maxCount < realCount)
+            {
+                throw new Exception("当前借阅数量超过最大借阅数目，请先归还先前借阅书籍！");
+            }
+            lendRecord.EndTime = DateTime.Now.AddDays(config.MaxLendDays);
             var result = await _lendRecordService.AddAsync(lendRecord);
-            book.IsLend = true;
-            await _bookService.UpdateAsync(book);
             if (result == null)
             {
                 throw new Exception("租借失败，请稍后再试！");
+            }
+            else
+            {
+                book.IsLend = true;
+                await _bookService.UpdateAsync(book);
             }
             var vo = _mapper.Map<LendRecordVo>(result);
             return CreatedAtAction(nameof(GetRecordAsync), new { id = vo.Id }, vo);
@@ -147,7 +166,7 @@ namespace Library.API.Controllers
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrator,SuperAdministrator")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> PutAsync(Guid id, LendRecordForCreationDto dto)
+        public async Task<IActionResult> PutAsync(Guid id)
         {
             var record = await _lendRecordService.GetByIdAsync(id);
             if (record == null)
@@ -159,7 +178,7 @@ namespace Library.API.Controllers
             {
                 return StatusCode(StatusCodes.Status412PreconditionFailed);
             }
-            _mapper.Map(dto, record);
+            record.RealReturnTime = DateTime.Now;
             await _lendRecordService.UpdateAsync(record);
             var entityNewHash = _hashFactory.GetHash(record);
             Response.Headers[HeaderNames.ETag] = entityNewHash;

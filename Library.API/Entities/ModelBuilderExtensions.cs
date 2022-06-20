@@ -59,7 +59,9 @@ namespace Library.API.Entities
                      NormalizedEmail = "ADMIN@LIBRARY.COM",
                      UserName = "admin@library.com",
                      NormalizedUserName = "ADMIN@LIBRARY.COM",
-                     PasswordHash = hasher.HashPassword(null, "12345678")
+                     PasswordHash = hasher.HashPassword(null, "12345678"),
+                     // 设置等级
+                     Grade = 1
                  },
                 new User
                 {

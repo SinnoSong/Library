@@ -49,7 +49,7 @@ namespace Library.API.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<ActionResult<PagedList<CategoryVo>>> Get(string sort, string? search = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<CategoryVo>>> Get(string sort = "id", string? search = null, int page = 1, int pageSize = 25)
         {
             IQueryable<Category>? categories = default;
             if (search == null)
