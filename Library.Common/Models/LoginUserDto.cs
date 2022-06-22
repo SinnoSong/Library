@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace Library.Web.Models
+namespace Library.Common.Models
 {
     public class LoginUserDto
     {
-        [JsonProperty("email", Required = Required.Always)]
+        [JsonProperty("userName", Required = Required.Always)]
         [Required(AllowEmptyStrings = true)]
-        public string Email { get; set; }
+        public string UserName { get; set; }
 
         [JsonProperty("password", Required = Required.Always)]
         [Required(AllowEmptyStrings = true)]

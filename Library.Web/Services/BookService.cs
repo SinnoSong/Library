@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blazored.LocalStorage;
+using Library.Common.Models;
 using Library.Web.Models;
 using Library.Web.Services.Interface;
 
@@ -8,15 +9,15 @@ namespace Library.Web.Services
     public class BookService : BaseHttpService, IBookService
     {
         #region field
-        private readonly IClient client;
-        private readonly IMapper mapper;
+        private readonly IClient _client;
+        private readonly IMapper _mapper;
         #endregion
 
         #region ctor
         public BookService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
         {
-            this.client = client;
-            this.mapper = mapper;
+            _client = client;
+            _mapper = mapper;
         }
         #endregion
 
@@ -27,7 +28,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await client.CreateBookAsync(bookCreateDto);
+                await _client.CreateBookAsync(bookCreateDto);
             }
             catch (ApiException e)
             {
@@ -42,7 +43,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await client.DeleteBookAsync(id);
+                await _client.DeleteBookAsync(id);
             }
             catch (ApiException e)
             {
@@ -58,7 +59,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await client.UpdateBookAsync(id, bookUpdateDto);
+                await _client.UpdateBookAsync(id, bookUpdateDto);
             }
             catch (ApiException exception)
             {
@@ -68,15 +69,15 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<BookReadOnlyDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<BookDto>>> GetAsync(QueryParameters queryParameters)
         {
-            Response<List<BookReadOnlyDto>> response;
+            Response<List<BookDto>> response;
 
             try
             {
                 await GetBearerToken();
-                var data = await client.GetBooksAsync(queryParameters);
-                response = new Response<List<BookReadOnlyDto>>
+                var data = await _client.GetBooksAsync(queryParameters);
+                response = new Response<List<BookDto>>
                 {
                     Data = data,
                     Success = true
@@ -84,21 +85,21 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<List<BookReadOnlyDto>>(exception);
+                response = ConvertApiException<List<BookDto>>(exception);
             }
 
             return response;
         }
 
-        public async Task<Response<BookReadOnlyDto>> GetAsync(string id)
+        public async Task<Response<BookDto>> GetAsync(string id)
         {
-            Response<BookReadOnlyDto> response;
+            Response<BookDto> response;
 
             try
             {
                 await GetBearerToken();
-                var data = await client.GetBookById(id);
-                response = new Response<BookReadOnlyDto>
+                var data = await _client.GetBookById(id);
+                response = new Response<BookDto>
                 {
                     Data = data,
                     Success = true
@@ -106,7 +107,7 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<BookReadOnlyDto>(exception);
+                response = ConvertApiException<BookDto>(exception);
             }
 
             return response;

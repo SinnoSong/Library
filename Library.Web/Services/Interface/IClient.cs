@@ -1,4 +1,5 @@
-﻿using Library.Web.Models;
+﻿using Library.Common.Models;
+using Library.Web.Models;
 
 namespace Library.Web.Services.Interface
 {
@@ -13,7 +14,7 @@ namespace Library.Web.Services.Interface
         Task<BookCreateDto> CreateBookAsync(BookCreateDto body);
         Task DeleteBookAsync(string id);
         Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto);
-        Task<List<BookReadOnlyDto>> GetBooksAsync(QueryParameters queryParameters);
-        Task<BookReadOnlyDto> GetBookById(string id);
+        Task<List<BookDto>> GetBooksAsync(QueryParameters queryParameters);
+        Task<BookDto> GetBookById(string id);
     }
 }

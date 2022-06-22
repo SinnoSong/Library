@@ -1,4 +1,5 @@
-﻿using Library.Web.Models;
+﻿using Library.Common.Models;
+using Library.Web.Models;
 
 namespace Library.Web.Services.Interface
 {

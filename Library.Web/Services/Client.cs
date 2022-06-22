@@ -1,4 +1,5 @@
-﻿using Library.Web.Models;
+﻿using Library.Common.Models;
+using Library.Web.Models;
 using Library.Web.Services.Interface;
 
 namespace Library.Web.Services
@@ -116,23 +117,18 @@ namespace Library.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<BookReadOnlyDto>> GetBooksAsync(QueryParameters queryParameters)
+        public Task<List<BookDto>> GetBooksAsync(QueryParameters queryParameters)
         {
             throw new NotImplementedException();
         }
 
-        public Task<BookReadOnlyDto> GetBookById(string id)
+        public Task<BookDto> GetBookById(string id)
         {
             throw new NotImplementedException();
         }
         #endregion
-        protected virtual async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(System.Net.Http.HttpResponseMessage response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, CancellationToken cancellationToken)
+        protected virtual async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, CancellationToken cancellationToken)
         {
-            if (response == null || response.Content == null)
-            {
-                return new ObjectResponseResult<T>(default(T), string.Empty);
-            }
-
             if (ReadResponseAsString)
             {
                 var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

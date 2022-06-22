@@ -44,7 +44,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NoticeVo>> GetNoticeAsync(Guid id)
+        public async Task<ActionResult<NoticeDto>> GetNoticeAsync(Guid id)
         {
             var notice = await _noticeService.GetByIdAsync(id);
             if (notice == null)
@@ -53,14 +53,14 @@ namespace Library.API.Controllers
             }
             var entityNewHash = _hashFactory.GetHash(notice);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
-            return _mapper.Map<NoticeVo>(notice);
+            return _mapper.Map<NoticeDto>(notice);
         }
         #endregion
 
         #region Post
         [HttpPost]
         [Authorize(Roles = "Administrator,SuperAdministrator")]
-        public async Task<IActionResult> AddNotice(NoticeForCreationDto dto)
+        public async Task<IActionResult> AddNotice(NoticeCreateDto dto)
         {
             var notice = _mapper.Map<Notice>(dto);
             notice.CreateTime = DateTime.Now;
@@ -69,8 +69,8 @@ namespace Library.API.Controllers
             {
                 throw new Exception("创建资源Notice失败！");
             }
-            var vo = _mapper.Map<NoticeVo>(result);
-            return CreatedAtAction(nameof(GetNoticeAsync), new { id = vo.Id }, vo);
+            var vo = _mapper.Map<NoticeDto>(result);
+            return CreatedAtRoute(nameof(GetNoticeAsync), new { id = vo.Id }, vo);
         }
         #endregion
 
@@ -94,7 +94,7 @@ namespace Library.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrator,SuperAdministrator")]
-        public async Task<IActionResult> PutAsync(Guid id, NoticeForCreationDto dto)
+        public async Task<IActionResult> PutAsync(Guid id, NoticeCreateDto dto)
         {
             var notice = await _noticeService.GetByIdAsync(id);
             if (notice == null)

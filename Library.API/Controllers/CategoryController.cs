@@ -49,7 +49,7 @@ namespace Library.API.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<ActionResult<PagedList<CategoryVo>>> Get(string sort = "id", string? search = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<CategoryDto>>> Get(string sort = "id", string? search = null, int page = 1, int pageSize = 25)
         {
             IQueryable<Category>? categories = default;
             if (search == null)
@@ -61,12 +61,12 @@ namespace Library.API.Controllers
                 categories = await _categoryService.GetByConditionAsync(category => category.Name.Contains(search));
             }
             categories = categories.Sort(sort, mappingDict);
-            return await PagedList<CategoryVo>.CreateAsync(categories.ProjectTo<CategoryVo>(_mapper.ConfigurationProvider), page, pageSize);
+            return await PagedList<CategoryDto>.CreateAsync(categories.ProjectTo<CategoryDto>(_mapper.ConfigurationProvider), page, pageSize);
         }
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}", Name = nameof(Get))]
-        public async Task<ActionResult<CategoryVo>> Get(Guid id)
+        public async Task<ActionResult<CategoryDto>> Get(Guid id)
         {
             var category = await _categoryService.GetByIdAsync(id);
             if (category == null)
@@ -75,7 +75,7 @@ namespace Library.API.Controllers
             }
             var entityNewHash = _hashFactory.GetHash(category);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
-            return _mapper.Map<CategoryVo>(category);
+            return _mapper.Map<CategoryDto>(category);
         }
         #endregion
 
@@ -83,15 +83,15 @@ namespace Library.API.Controllers
 
         // POST api/<CategoryController>
         [HttpPost]
-        public async Task<IActionResult> Post(CategoryForCreationDto dto)
+        public async Task<IActionResult> Post(CategoryCreateDto dto)
         {
             var result = await _categoryService.AddAsync(_mapper.Map<Category>(dto));
             if (result == null)
             {
                 throw new Exception("创建资源Category失败！");
             }
-            var vo = _mapper.Map<CategoryVo>(result);
-            return CreatedAtAction(nameof(Get), new { id = result.Id }, vo);
+            var vo = _mapper.Map<CategoryDto>(result);
+            return CreatedAtRoute(nameof(Get), new { id = result.Id }, vo);
         }
 
         [HttpPost("categories")]
@@ -112,7 +112,7 @@ namespace Library.API.Controllers
         // PUT api/<CategoryController>/5
         [HttpPut("{id}")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> PutAsync(Guid id, CategoryForCreationDto dto)
+        public async Task<IActionResult> PutAsync(Guid id, CategoryCreateDto dto)
         {
             var category = await _categoryService.GetByIdAsync(id);
             if (category == null)

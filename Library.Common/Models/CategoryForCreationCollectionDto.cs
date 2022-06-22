@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace Library.Common.Models
+﻿namespace Library.Common.Models
 {
     public class CategoryForCreationCollectionDto
     {
-        public IEnumerable<CategoryForCreationDto> Categories { get; set; }
+        public CategoryForCreationCollectionDto(IEnumerable<CategoryCreateDto> categories)
+        {
+            Categories = categories;
+        }
+
+        public IEnumerable<CategoryCreateDto> Categories { get; set; }
     }
 }

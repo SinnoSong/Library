@@ -23,7 +23,8 @@ namespace Library.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
-        public AuthenticateController(IConfiguration configuration, UserManager<User> userManager, RoleManager<Role> roleManager)
+        public AuthenticateController(IConfiguration configuration, UserManager<User> userManager,
+            RoleManager<Role> roleManager)
         {
             Configuration = configuration;
             _userManager = userManager;
@@ -33,29 +34,32 @@ namespace Library.API.Controllers
         public IConfiguration Configuration { get; }
 
         [HttpPost("token")]
-        public async Task<IActionResult> GenerateTokenAsync(LoginUser loginUser)
+        public async Task<IActionResult> GenerateTokenAsync(LoginUserDto loginUser)
         {
             var user = await _userManager.FindByEmailAsync(loginUser.UserName);
             if (user == null)
             {
                 return Unauthorized();
             }
+
             var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, loginUser.Password);
             if (result != PasswordVerificationResult.Success)
             {
                 return Unauthorized();
             }
+
             var userClaims = await _userManager.GetClaimsAsync(user);
             var userRoles = await _userManager.GetRolesAsync(user);
             foreach (var roleItem in userRoles)
             {
                 userClaims.Add(new Claim(ClaimTypes.Role, roleItem));
             }
+
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub,user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email,user.Email)
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
             claims.AddRange(userClaims);
             var tokenConfigSection = Configuration.GetSection("Security:Token");
@@ -81,6 +85,7 @@ namespace Library.API.Controllers
             {
                 throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
             }
+
             var user = new User
             {
                 UserName = registerUser.UserName,

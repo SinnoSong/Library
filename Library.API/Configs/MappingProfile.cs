@@ -9,17 +9,17 @@ namespace Library.API.Configs
         public MappingProfile()
         {
             CreateMap<Book, BookDto>();
-            CreateMap<BookForCreationDto, Book>();
-            CreateMap<BookForUpdateDto, Book>().ReverseMap();
-            CreateMap<Category, CategoryVo>().ReverseMap();
-            CreateMap<CategoryForCreationDto, Category>();
-            CreateMap<LendConfig, LendConfigVo>().ReverseMap();
-            CreateMap<LendConfigForCreationDto, LendConfig>();
-            CreateMap<LendRecord, LendRecordVo>().ReverseMap();
-            CreateMap<LendRecordForCreationDto, LendRecord>();
-            CreateMap<Notice, NoticeVo>().ReverseMap();
+            CreateMap<BookCreateDto, Book>();
+            CreateMap<BookUpdateDto, Book>().ReverseMap();
+            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<CategoryCreateDto, Category>();
+            CreateMap<LendConfig, LendConfigDto>().ReverseMap();
+            CreateMap<LendConfigCreateDto, LendConfig>();
+            CreateMap<LendRecord, LendRecordDto>().ReverseMap();
+            CreateMap<LendRecordCreateDto, LendRecord>();
+            CreateMap<Notice, NoticeDto>().ReverseMap();
             CreateMap<Notice, NoticeNoContentVo>();
-            CreateMap<NoticeForCreationDto, Notice>();
+            CreateMap<NoticeCreateDto, Notice>();
         }
     }
 }
