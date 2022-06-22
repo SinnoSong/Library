@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Library.API.Models
+namespace Library.Common.Models
 {
     public class CategoryForCreationCollectionDto
     {

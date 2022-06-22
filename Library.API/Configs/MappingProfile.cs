@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.API.Entities;
-using Library.API.Models;
+using Library.Common.Models;
 
 namespace Library.API.Configs
 {

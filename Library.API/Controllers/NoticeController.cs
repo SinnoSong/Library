@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Library.API.Entities;
 using Library.API.Helper;
-using Library.API.Models;
+using Library.Common.Models;
 using Library.API.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

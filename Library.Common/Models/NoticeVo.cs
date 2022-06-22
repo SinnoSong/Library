@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Library.API.Models
+namespace Library.Common.Models
 {
     public class NoticeVo
     {

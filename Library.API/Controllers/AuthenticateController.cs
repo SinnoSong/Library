@@ -1,5 +1,5 @@
 ﻿using Library.API.Entities;
-using Library.API.Models;
+using Library.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

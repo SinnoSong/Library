@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Library.API.Models
+namespace Library.Common.Models
 {
     public class LendConfigVo
     {

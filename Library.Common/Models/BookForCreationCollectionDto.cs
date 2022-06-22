@@ -1,4 +1,4 @@
-﻿using Library.API.Models;
+﻿using Library.Common.Models;
 using System.Collections.Generic;
 
 namespace Library.API.Entities
