@@ -192,7 +192,7 @@ namespace Library.Web.Services
 
         #region lendConfig
 
-        public async Task<LendConfigDto> CreateLendConfigAsync(LendConfigDto body)
+        public Task<LendConfigDto> CreateLendConfigAsync(LendConfigCreateDto body)
         {
             throw new NotImplementedException();
         }
@@ -221,7 +221,7 @@ namespace Library.Web.Services
 
         #region lendRecord
 
-        public Task<LendRecordDto> CreateLendRecordAsync(LendRecordDto body)
+        public Task<LendRecordDto> CreateLendRecordAsync(LendRecordCreateDto body)
         {
             throw new NotImplementedException();
         }
@@ -250,7 +250,7 @@ namespace Library.Web.Services
 
         #region notice
 
-        public Task<NoticeDto> CreateNoticeAsync(NoticeDto body)
+        public Task<NoticeDto> CreateNoticeAsync(NoticeCreateDto body)
         {
             throw new NotImplementedException();
         }
