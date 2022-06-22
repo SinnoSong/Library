@@ -95,7 +95,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPost("categories")]
-        public async Task<IActionResult> AddCategoriesAsync(CategoryForCreationCollectionDto dto)
+        public async Task<IActionResult> AddCategoriesAsync(CategoryCreateCollectionDto dto)
         {
             var categories = _mapper.Map<IEnumerable<Category>>(dto.Categories);
             await _categoryService.AddAsync(categories);

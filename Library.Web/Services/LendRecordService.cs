@@ -6,35 +6,31 @@ using Library.Web.Services.Interface;
 
 namespace Library.Web.Services
 {
-    public class CategoryService : BaseHttpService, ICategoryService
+    public class LendRecordService : BaseHttpService, ILendRecordService
     {
         #region field
-
         private readonly IClient _client;
         private readonly IMapper _mapper;
-
         #endregion
 
-        public CategoryService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
-            localStorage)
+        public LendRecordService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
         {
             _client = client;
             _mapper = mapper;
         }
 
-        public async Task<Response<int>> CreateAsync(CategoryCreateDto categoryCreateDto)
+        public async Task<Response<int>> CreateAsync(LendRecordCreateDto createDto)
         {
             var response = new Response<int>();
             try
             {
                 await GetBearerToken();
-                await _client.CreateCategoryAsync(categoryCreateDto);
+                await _client.CreateLendRecordAsync(createDto);
             }
             catch (ApiException e)
             {
                 response = ConvertApiException<int>(e);
             }
-
             return response;
         }
 
@@ -44,24 +40,23 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.DeleteCategoryAsync(id);
+                await _client.DeleteLendRecordAsync(id);
             }
             catch (ApiException e)
             {
                 response = ConvertApiException<int>(e);
             }
-
             return response;
         }
 
-        public async Task<Response<int>> EditAsync(string id, CategoryCreateDto categoryUpdateDto)
+        public async Task<Response<int>> EditAsync(string id, LendRecordCreateDto updateDto)
         {
             Response<int> response = new();
 
             try
             {
                 await GetBearerToken();
-                await _client.UpdateCategoryAsync(id, categoryUpdateDto);
+                await _client.UpdateLendRecordAsync(id, updateDto);
             }
             catch (ApiException exception)
             {
@@ -71,15 +66,15 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<CategoryDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<LendRecordDto>>> GetAsync(QueryParameters queryParameters)
         {
-            Response<List<CategoryDto>> response;
+            Response<List<LendRecordDto>> response;
 
             try
             {
                 await GetBearerToken();
-                var data = await _client.GetCategoriesAsync(queryParameters);
-                response = new Response<List<CategoryDto>>
+                var data = await _client.GetLendRecordsAsync(queryParameters);
+                response = new Response<List<LendRecordDto>>
                 {
                     Data = data,
                     Success = true
@@ -87,21 +82,21 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<List<CategoryDto>>(exception);
+                response = ConvertApiException<List<LendRecordDto>>(exception);
             }
 
             return response;
         }
 
-        public async Task<Response<CategoryDto>> GetAsync(string id)
+        public async Task<Response<LendRecordDto>> GetAsync(string id)
         {
-            Response<CategoryDto> response;
+            Response<LendRecordDto> response;
 
             try
             {
                 await GetBearerToken();
-                var data = await _client.GetCategoryById(id);
-                response = new Response<CategoryDto>
+                var data = await _client.GetLendRecordById(id);
+                response = new Response<LendRecordDto>
                 {
                     Data = data,
                     Success = true
@@ -109,7 +104,7 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<CategoryDto>(exception);
+                response = ConvertApiException<LendRecordDto>(exception);
             }
 
             return response;

@@ -7,28 +7,28 @@ namespace Library.Web.Providers
 {
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService localStorage;
-        private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler;
+        private readonly ILocalStorageService _localStorage;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
         public ApiAuthenticationStateProvider(ILocalStorageService localStorage)
         {
-            this.localStorage = localStorage;
-            jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            this._localStorage = localStorage;
+            _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity());
-            var savedToken = await localStorage.GetItemAsync<string>("accessToken");
+            var savedToken = await _localStorage.GetItemAsync<string>("accessToken");
             if (savedToken == null)
             {
                 return new AuthenticationState(user);
             }
 
-            var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+            var tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
 
             if (tokenContent.ValidTo < DateTime.Now)
             {
-                await localStorage.RemoveItemAsync("accessToken");
+                await _localStorage.RemoveItemAsync("accessToken");
                 return new AuthenticationState(user);
             }
 
@@ -49,7 +49,7 @@ namespace Library.Web.Providers
 
         public async Task LoggedOut()
         {
-            await localStorage.RemoveItemAsync("accessToken");
+            await _localStorage.RemoveItemAsync("accessToken");
             var nobody = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(new AuthenticationState(nobody));
             NotifyAuthenticationStateChanged(authState);
@@ -57,8 +57,8 @@ namespace Library.Web.Providers
 
         private async Task<List<Claim>> GetClaims()
         {
-            var savedToken = await localStorage.GetItemAsync<string>("accessToken");
-            var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+            var savedToken = await _localStorage.GetItemAsync<string>("accessToken");
+            var tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
             var claims = tokenContent.Claims.ToList();
             claims.Add(new Claim(ClaimTypes.Name, tokenContent.Subject));
             return claims;

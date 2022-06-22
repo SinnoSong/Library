@@ -6,35 +6,33 @@ using Library.Web.Services.Interface;
 
 namespace Library.Web.Services
 {
-    public class CategoryService : BaseHttpService, ICategoryService
+    public class NoticeService : BaseHttpService, INoticeService
     {
         #region field
-
         private readonly IClient _client;
         private readonly IMapper _mapper;
-
         #endregion
 
-        public CategoryService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
-            localStorage)
+        #region ctor
+        public NoticeService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
         {
             _client = client;
             _mapper = mapper;
         }
+        #endregion
 
-        public async Task<Response<int>> CreateAsync(CategoryCreateDto categoryCreateDto)
+        public async Task<Response<int>> CreateAsync(NoticeCreateDto createDto)
         {
             var response = new Response<int>();
             try
             {
                 await GetBearerToken();
-                await _client.CreateCategoryAsync(categoryCreateDto);
+                await _client.CreateNoticeAsync(createDto);
             }
             catch (ApiException e)
             {
                 response = ConvertApiException<int>(e);
             }
-
             return response;
         }
 
@@ -44,24 +42,23 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.DeleteCategoryAsync(id);
+                await _client.DeleteNoticeAsync(id);
             }
             catch (ApiException e)
             {
                 response = ConvertApiException<int>(e);
             }
-
             return response;
         }
 
-        public async Task<Response<int>> EditAsync(string id, CategoryCreateDto categoryUpdateDto)
+        public async Task<Response<int>> EditAsync(string id, NoticeCreateDto updateDto)
         {
             Response<int> response = new();
 
             try
             {
                 await GetBearerToken();
-                await _client.UpdateCategoryAsync(id, categoryUpdateDto);
+                await _client.UpdateNoticeAsync(id, updateDto);
             }
             catch (ApiException exception)
             {
@@ -71,15 +68,15 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<CategoryDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<NoticeDto>>> GetAsync(QueryParameters queryParameters)
         {
-            Response<List<CategoryDto>> response;
+            Response<List<NoticeDto>> response;
 
             try
             {
                 await GetBearerToken();
-                var data = await _client.GetCategoriesAsync(queryParameters);
-                response = new Response<List<CategoryDto>>
+                var data = await _client.GetNoticesAsync(queryParameters);
+                response = new Response<List<NoticeDto>>
                 {
                     Data = data,
                     Success = true
@@ -87,21 +84,21 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<List<CategoryDto>>(exception);
+                response = ConvertApiException<List<NoticeDto>>(exception);
             }
 
             return response;
         }
 
-        public async Task<Response<CategoryDto>> GetAsync(string id)
+        public async Task<Response<NoticeDto>> GetAsync(string id)
         {
-            Response<CategoryDto> response;
+            Response<NoticeDto> response;
 
             try
             {
                 await GetBearerToken();
-                var data = await _client.GetCategoryById(id);
-                response = new Response<CategoryDto>
+                var data = await _client.GetNoticeById(id);
+                response = new Response<NoticeDto>
                 {
                     Data = data,
                     Success = true
@@ -109,7 +106,7 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<CategoryDto>(exception);
+                response = ConvertApiException<NoticeDto>(exception);
             }
 
             return response;

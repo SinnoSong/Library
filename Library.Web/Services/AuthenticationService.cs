@@ -10,16 +10,19 @@ namespace Library.Web.Services
     public class AuthenticationService : BaseHttpService, IAuthenticationService
     {
         #region field
-        private readonly IClient httpClient;
-        private readonly ILocalStorageService localStorage;
-        private readonly AuthenticationStateProvider authenticationStateProvider;
+
+        private readonly IClient _httpClient;
+        private readonly ILocalStorageService _localStorage;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
+
         #endregion
 
-        public AuthenticationService(IClient client, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider) : base(client, localStorage)
+        public AuthenticationService(IClient client, ILocalStorageService localStorage,
+            AuthenticationStateProvider authenticationStateProvider) : base(client, localStorage)
         {
-            httpClient = client;
-            this.localStorage = localStorage;
-            this.authenticationStateProvider = authenticationStateProvider;
+            _httpClient = client;
+            _localStorage = localStorage;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<Response<AuthResponse>> AuthenticateAsync(LoginUserDto loginUser)
@@ -27,17 +30,17 @@ namespace Library.Web.Services
             Response<AuthResponse> response;
             try
             {
-                var result = await httpClient.LoginAsync(loginUser);
+                var result = await _httpClient.LoginAsync(loginUser);
                 response = new Response<AuthResponse>
                 {
                     Data = result,
                     Success = true,
                 };
                 //Store Token
-                await localStorage.SetItemAsync("accessToken", result.Token);
+                await _localStorage.SetItemAsync("accessToken", result.Token);
 
                 //Change auth state of app
-                await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedIn();
+                await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
             }
             catch (ApiException exception)
             {
@@ -49,7 +52,27 @@ namespace Library.Web.Services
 
         public async Task Logout()
         {
-            await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedOut();
+            await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
+        }
+
+        public async Task<Response<bool>> RegisterAsync(RegisterUser registerUser)
+        {
+            Response<bool> response;
+            try
+            {
+                var result = await _httpClient.RegisterUserAsync(registerUser);
+                response = new Response<bool>
+                {
+                    Data = result,
+                    Success = true
+                };
+            }
+            catch (ApiException e)
+            {
+                response = ConvertApiException<bool>(e);
+            }
+
+            return response;
         }
     }
 }

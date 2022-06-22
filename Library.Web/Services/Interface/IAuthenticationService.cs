@@ -7,6 +7,8 @@ namespace Library.Web.Services.Interface
     {
         Task<Response<AuthResponse>> AuthenticateAsync(LoginUserDto loginUser);
 
-        public Task Logout();
+        Task Logout();
+
+        Task<Response<bool>> RegisterAsync(RegisterUser registerUser);
     }
 }

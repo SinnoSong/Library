@@ -1,8 +1,9 @@
-
 using Blazored.LocalStorage;
 using Library.Web.Config;
+using Library.Web.Providers;
 using Library.Web.Services;
 using Library.Web.Services.Interface;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri(b
 builder.Services.AddAntDesign();
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
+
+builder.Services.AddScoped<ApiAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<ApiAuthenticationStateProvider>());
 
 var app = builder.Build();
 
