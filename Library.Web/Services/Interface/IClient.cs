@@ -17,7 +17,7 @@ namespace Library.Web.Services.Interface
         Task<BookCreateDto> CreateBookAsync(BookCreateDto body);
         Task DeleteBookAsync(string id);
         Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto);
-        Task<List<BookDto>> GetBooksAsync(QueryParameters queryParameters);
+        Task<List<BookDto>> GetBooksAsync(BookQueryParameters queryParameters);
         Task<BookDto> GetBookById(string id);
 
         #endregion

@@ -9,16 +9,21 @@ namespace Library.Web.Services
     public class BookService : BaseHttpService, IBookService
     {
         #region field
+
         private readonly IClient _client;
         private readonly IMapper _mapper;
+
         #endregion
 
         #region ctor
-        public BookService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
+
+        public BookService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
+            localStorage)
         {
             _client = client;
             _mapper = mapper;
         }
+
         #endregion
 
 
@@ -34,6 +39,7 @@ namespace Library.Web.Services
             {
                 response = ConvertApiException<int>(e);
             }
+
             return response;
         }
 
@@ -49,6 +55,7 @@ namespace Library.Web.Services
             {
                 response = ConvertApiException<int>(e);
             }
+
             return response;
         }
 
@@ -69,7 +76,7 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<BookDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<BookDto>>> GetAsync(BookQueryParameters queryParameters)
         {
             Response<List<BookDto>> response;
 

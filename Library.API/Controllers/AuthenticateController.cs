@@ -33,7 +33,7 @@ namespace Library.API.Controllers
 
         public IConfiguration Configuration { get; }
 
-        [HttpPost("token")]
+        [HttpPost("login")]
         public async Task<IActionResult> GenerateTokenAsync(LoginUserDto loginUser)
         {
             var user = await _userManager.FindByEmailAsync(loginUser.UserName);

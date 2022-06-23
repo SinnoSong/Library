@@ -1,0 +1,50 @@
+﻿@page "/Login"
+@using Library.Common.Models
+@using Library.Web.Services.Interface
+<h3>Login</h3>
+
+<div>
+    <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">
+            <label for="UserName">UserName</label>
+            <InputText class="form-control" @bind-Value="loginModel.UserName"/>
+            <ValidationMessage For="@(() => loginModel.UserName)"/>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText class="form-control" type="password" @bind-Value="loginModel.Password"/>
+            <ValidationMessage For="@(() => loginModel.Password)"/>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </EditForm>
+
+</div>
+
+@code {
+
+    [Inject]
+    IAuthenticationService authService { get; set; }
+
+    [Inject]
+    NavigationManager navManager { get; set; }
+
+    LoginUserDto loginModel = new();
+    string _message = string.Empty;
+
+    public async Task HandleLogin()
+    {
+        var response = await authService.AuthenticateAsync(loginModel);
+
+        if (response.Success)
+        {
+            navManager.NavigateTo("/");
+        }
+
+        _message = response.Message;
+    }
+
+}

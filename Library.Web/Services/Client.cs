@@ -1,6 +1,12 @@
-﻿using Library.Common.Models;
+﻿using System.Text;
+using Blazored.LocalStorage;
+using Library.Common.Models;
+using Library.Web.Constants;
+using Library.Web.Helper;
 using Library.Web.Models;
 using Library.Web.Services.Interface;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace Library.Web.Services
 {
@@ -8,155 +14,199 @@ namespace Library.Web.Services
     {
         #region field
 
-        private readonly HttpClient _httpClient;
-        private Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
+        private const string ApplicationUrl = "http://localhost:52766/";
+        public HttpClient HttpClient { get; }
 
-        public HttpClient HttpClient
-        {
-            get { return _httpClient; }
-        }
-
-        public bool ReadResponseAsString { get; set; }
-
-        protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings
-        {
-            get { return _settings.Value; }
-        }
+        private readonly ILocalStorageService _localStorageService;
 
         #endregion
 
 
         #region ctor
 
-        public Client(HttpClient httpClient)
+        public Client(HttpClient httpClient, ILocalStorageService localStorageService)
         {
-            _httpClient = httpClient;
-            _settings = new Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
+            HttpClient = httpClient;
+            _localStorageService = localStorageService;
         }
 
         #endregion
-
-
-        private Newtonsoft.Json.JsonSerializerSettings CreateSerializerSettings()
-        {
-            var settings = new Newtonsoft.Json.JsonSerializerSettings();
-            return settings;
-        }
-
-        public Task<AuthResponse> LoginAsync(LoginUserDto body)
-        {
-            return LoginAsync(body, CancellationToken.None);
-        }
 
         public Task<bool> RegisterUserAsync(RegisterUser registerUser)
         {
             throw new NotImplementedException();
         }
 
-        public virtual async Task<AuthResponse> LoginAsync(LoginUserDto body, CancellationToken cancellationToken)
+        #region 封装请求
+
+        private async Task<T> SendRequest<T>(HttpMethod method, string queryUrl, string accessToken,
+            string? json = null, Dictionary<string, object>? queryPairs = null)
+        {
+            if (queryPairs != null)
+            {
+                var queryParams = new StringBuilder("?");
+                foreach (var (key, value) in queryPairs)
+                {
+                    queryParams.Append(key + "=" + value + "&");
+                }
+
+                queryParams.Remove(queryParams.Length - 1, 1);
+                queryUrl += queryParams.ToString();
+            }
+
+            using var request = new HttpRequestMessage(method, queryUrl);
+            request.Headers.Add("Authorization", "Bearer " + accessToken);
+            if (json != null)
+            {
+                var content = new StringContent(json);
+                request.Content = content;
+                content.Headers.ContentType =
+                    System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                request.Method = HttpMethod.Post;
+                request.Headers.Accept.Add(
+                    System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+            }
+
+            using var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
+            var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
+            foreach (var item in response.Content.Headers)
+                headers[item.Key] = item.Value;
+
+            var status = (int)response.StatusCode;
+            if (status == 200)
+            {
+                var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var objectResponse = JsonConvert.DeserializeObject<T>(stringContent);
+                if (objectResponse == null)
+                {
+                    throw new ApiException("Response was null which was not expected.", status, stringContent, headers);
+                }
+
+                return objectResponse;
+            }
+            else
+            {
+                var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                throw new ApiException("The HTTP status code of the response was not expected (" + status + ").",
+                    status, responseData, headers);
+            }
+        }
+
+        private async Task<bool> SendRequest(HttpMethod method, string queryUrl, string accessToken,
+            string? json = null, Dictionary<string, object>? queryPairs = null)
+        {
+            if (queryPairs != null)
+            {
+                var queryParams = new StringBuilder("?");
+                foreach (var (key, value) in queryPairs)
+                {
+                    queryParams.Append(key + "=" + value + "&");
+                }
+
+                queryParams.Remove(queryParams.Length - 1, 1);
+                queryUrl += queryParams.ToString();
+            }
+
+            using var request = new HttpRequestMessage(method, queryUrl);
+            request.Headers.Add("Authorization", "Bearer " + accessToken);
+            if (json != null)
+            {
+                var content = new StringContent(json);
+                request.Content = content;
+                content.Headers.ContentType =
+                    System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                request.Method = HttpMethod.Post;
+                request.Headers.Accept.Add(
+                    System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+            }
+
+            using var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
+            return response.IsSuccessStatusCode;
+        }
+
+        #endregion
+
+        public async Task<AuthResponse> LoginAsync(LoginUserDto body)
         {
             // todo 需要重写调用接口
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("api/Auth/login");
+            using var request = new HttpRequestMessage();
+            var content = new StringContent(JsonConvert.SerializeObject(body));
+            request.Content = content;
+            content.Headers.ContentType =
+                System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+            request.Method = HttpMethod.Post;
+            request.Headers.Accept.Add(
+                System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+            request.RequestUri = new Uri(ApplicationUrl + Apis.AuthLogin, UriKind.RelativeOrAbsolute);
 
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                .ConfigureAwait(false);
+
+            var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
+            foreach (var item in response.Content.Headers)
+                headers[item.Key] = item.Value;
+
+            var status = (int)response.StatusCode;
+            if (status == 200)
             {
-                using (var request_ = new HttpRequestMessage())
+                var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var authResponse = JsonConvert.DeserializeObject<AuthResponse>(stringContent);
+                if (authResponse == null)
                 {
-                    var content_ =
-                        new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType =
-                        System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(
-                        System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
-
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-
-                    var response_ = await client_
-                        .SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
-                        .ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-
-                        var status_ = (int) response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ =
-                                await ReadObjectResponseAsync<AuthResponse>(response_, headers_, cancellationToken)
-                                    .ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_,
-                                    objectResponse_.Text, headers_, null);
-                            }
-
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null
-                                ? null
-                                : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException(
-                                "The HTTP status code of the response was not expected (" + status_ + ").", status_,
-                                responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
+                    throw new ApiException("Response was null which was not expected.", status, stringContent,
+                        headers);
                 }
+
+                return authResponse;
             }
-            finally
+            else
             {
-                if (disposeClient_)
-                    client_.Dispose();
+                var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                throw new ApiException(
+                    "The HTTP status code of the response was not expected (" + status + ").", status,
+                    responseData, headers);
             }
         }
 
         #region Book
 
         // todo 接口未实现
-        public Task<BookCreateDto> CreateBookAsync(BookCreateDto body)
+        public async Task<BookCreateDto> CreateBookAsync(BookCreateDto body)
         {
-            throw new NotImplementedException();
+            var apiUrl = ApplicationUrl + Apis.CreateBook;
+            var accessToken = await _localStorageService.GetItemAsStringAsync("accessToken");
+            var bookCreateDto = await SendRequest<BookCreateDto>(HttpMethod.Post, apiUrl, accessToken,
+                JsonConvert.SerializeObject(body));
+            return bookCreateDto;
         }
 
-        public Task DeleteBookAsync(string id)
+        public async Task DeleteBookAsync(string id)
         {
-            throw new NotImplementedException();
+            var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
+            var accessToken = await _localStorageService.GetItemAsStringAsync("accessToken");
+            await SendRequest(HttpMethod.Post, apiUrl, accessToken);
         }
 
-        public Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto)
+        public async Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto)
         {
-            throw new NotImplementedException();
+            var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
+            var accessToken = await _localStorageService.GetItemAsStringAsync("accessToken");
+            await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(bookUpdateDto));
         }
 
-        public Task<List<BookDto>> GetBooksAsync(QueryParameters queryParameters)
+        public async Task<List<BookDto>> GetBooksAsync(BookQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var apiUrl = ApplicationUrl + Apis.CreateBook;
+            var accessToken = await _localStorageService.GetItemAsStringAsync("accessToken");
+            var dict = queryParameters.ToDictionary();
+            return await SendRequest<List<BookDto>>(HttpMethod.Post, apiUrl, accessToken, null, dict);
         }
 
-        public Task<BookDto> GetBookById(string id)
+        public async Task<BookDto> GetBookById(string id)
         {
-            throw new NotImplementedException();
+            var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
+            var accessToken = await _localStorageService.GetItemAsStringAsync("accessToken");
+            return await SendRequest<BookDto>(HttpMethod.Post, apiUrl, accessToken);
         }
 
         #endregion
@@ -276,58 +326,5 @@ namespace Library.Web.Services
         }
 
         #endregion
-
-        protected virtual async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response,
-            IReadOnlyDictionary<string, IEnumerable<string>> headers, CancellationToken cancellationToken)
-        {
-            if (ReadResponseAsString)
-            {
-                var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    var typedBody =
-                        Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText, JsonSerializerSettings);
-                    return new ObjectResponseResult<T>(typedBody, responseText);
-                }
-                catch (Newtonsoft.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int) response.StatusCode, responseText, headers, exception);
-                }
-            }
-            else
-            {
-                try
-                {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    using (var streamReader = new StreamReader(responseStream))
-                    using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader))
-                    {
-                        var serializer = Newtonsoft.Json.JsonSerializer.Create(JsonSerializerSettings);
-                        var typedBody = serializer.Deserialize<T>(jsonTextReader);
-                        return new ObjectResponseResult<T>(typedBody, string.Empty);
-                    }
-                }
-                catch (Newtonsoft.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int) response.StatusCode, string.Empty, headers, exception);
-                }
-            }
-        }
-
-
-        protected struct ObjectResponseResult<T>
-        {
-            public ObjectResponseResult(T responseObject, string responseText)
-            {
-                Object = responseObject;
-                Text = responseText;
-            }
-
-            public T Object { get; }
-
-            public string Text { get; }
-        }
     }
 }
