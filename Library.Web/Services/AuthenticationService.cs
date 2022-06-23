@@ -36,11 +36,9 @@ namespace Library.Web.Services
                     Data = result,
                     Success = true,
                 };
-                //Store Token
                 await _localStorage.SetItemAsync("accessToken", result.Token);
 
-                //Change auth state of app
-                await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
+                await ((ApiAuthenticationStateProvider) _authenticationStateProvider).LoggedIn();
             }
             catch (ApiException exception)
             {
@@ -52,7 +50,7 @@ namespace Library.Web.Services
 
         public async Task Logout()
         {
-            await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
+            await ((ApiAuthenticationStateProvider) _authenticationStateProvider).LoggedOut();
         }
 
         public async Task<Response<bool>> RegisterAsync(RegisterUser registerUser)

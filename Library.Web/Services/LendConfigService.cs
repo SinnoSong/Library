@@ -9,25 +9,27 @@ namespace Library.Web.Services;
 public class LendConfigService : BaseHttpService, ILendConfigService
 {
     #region field
+
     private readonly IClient _client;
     private readonly IMapper _mapper;
 
     #endregion
 
-    public LendConfigService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
+    public LendConfigService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
+        localStorage)
     {
         _client = client;
         _mapper = mapper;
     }
 
-    public async Task<Response<List<LendConfigDto>>> GetAsync(QueryParameters queryParameters)
+    public async Task<Response<List<LendConfigDto>>> GetAsync()
     {
         Response<List<LendConfigDto>> response;
 
         try
         {
             await GetBearerToken();
-            var data = await _client.GetLendConfigsAsync(queryParameters);
+            var data = await _client.GetLendConfigsAsync();
             response = new Response<List<LendConfigDto>>
             {
                 Data = data,
@@ -76,17 +78,18 @@ public class LendConfigService : BaseHttpService, ILendConfigService
         {
             response = ConvertApiException<int>(e);
         }
+
         return response;
     }
 
-    public async Task<Response<int>> EditAsync(string id, BookUpdateDto updateDto)
+    public async Task<Response<int>> EditAsync(string id, LendConfigCreateDto updateDto)
     {
         Response<int> response = new();
 
         try
         {
             await GetBearerToken();
-            await _client.UpdateBookAsync(id, updateDto);
+            await _client.UpdateLendConfigAsync(id, updateDto);
         }
         catch (ApiException exception)
         {
@@ -108,6 +111,7 @@ public class LendConfigService : BaseHttpService, ILendConfigService
         {
             response = ConvertApiException<int>(e);
         }
+
         return response;
     }
 }

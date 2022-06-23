@@ -71,7 +71,7 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<CategoryDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<CategoryDto>>> GetAsync(CategoryQueryParameters queryParameters)
         {
             Response<List<CategoryDto>> response;
 

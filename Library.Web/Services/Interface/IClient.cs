@@ -7,8 +7,6 @@ namespace Library.Web.Services.Interface
     {
         public HttpClient HttpClient { get; }
 
-        // todo 接口
-
         Task<AuthResponse> LoginAsync(LoginUserDto body);
         Task<bool> RegisterUserAsync(RegisterUser registerUser);
 
@@ -26,8 +24,8 @@ namespace Library.Web.Services.Interface
 
         Task<CategoryCreateDto> CreateCategoryAsync(CategoryCreateDto body);
         Task DeleteCategoryAsync(string id);
-        Task UpdateCategoryAsync(string id, CategoryCreateDto bookUpdateDto);
-        Task<List<CategoryDto>> GetCategoriesAsync(QueryParameters queryParameters);
+        Task UpdateCategoryAsync(string id, CategoryCreateDto updateDto);
+        Task<List<CategoryDto>> GetCategoriesAsync(CategoryQueryParameters queryParameters);
         Task<CategoryDto> GetCategoryById(string id);
 
         #endregion
@@ -36,8 +34,8 @@ namespace Library.Web.Services.Interface
 
         Task<LendConfigDto> CreateLendConfigAsync(LendConfigCreateDto body);
         Task DeleteLendConfigAsync(string id);
-        Task UpdateLendConfigAsync(string id, LendConfigCreateDto bookUpdateDto);
-        Task<List<LendConfigDto>> GetLendConfigsAsync(QueryParameters queryParameters);
+        Task UpdateLendConfigAsync(string id, LendConfigCreateDto updateDto);
+        Task<List<LendConfigDto>> GetLendConfigsAsync();
         Task<LendConfigDto> GetLendConfigById(string id);
 
         #endregion
@@ -46,8 +44,8 @@ namespace Library.Web.Services.Interface
 
         Task<LendRecordDto> CreateLendRecordAsync(LendRecordCreateDto body);
         Task DeleteLendRecordAsync(string id);
-        Task UpdateLendRecordAsync(string id, LendRecordCreateDto bookUpdateDto);
-        Task<List<LendRecordDto>> GetLendRecordsAsync(QueryParameters queryParameters);
+        Task UpdateLendRecordAsync(string id, LendRecordCreateDto updateDto);
+        Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters);
         Task<LendRecordDto> GetLendRecordById(string id);
 
         #endregion
@@ -56,7 +54,7 @@ namespace Library.Web.Services.Interface
 
         Task<NoticeDto> CreateNoticeAsync(NoticeCreateDto body);
         Task DeleteNoticeAsync(string id);
-        Task UpdateNoticeAsync(string id, NoticeCreateDto bookUpdateDto);
+        Task UpdateNoticeAsync(string id, NoticeCreateDto updateDto);
         Task<List<NoticeDto>> GetNoticesAsync(QueryParameters queryParameters);
         Task<NoticeDto> GetNoticeById(string id);
 

@@ -28,7 +28,7 @@ namespace Library.API.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
         private readonly HashFactory _hashFactory;
-        private readonly Dictionary<string, PropertyMapping> mappingDict;
+        private readonly Dictionary<string, PropertyMapping> _mappingDict;
         #endregion
 
         #region ctor
@@ -37,7 +37,7 @@ namespace Library.API.Controllers
             _categoryService = repositoryWrapper.Category;
             _mapper = mapper;
             _hashFactory = hashFactory;
-            mappingDict = new Dictionary<string, PropertyMapping>()
+            _mappingDict = new Dictionary<string, PropertyMapping>()
             {
                 {"id",new PropertyMapping("Id") },
                 {"name",new PropertyMapping("Name") },
@@ -51,7 +51,7 @@ namespace Library.API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<CategoryDto>>> Get(string sort = "id", string? search = null, int page = 1, int pageSize = 25)
         {
-            IQueryable<Category>? categories = default;
+            IQueryable<Category>? categories;
             if (search == null)
             {
                 categories = await _categoryService.GetAllAsync();
@@ -60,19 +60,15 @@ namespace Library.API.Controllers
             {
                 categories = await _categoryService.GetByConditionAsync(category => category.Name.Contains(search));
             }
-            categories = categories.Sort(sort, mappingDict);
+            categories = categories.Sort(sort, _mappingDict);
             return await PagedList<CategoryDto>.CreateAsync(categories.ProjectTo<CategoryDto>(_mapper.ConfigurationProvider), page, pageSize);
         }
 
         // GET api/<CategoryController>/5
-        [HttpGet("{id}", Name = nameof(Get))]
+        [HttpGet("{id:guid}", Name = nameof(Get))]
         public async Task<ActionResult<CategoryDto>> Get(Guid id)
         {
             var category = await _categoryService.GetByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             var entityNewHash = _hashFactory.GetHash(category);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<CategoryDto>(category);
@@ -110,15 +106,11 @@ namespace Library.API.Controllers
         #region Put
 
         // PUT api/<CategoryController>/5
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> PutAsync(Guid id, CategoryCreateDto dto)
         {
             var category = await _categoryService.GetByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             var entityHash = _hashFactory.GetHash(category);
             if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
             {
@@ -135,14 +127,10 @@ namespace Library.API.Controllers
         #region Delete
 
         // DELETE api/<CategoryController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var category = await _categoryService.GetByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             await _categoryService.DeleteAsync(category);
             return NoContent();
         }

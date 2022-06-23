@@ -66,7 +66,7 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<LendRecordDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<LendRecordDto>>> GetAsync(LendRecordQueryParameters queryParameters)
         {
             Response<List<LendRecordDto>> response;
 

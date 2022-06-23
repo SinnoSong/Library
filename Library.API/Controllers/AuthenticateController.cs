@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Library.API.Controllers
@@ -22,13 +23,15 @@ namespace Library.API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly IUserRoleStore<User> _userRoleStore;
 
         public AuthenticateController(IConfiguration configuration, UserManager<User> userManager,
-            RoleManager<Role> roleManager)
+            RoleManager<Role> roleManager, IUserRoleStore<User> userRoleStore)
         {
             Configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+            _userRoleStore = userRoleStore;
         }
 
         public IConfiguration Configuration { get; }
@@ -81,20 +84,22 @@ namespace Library.API.Controllers
         [HttpPost("register", Name = nameof(AddUserAsync))]
         public async Task<IActionResult> AddUserAsync(RegisterUser registerUser)
         {
-            if (registerUser.Grade > 4 || registerUser.Grade == 0)
+            if (registerUser.Grade is > 4 or 0)
             {
                 throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
             }
 
-            var user = new User
+            var user = new User()
             {
                 UserName = registerUser.UserName,
                 Email = registerUser.Email,
                 Grade = registerUser.Grade,
             };
-            IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
+            var result = await _userManager.CreateAsync(user, registerUser.Password);
+
             if (result.Succeeded)
             {
+                await _userRoleStore.AddToRoleAsync(user, "User", CancellationToken.None);
                 return Ok();
             }
             else
