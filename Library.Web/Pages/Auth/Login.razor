@@ -1,41 +1,43 @@
-﻿@page "/Login"
-@using Library.Common.Models
-@using Library.Web.Services.Interface
+﻿@page "/login"
+@inject IAuthenticationService authService
+@inject NavigationManager navManager
+
 <h3>Login</h3>
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <div class="alert alert-danger">
+        <p>@_message</p>
+    </div>
+}
 
 <div>
     <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
         <div class="form-group">
             <label for="UserName">UserName</label>
-            <InputText class="form-control" @bind-Value="loginModel.UserName"/>
-            <ValidationMessage For="@(() => loginModel.UserName)"/>
+            <InputText class="form-control" @bind-Value="loginModel.UserName" />
+            <ValidationMessage For="@(() => loginModel.UserName)" />
         </div>
-        <br/>
+        <br />
         <div class="form-group">
             <label for="password">Password</label>
-            <InputText class="form-control" type="password" @bind-Value="loginModel.Password"/>
-            <ValidationMessage For="@(() => loginModel.Password)"/>
+            <InputText class="form-control" type="password" @bind-Value="loginModel.Password" />
+            <ValidationMessage For="@(() => loginModel.Password)" />
         </div>
-        <br/>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <br />
+        <Button Type="submit" class="btn btn-primary btn-block">Login</Button>
     </EditForm>
 
 </div>
 
 @code {
 
-    [Inject]
-    IAuthenticationService authService { get; set; }
-
-    [Inject]
-    NavigationManager navManager { get; set; }
-
     LoginUserDto loginModel = new();
-    string _message = string.Empty;
+    private string? _message;
 
-    public async Task HandleLogin()
+    private async Task HandleLogin()
     {
         var response = await authService.AuthenticateAsync(loginModel);
 

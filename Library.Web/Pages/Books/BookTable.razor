@@ -1,0 +1,43 @@
+﻿
+@inject IBookService bookService
+
+<Table TItem="BookDto" DataSource="@books">
+    <Selection Key="@(context.Id.ToString())" />
+    <Column @bind-Field="@context.Id" Sortable />
+    <Column @bind-Field="@context.Title" Sortable />
+    <Column @bind-Field="@context.Summary" Sortable />
+    <Column @bind-Field="@context.Price" Sortable />
+    <Column @bind-Field="@context.Isbn" Sortable />
+    <Column @bind-Field="@context.Author" Sortable />
+    <Column @bind-Field="@context.Location" Sortable />
+@*    <ActionColumn>
+        <Space>
+            <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">Delete</Button></SpaceItem>
+        </Space>
+    </ActionColumn>*@
+</Table>
+
+@code {
+    private List<BookDto> books;
+
+    private int _pageIndex = 1;
+    private int _pageSize = 25;
+    private int _total = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        List<BookDto> bookDto = new List<BookDto>() { new BookDto { Title = "book1" }, new BookDto { Title = "book2" } };
+
+        var queryParameters = new BookQueryParameters();
+        queryParameters.PageSize = 25;
+        queryParameters.StartIndex = 1;
+        books = bookDto;
+        //books = (await bookService.GetAsync(queryParameters)).Data;
+    }
+
+    private void Delete(Guid id)
+    {
+        books = books.Where(x => x.Id != id).ToList();
+        _total = books.Count;
+    }
+}

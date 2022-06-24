@@ -1,6 +1,67 @@
-﻿@page "/Register"
+﻿@page "/register"
+@inject IAuthenticationService authService
+@inject NavigationManager navManager
+
+<PageTitle>Register</PageTitle>
+
 <h3>Register</h3>
 
+@if (string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-danger">
+        <p>@message</p>
+    </div>
+}
+
+<Divider>
+    <EditForm Model="user" OnValidSubmit="HandleRegistration">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label for="username">UserName</label>
+            <Input id="username" @bind-Value="user.UserName" class="form-control" />
+            <ValidationMessage For="@(()=>user.UserName)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="email">Email</label>
+            <Input id="email" @bind-Value="user.Email" class="form-control" />
+            <ValidationMessage For="@(()=>user.Email)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Password</label>
+            <Input id="password" @bind-Value="user.Password" class="form-control" type="password" />
+            <ValidationMessage For="@(()=>user.Password)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="confirmPassword">ConfirmPassword</label>
+            @* <Input id="confirmPassword" @bind-Value="user.ConfirmPassword" class="form-control" type="password"/> *@
+        </div>
+        <Button Type="submit" Class="btn btn-primary">提交</Button>
+    </EditForm>
+</Divider>
+
+
 @code {
-    
+    private string? message;
+
+    RegisterUser user = new();
+
+    private async Task HandleRegistration()
+    {
+        var response = await authService.RegisterAsync(user);
+
+        if (response.Success)
+        {
+            navManager.NavigateTo("/login");
+        }
+        else
+        {
+            message = "注册失败！请稍后重试！";
+        }
+
+    }
+
 }

@@ -11,7 +11,7 @@ namespace Library.Web.Providers
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
         public ApiAuthenticationStateProvider(ILocalStorageService localStorage)
         {
-            this._localStorage = localStorage;
+            _localStorage = localStorage;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 

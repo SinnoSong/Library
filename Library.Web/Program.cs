@@ -16,6 +16,15 @@ builder.Services.AddAntDesign();
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
+#region ×¢²áservice
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ILendConfigService, LendConfigService>();
+builder.Services.AddScoped<ILendRecordService, LendRecordService>();
+builder.Services.AddScoped<INoticeService, NoticeService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+#endregion
+
 builder.Services.AddScoped<ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<ApiAuthenticationStateProvider>());
 
