@@ -1,0 +1,110 @@
+﻿@using Microsoft.IdentityModel.JsonWebTokens
+@inherits AntDomComponentBase
+@inject AuthenticationStateProvider authProvider
+@inject NavigationManager navManager
+
+<Space Class="@ClassMapper.Class" Size="@("16")">
+    <SpaceItem>
+        <HeaderSearch Class="action search"
+                      Placeholder="Site Search"
+                      DefaultValue="umi ui"
+                      Options="DefaultOptions" />
+    </SpaceItem>
+    <SpaceItem>
+        <NoticeIcon ClearText="Empty"
+                    ViewMoreText="see more"
+                    Count="_count"
+                    OnClear="HandleClear"
+                    OnViewMore="HandleViewMore">
+            <NoticeList TabKey="notification"
+                        Title="Notifications"
+                        EmptyText="You have viewed all notifications"
+                        ShowViewMore
+                        Data="_notifications" />
+        </NoticeIcon>
+    </SpaceItem>
+    <SpaceItem>
+        <AvatarDropdown Name="@userName"
+                        MenuItems="@AvatarMenuItems"
+                        OnItemSelected="HandleSelectUser" />
+    </SpaceItem>
+</Space>
+
+@code {
+    private string userName;
+    private NoticeIconData[] _notifications = { };
+    private int _count = 0;
+
+    private List<AutoCompleteDataItem<string>> DefaultOptions { get; set; } = new List<AutoCompleteDataItem<string>>
+        {
+            new AutoCompleteDataItem<string>
+            {
+                Label = "umi ui",
+                Value = "umi ui"
+            },
+            new AutoCompleteDataItem<string>
+            {
+                Label = "Pro Table",
+                Value = "Pro Table"
+            },
+            new AutoCompleteDataItem<string>
+            {
+                Label = "Pro Layout",
+                Value = "Pro Layout"
+            }
+        };
+
+    public AvatarMenuItem[] AvatarMenuItems { get; set; } = new AvatarMenuItem[]
+    {
+            new() { Key = "center", IconType = "user", Option = "个人中心"},
+            new() { Key = "setting", IconType = "setting", Option = "个人设置"},
+            new() { IsDivider = true },
+            new() { Key = "logout", IconType = "logout", Option = "退出登录"}
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        userName = await setUser();
+    }
+
+    protected void SetClassMap()
+    {
+        ClassMapper
+            .Clear()
+            .Add("right");
+    }
+
+    private async Task<string> setUser()
+    {
+        //var authenticationState = await authProvider.GetAuthenticationStateAsync();
+        //return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        return "测试用户";
+    }
+
+    public void HandleSelectUser(MenuItem item)
+    {
+        switch (item.Key)
+        {
+            case "center":
+                navManager.NavigateTo("/account/center");
+                break;
+            case "setting":
+                navManager.NavigateTo("/account/settings");
+                break;
+            case "logout":
+                navManager.NavigateTo("/user/login");
+                break;
+        }
+    }
+
+    public async Task HandleClear(string key)
+    {
+        _notifications = new NoticeIconData[] { };
+    }
+
+    public async Task HandleViewMore(string key)
+    {
+        Console.WriteLine("Click on view more");
+    }
+}

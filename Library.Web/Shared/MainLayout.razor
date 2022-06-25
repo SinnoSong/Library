@@ -1,28 +1,16 @@
 ﻿@using Newtonsoft.Json
 @inherits LayoutComponentBase
 
-<PageTitle>Library.Web</PageTitle>
-
-<BasicLayout MenuData="MenuData">
-
-    <Layout Class="site-layout">
-        <Header Class="site-layout-background" Style=" padding: 0 ;"></Header>
-        <Content Style="margin:0 16px;">
-
-            <Breadcrumb Style="margin:16px 0;">
-                <BreadcrumbItem>User</BreadcrumbItem>
-                <BreadcrumbItem>Bill</BreadcrumbItem>
-            </Breadcrumb>
-            <div class="site-layout-background" style="padding: 24; min-height: 360px">
-                @Body
-            </div>
-        </Content>
-        <Footer Style="text-align:center ">
-            <div class="top-row px-4">
-                <a href="https://github.com/SinnoSong/Library.API" target="_blank">About</a>
-            </div>
-        </Footer>
-    </Layout>
+<BasicLayout MenuData="MenuData" Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")">
+    <RightContentRender>
+        <Library.Web.Components.RightContent />
+    </RightContentRender>
+    <ChildContent>
+        @Body
+    </ChildContent>
+    <FooterRender>
+        <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
+    </FooterRender>
 </BasicLayout>
 
 
@@ -36,6 +24,31 @@
 
         MenuData = JsonConvert.DeserializeObject<MenuDataItem[]>(menuJson);
     }
+
+    public LinkItem[] Links { get; set; } =
+    {
+        new LinkItem
+        {
+            Key = "Ant Design Blazor",
+            Title = "Ant Design Blazor",
+            Href = "https://antblazor.com",
+            BlankTarget = true,
+        },
+        new LinkItem
+        {
+            Key = "github",
+            Title = (RenderFragment)(@<Icon Type="github" />),
+            Href = "https://github.com/SinnoSong/Library.API",
+            BlankTarget = true,
+        },
+        new LinkItem
+        {
+            Key = "Blazor",
+            Title = "Blazor",
+            Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
+            BlankTarget = true,
+        }
+    };
 }
 
 

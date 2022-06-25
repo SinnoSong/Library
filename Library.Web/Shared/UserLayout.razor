@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+
+<div>
+    <div class="content">
+        <div class="top-0">
+            <div class="card-header">
+                <a>
+                    <img alt="logo" class="card-img-top" src="assets/logo.svg" />
+                    <span class="card-title">Ant Design</span>
+                </a>
+            </div>
+            <div class="oi-sort-descending">图书管理系统</div>
+        </div>
+        @Body
+    </div>
+    <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
+</div>
+
+@code {
+    public LinkItem[] Links { get; set; } =
+    {
+        new LinkItem
+        {
+            Key = "Ant Design Blazor",
+            Title = "Ant Design Blazor",
+            Href = "https://antblazor.com",
+            BlankTarget = true,
+        },
+        new LinkItem
+        {
+            Key = "github",
+            Title = (RenderFragment)(@<Icon Type="github" />),
+            Href = "https://github.com/SinnoSong/Library.API",
+            BlankTarget = true,
+        },
+        new LinkItem
+        {
+            Key = "Blazor",
+            Title = "Blazor",
+            Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
+            BlankTarget = true,
+        }
+    };
+}
