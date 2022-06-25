@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DocumentationFile>D:\repos\C#\Library.API\Library.API\Library.API.xml</DocumentationFile>
+		<DocumentationFile></DocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
 
