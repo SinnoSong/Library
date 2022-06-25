@@ -6,6 +6,8 @@ using Library.API.Service;
 using Library.API.Service.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +56,6 @@ builder.Services.AddSwaggerGen(options =>
 
 // 添加identityCore，基于user和role
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
-
 // 添加repository包装
 builder.Services.AddScoped<IServicesWrapper, ServicesWrapper>();
 builder.Services.AddSingleton<HashFactory>();

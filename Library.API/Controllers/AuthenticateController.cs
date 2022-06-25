@@ -23,15 +23,13 @@ namespace Library.API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly IUserRoleStore<User> _userRoleStore;
 
         public AuthenticateController(IConfiguration configuration, UserManager<User> userManager,
-            RoleManager<Role> roleManager, IUserRoleStore<User> userRoleStore)
+            RoleManager<Role> roleManager)
         {
             Configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
-            _userRoleStore = userRoleStore;
         }
 
         public IConfiguration Configuration { get; }
@@ -99,7 +97,8 @@ namespace Library.API.Controllers
 
             if (result.Succeeded)
             {
-                await _userRoleStore.AddToRoleAsync(user, "User", CancellationToken.None);
+                var role = await _roleManager.FindByNameAsync("User");
+                await _userManager.AddToRoleAsync(user, role.Name);
                 return Ok();
             }
             else

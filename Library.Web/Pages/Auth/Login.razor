@@ -11,26 +11,18 @@
     </div>
 }
 
-<div>
-    <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="form-group">
-            <label for="UserName">UserName</label>
-            <InputText class="form-control" @bind-Value="loginModel.UserName" />
-            <ValidationMessage For="@(() => loginModel.UserName)" />
-        </div>
-        <br />
-        <div class="form-group">
-            <label for="password">Password</label>
-            <InputText class="form-control" type="password" @bind-Value="loginModel.Password" />
-            <ValidationMessage For="@(() => loginModel.Password)" />
-        </div>
-        <br />
-        <Button Type="submit" class="btn btn-primary btn-block">Login</Button>
-    </EditForm>
+<Form Model="loginModel" OnFinish="HandleLogin" Layout="@FormLayout.Horizontal" ValidateOnChange="true">
+    <FormItem Label="UserName">
+        <Input @bind-Value="@context.UserName" Placeholder="请输入用户名"></Input>
+    </FormItem>
+    <FormItem Label="Password">
+        <InputPassword @bind-Value="@context.Password" Placeholder="请输入密码"></InputPassword>
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="Submit">Submit</Button>
+    </FormItem>
+</Form>
 
-</div>
 
 @code {
 

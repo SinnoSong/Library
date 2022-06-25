@@ -26,5 +26,8 @@ namespace Library.Common.Models
         {
             Processor = processor;
         }
+        public LendRecordDto()
+        {
+        }
     }
 }
