@@ -1,7 +1,7 @@
 ﻿@using Newtonsoft.Json
 @inherits LayoutComponentBase
 
-<BasicLayout MenuData="MenuData" Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")">
+<BasicLayout MenuData="MenuData">
     <RightContentRender>
         <Library.Web.Components.RightContent />
     </RightContentRender>
@@ -12,7 +12,7 @@
         <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
     </FooterRender>
 </BasicLayout>
-
+<SettingDrawer />
 
 @code {
     private MenuDataItem[] MenuData { get; set; } = { };
@@ -50,16 +50,3 @@
         }
     };
 }
-
-
-<style>
-    #components-layout-demo-side .logo {
-        height: 32px;
-        background: rgba(255, 255, 255, 0.2);
-        margin: 16px;
-    }
-
-    .site-layout .site-layout-background {
-        background: #fff;
-    }
-</style>

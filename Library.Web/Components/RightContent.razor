@@ -3,12 +3,21 @@
 @inject AuthenticationStateProvider authProvider
 @inject NavigationManager navManager
 
-<Space Class="@ClassMapper.Class" Size="@("16")">
+<Space Class="@ClassMapper.Class" Size="@("24")">
     <SpaceItem>
         <HeaderSearch Class="action search"
                       Placeholder="Site Search"
                       DefaultValue="umi ui"
                       Options="DefaultOptions" />
+    </SpaceItem>
+    <SpaceItem>
+        <AntDesign.Tooltip Title="@("Help")" Placement="@Placement.Bottom">
+            <Unbound>
+                <span @ref="@context.Current" class="action">
+                    <Icon Type="question-circle" Theme="outline" />
+                </span>
+            </Unbound>
+        </AntDesign.Tooltip>
     </SpaceItem>
     <SpaceItem>
         <NoticeIcon ClearText="Empty"
