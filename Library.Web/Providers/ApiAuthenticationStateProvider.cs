@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Library.Web.Helper;
 
 namespace Library.Web.Providers
 {
@@ -18,7 +19,7 @@ namespace Library.Web.Providers
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity());
-            var savedToken = await _localStorage.GetItemAsync<string>("accessToken");
+            var savedToken = await _localStorage.GetAccessTokenAsync();
             if (savedToken == null)
             {
                 return new AuthenticationState(user);

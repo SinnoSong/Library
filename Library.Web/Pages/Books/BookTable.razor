@@ -1,7 +1,6 @@
-﻿
-@inject IBookService bookService
+﻿@inject IBookService bookService
 
-<Table TItem="BookDto" DataSource="@books">
+<Table TItem="BookDto" DataSource="@Books">
     <Selection Key="@(context.Id.ToString())" />
     <Column @bind-Field="@context.Id" Sortable />
     <Column @bind-Field="@context.Title" Sortable />
@@ -10,34 +9,38 @@
     <Column @bind-Field="@context.Isbn" Sortable />
     <Column @bind-Field="@context.Author" Sortable />
     <Column @bind-Field="@context.Location" Sortable />
-@*    <ActionColumn>
+    <ActionColumn>
         <Space>
-            <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">Delete</Button></SpaceItem>
+            <SpaceItem><Button Danger OnClick="async ()=>await Delete(context.Id)">Delete</Button></SpaceItem>
+            <SpaceItem>
+                <a href="/book/details/@context.Id">Details</a>
+            </SpaceItem>
         </Space>
-    </ActionColumn>*@
+    </ActionColumn>
 </Table>
 
 @code {
-    private List<BookDto> books;
+    [Parameter]
+    public EventCallback<Guid> OnDelete { get; set; }
+    [Parameter]
+    public List<BookDto> Books { get; set; }
+    [Parameter]
+    public EventCallback<QueryParameters> OnScroll { get; set; }
+    [Parameter]
+    public int TotalSize { get; set; }
 
-    private int _pageIndex = 1;
-    private int _pageSize = 25;
-    private int _total = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
-        List<BookDto> bookDto = new List<BookDto>() { new BookDto { Title = "book1" }, new BookDto { Title = "book2" } };
 
         var queryParameters = new BookQueryParameters();
-        queryParameters.PageSize = 25;
-        queryParameters.StartIndex = 1;
-        books = bookDto;
-        //books = (await bookService.GetAsync(queryParameters)).Data;
+        Books = (await bookService.GetAsync(queryParameters)).Data;
     }
 
-    private void Delete(Guid id)
+    private async Task Delete(Guid id)
     {
-        books = books.Where(x => x.Id != id).ToList();
-        _total = books.Count;
+        await OnDelete.InvokeAsync(id);
+
     }
 }

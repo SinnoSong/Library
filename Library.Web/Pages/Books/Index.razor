@@ -1,9 +1,15 @@
 ﻿@page "/books"
 
-<h3>Index</h3>
-
-<BookTable></BookTable>
-
+<PageContainer Title="Books">
+    <Content>
+        <div style="text-align:center">
+            <Search Placeholder="请输入搜索关键词" EnterButton="@("搜索")" Size="large" Style="max-width:522px;width:100%" />
+        </div>
+    </Content>
+    <ChildContent>
+        <BookTable></BookTable>
+    </ChildContent>
+</PageContainer>
 
 @code {
 
