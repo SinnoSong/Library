@@ -52,7 +52,7 @@ namespace Library.Web.Services
             using var request = new HttpRequestMessage(method, queryUrl);
             if (accessToken != null)
             {
-                request.Headers.Add("Authorization", "Bearer " + accessToken);
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
             }
 
             if (json != null)
@@ -107,7 +107,7 @@ namespace Library.Web.Services
             }
 
             using var request = new HttpRequestMessage(method, queryUrl);
-            request.Headers.Add("Authorization", "Bearer " + accessToken);
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
             if (json != null)
             {
                 var content = new StringContent(json);

@@ -1,7 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using Library.Common.Models;
 using Library.Web.Models;
+using Library.Web.Providers;
 using Library.Web.Services.Interface;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Library.Web.Services
 {
@@ -11,13 +13,16 @@ namespace Library.Web.Services
 
         private readonly IClient _httpClient;
         private readonly ILocalStorageService _localStorage;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
         #endregion
 
-        public AuthenticationService(IClient client, ILocalStorageService localStorage) : base(client, localStorage)
+        public AuthenticationService(IClient client, ILocalStorageService localStorage,
+            AuthenticationStateProvider authenticationStateProvider) : base(client, localStorage)
         {
             _httpClient = client;
             _localStorage = localStorage;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<Response<AuthResponse>> AuthenticateAsync(LoginUserDto loginUser)
@@ -32,6 +37,8 @@ namespace Library.Web.Services
                     Success = true,
                 };
                 await _localStorage.SetItemAsync("accessToken", result.Token);
+
+                await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
             }
             catch (ApiException exception)
             {
@@ -43,7 +50,7 @@ namespace Library.Web.Services
 
         public async Task Logout()
         {
-            await _localStorage.RemoveItemAsync("accessToken");
+            await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
         }
 
         public async Task<Response<bool>> RegisterAsync(RegisterUser registerUser)

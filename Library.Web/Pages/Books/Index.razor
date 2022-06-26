@@ -7,7 +7,7 @@
     <Content>
         <Form Model="@_queryParameters" Layout="Inline">
             <FormItem Label="是否借出">
-                <Switch @bind-Value="@context.isLend"></Switch>
+                <Switch @bind-Value="@context.isLend" Checked="@false"></Switch>
             </FormItem>
             <FormItem>
                 <AutoComplete @bind-Value="@context.sort" Options="@_sortOptions" Placeholder="请选择排序字段" />
@@ -22,12 +22,13 @@
                 <Input @bind-Value="@context.ibsn" Placeholder="ibsn" />
             </FormItem>
             <FormItem>
-@*                <AutoComplete @bind-Value="@category" OptionDataItems="@categories" CompareWith="@_compareWith" OnSelectionChange="@OnSelectionChange">
-                    <OptionTemplate Context="option">
-                        <AutoCompleteOption Value="@option.Value" Label="@option.Label">
-                        </AutoCompleteOption>
-                    </OptionTemplate>
+                @*                <AutoComplete @bind-Value="@category" OptionDataItems="@categories" CompareWith="@_compareWith" OnSelectionChange="@OnSelectionChange">
+                <OptionTemplate Context="option">
+                <AutoCompleteOption Value="@option.Value" Label="@option.Label">
+                </AutoCompleteOption>
+                </OptionTemplate>
                 </AutoComplete>*@
+                <Input @bind-Value="@context.category"></Input>
             </FormItem>
             <FormItem>
                 <Button Type="@ButtonType.Primary" HtmlType="submit">
@@ -43,19 +44,19 @@
 
 @code {
     private readonly List<string> _sortOptions = new() { "title", "author", "ibsn", "category" };
-    private List<CategoryDto> categories;
-    private List<BookDto> Books;
-    private int TotalSize;
-    private BookQueryParameters? _queryParameters;
+    private List<CategoryDto> categories = new List<CategoryDto> { };
+    private List<BookDto> Books = new List<BookDto> { new BookDto { Title = "123981" }, new BookDto { Title = "book1" } };
+    private int TotalSize = 50;
+    private BookQueryParameters _queryParameters = new BookQueryParameters();
     private Guid category;
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await bookService.GetAsync(_queryParameters);
-        if (response.Success)
-        {
-            Books = response.Data;
-        }
+        //var response = await bookService.GetAsync(new BookQueryParameters());
+        //if (response.Success)
+        //{
+        //    Books = response.Data;
+        //}
         var categoryResponse = await categoryService.GetAsync(new CategoryQueryParameters());
         if (categoryResponse.Success)
         {
