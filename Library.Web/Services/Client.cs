@@ -1,11 +1,11 @@
-﻿using System.Text;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using Library.Common.Models;
 using Library.Web.Constants;
 using Library.Web.Helper;
 using Library.Web.Models;
 using Library.Web.Services.Interface;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Library.Web.Services
 {
@@ -166,7 +166,7 @@ namespace Library.Web.Services
             await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(bookUpdateDto));
         }
 
-        public async Task<List<BookDto>> GetBooksAsync(BookQueryParameters queryParameters)
+        public async Task<List<BookDto>> GetBooksAsync(BookQueryParameters? queryParameters)
         {
             var apiUrl = ApplicationUrl + Apis.CreateBook;
             var accessToken = await _localStorageService.GetAccessTokenAsync();

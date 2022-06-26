@@ -1,8 +1,8 @@
 ﻿using Blazored.LocalStorage;
+using Library.Web.Helper;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Library.Web.Helper;
 
 namespace Library.Web.Providers
 {

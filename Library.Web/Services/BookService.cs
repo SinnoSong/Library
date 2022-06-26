@@ -76,7 +76,7 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<BookDto>>> GetAsync(BookQueryParameters queryParameters)
+        public async Task<Response<List<BookDto>>> GetAsync(BookQueryParameters? queryParameters)
         {
             Response<List<BookDto>> response;
 

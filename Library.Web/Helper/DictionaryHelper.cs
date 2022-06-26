@@ -2,7 +2,7 @@
 
 public static class DictionaryHelper
 {
-    public static Dictionary<string, object> ToDictionary(this object data)
+    public static Dictionary<string, object> ToDictionary(this object? data)
     {
         return data.GetType().GetProperties() //这一步获取匿名类的公共属性，返回一个数组
             .Where(q => q.GetValue(data) != null)
