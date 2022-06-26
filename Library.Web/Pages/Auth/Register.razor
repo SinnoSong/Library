@@ -5,50 +5,44 @@
 
 <PageTitle>Register</PageTitle>
 
-<h3>Register</h3>
+<div class="main__b__1">
+    <div class="register">
+        <h3>注册</h3>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-danger">
+                <p>@message</p>
+            </div>
+        }
+        <Form Model="user">
+            <FormItem>
+                <Input Placeholder="请输入用户名" @bind-Value="@context.UserName" Size="@InputSize.Large"></Input>
+            </FormItem>
 
-@if (string.IsNullOrEmpty(message))
-{
-    <div class="alert alert-danger">
-        <p>@message</p>
+            <FormItem>
+                <Input Placeholder="请输入密码" @bind-Value="@context.Password" Size="@InputSize.Large" Type="password"></Input>
+            </FormItem>
+
+            <FormItem>
+                <Input Placeholder="再次输入密码" @bind-Value="@context.ConfirmPassword" Size="@InputSize.Large" Type="password"></Input>
+            </FormItem>
+
+            <FormItem>
+                <Input Placeholder="请输入邮箱" @bind-Value="@context.Email" Size="@InputSize.Large" Type="email"></Input>
+            </FormItem>
+
+            <FormItem>
+                <Button Type="submit" Size="large" Class="submit" OnClick="HandleRegistration">注册</Button>
+                <a class="login" href="/user/login">Log in with an existing account</a>
+            </FormItem>
+        </Form>
     </div>
-}
-
-<Divider>
-    <EditForm Model="user" OnValidSubmit="HandleRegistration">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="mb-3">
-            <label for="username">UserName</label>
-            <Input id="username" @bind-Value="user.UserName" class="form-control" />
-            <ValidationMessage For="@(()=>user.UserName)" />
-        </div>
-
-        <div class="mb-3">
-            <label for="email">Email</label>
-            <Input id="email" @bind-Value="user.Email" class="form-control" />
-            <ValidationMessage For="@(()=>user.Email)" />
-        </div>
-
-        <div class="mb-3">
-            <label for="password">Password</label>
-            <Input id="password" @bind-Value="user.Password" class="form-control" type="password" />
-            <ValidationMessage For="@(()=>user.Password)" />
-        </div>
-
-        <div class="mb-3">
-            <label for="confirmPassword">ConfirmPassword</label>
-            @* <Input id="confirmPassword" @bind-Value="user.ConfirmPassword" class="form-control" type="password"/> *@
-        </div>
-        <Button Type="submit" Class="btn btn-primary">提交</Button>
-    </EditForm>
-</Divider>
+</div>
 
 
 @code {
     private string? message;
-
-    RegisterUser user = new();
+    private readonly RegisterUser user = new();
 
     private async Task HandleRegistration()
     {
@@ -58,11 +52,6 @@
         {
             navManager.NavigateTo("/login");
         }
-        else
-        {
-            message = "注册失败！请稍后重试！";
-        }
-
+        message = response.Message;
     }
-
 }

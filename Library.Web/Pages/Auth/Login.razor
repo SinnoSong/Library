@@ -3,32 +3,39 @@
 @inject IAuthenticationService authService
 @inject NavigationManager navManager
 
-<h3>Login</h3>
 
-@if (!string.IsNullOrEmpty(_message))
-{
-    <div class="alert alert-danger">
-        <p>@_message</p>
+<div class="main__b__0">
+    <div class="login">
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-danger">
+                <p>@message</p>
+            </div>
+        }
+        <Form Model="loginModel" OnFinish="HandleLogin" Layout="@FormLayout.Horizontal" ValidateOnChange="true">
+            <FormItem Label="用户名">
+                <Input @bind-Value="@context.UserName" Placeholder="请输入用户名">
+                <Prefix><Icon Type="user" /></Prefix>
+                </Input>
+            </FormItem>
+            <FormItem Label="密码">
+                <InputPassword @bind-Value="@context.Password" Placeholder="请输入密码">
+                    <Prefix><Icon Type="lock" /></Prefix>
+                </InputPassword>
+            </FormItem>
+            <FormItem>
+                <Button Type="@ButtonType.Primary" HtmlType="Submit" Size="large" Block OnClick="HandleLogin">Submit</Button>
+            </FormItem>
+            <div> <a class="register" href="/user/register">Register Account</a></div>
+        </Form>
     </div>
-}
+</div>
 
-<Form Model="loginModel" OnFinish="HandleLogin" Layout="@FormLayout.Horizontal" ValidateOnChange="true">
-    <FormItem Label="UserName">
-        <Input @bind-Value="@context.UserName" Placeholder="请输入用户名"></Input>
-    </FormItem>
-    <FormItem Label="Password">
-        <InputPassword @bind-Value="@context.Password" Placeholder="请输入密码"></InputPassword>
-    </FormItem>
-    <FormItem>
-        <Button Type="@ButtonType.Primary" HtmlType="Submit">Submit</Button>
-    </FormItem>
-</Form>
 
 
 @code {
-
+    private string? message;
     LoginUserDto loginModel = new LoginUserDto();
-    private string? _message;
 
     private async Task HandleLogin()
     {
@@ -38,8 +45,7 @@
         {
             navManager.NavigateTo("/");
         }
-
-        _message = response.Message;
+        message = response.Message;
     }
 
 }

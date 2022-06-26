@@ -1,0 +1,34 @@
+﻿.main__b__0 ::deep {
+    width: 368px;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 100%) {
+    .main__b__0 ::deep {
+        width: 95%;
+    }
+}
+
+.main__b__0 ::deep .login :global .ant-tabs .ant-tabs-nav {
+    margin-bottom: 24px;
+    text-align: center;
+    border-bottom: 0;
+}
+
+.main__b__0 ::deep .login .icon {
+    color:;
+}
+
+.main__b__0 ::deep .login .prefixIcon {
+    color: #001529;
+    font-size: 14;
+}
+
+.main__b__0 ::deep .login .submit {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.main__b__0 ::deep .register {
+    float: right;
+}
