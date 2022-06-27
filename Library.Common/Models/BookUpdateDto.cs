@@ -28,11 +28,11 @@ namespace Library.Common.Models
         [JsonProperty("location", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Location { get; set; }
 
-        [JsonProperty("categoryId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public Guid CategoryId { get; set; }
+        [JsonProperty("category", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Category { get; set; }
 
         public BookUpdateDto(string title, string? summary, decimal? price, string? isbn, string? image, int pages,
-            string author, string location, Guid categoryId)
+            string author, string location, string category)
         {
             Title = title;
             Summary = summary;
@@ -42,7 +42,7 @@ namespace Library.Common.Models
             Pages = pages;
             Author = author;
             Location = location;
-            CategoryId = categoryId;
+            Category = category;
         }
 
         public BookUpdateDto()

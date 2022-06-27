@@ -7,5 +7,5 @@ public class BookQueryParameters : QueryParameters
     public string? title { get; set; }
     public string? author { get; set; }
     public string? ibsn { get; set; }
-    public Guid? category { get; set; }
+    public string? category { get; set; }
 }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -26,6 +27,7 @@ namespace Library.API.Controllers
         #region field
 
         private readonly IBookService _bookServices;
+        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
         private readonly HashFactory _hashFactory;
         private readonly Dictionary<string, PropertyMapping> _mappingDict;
@@ -34,7 +36,7 @@ namespace Library.API.Controllers
 
         #region ctor
 
-        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
+        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory, ICategoryService categoryService)
         {
             _bookServices = repositoryWrapper.Book;
             _mapper = mapper;
@@ -46,6 +48,7 @@ namespace Library.API.Controllers
                 { "ibsn", new PropertyMapping(targetProperty: "Ibsn") },
                 { "category", new PropertyMapping(targetProperty: "Category") }
             };
+            _categoryService = categoryService;
         }
 
         #endregion
@@ -54,13 +57,15 @@ namespace Library.API.Controllers
 
         [HttpGet(Name = nameof(GetBooksAsync))]
         public async Task<ActionResult<PagedList<BookDto>>> GetBooksAsync(bool isLend, string sort = "title",
-            string? title = null, string? author = null, string? ibsn = null, Guid? category = null, int page = 1,
+            string? title = null, string? author = null, string? ibsn = null, string? category = null, int page = 1,
             int pageSize = 25)
         {
             Expression<Func<Book, bool>> select = book => book.IsLend == isLend;
             if (category != null)
             {
-                select = select.And(book => book.CategoryId == category);
+                var cate = (await _categoryService.GetByConditionAsync(c => c.Name == category)).FirstOrDefault();
+                if (cate == null) throw new Exception("category 不存在");
+                select = select.And(book => book.CategoryId == cate.Id);
             }
 
             if (title != null)
@@ -101,7 +106,14 @@ namespace Library.API.Controllers
         [Authorize(Roles = "Administrator,SuperAdministrator")]
         public async Task<IActionResult> AddBookAsync(BookCreateDto bookForCreationDto)
         {
-            var result = await _bookServices.AddAsync(_mapper.Map<Book>(bookForCreationDto));
+            var cate = (await _categoryService.GetByConditionAsync(c => c.Name == bookForCreationDto.Category)).FirstOrDefault();
+            if (cate == null)
+            {
+                throw new Exception("category不能为空");
+            }
+            var book = _mapper.Map<Book>(bookForCreationDto);
+            book.CategoryId = cate.Id;
+            var result = await _bookServices.AddAsync(book);
             if (result == null)
             {
                 throw new Exception("创建资源Book失败");
@@ -109,20 +121,6 @@ namespace Library.API.Controllers
 
             var bookDto = _mapper.Map<BookDto>(result);
             return CreatedAtRoute(nameof(GetBookAsync), new { bookId = bookDto.Id }, bookDto);
-        }
-
-        [HttpPost("books")]
-        [Authorize(Roles = "Administrator,SuperAdministrator")]
-        public async Task<IActionResult> AddBooksAsync(BookCreateCollectionDto bookCreateCollectionDto)
-        {
-            var books = _mapper.Map<IEnumerable<Book>>(bookCreateCollectionDto.Books);
-            await _bookServices.AddAsync(books);
-            if (!await _bookServices.SaveAsync())
-            {
-                throw new Exception("创建资源Book失败");
-            }
-
-            return Ok(bookCreateCollectionDto);
         }
 
         #endregion
@@ -147,7 +145,13 @@ namespace Library.API.Controllers
         [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> UpdateBookAsync(Guid bookId, BookUpdateDto updateBook)
         {
+            var cate = (await _categoryService.GetByConditionAsync(c => c.Name == updateBook.Category)).FirstOrDefault();
+            if (cate == null)
+            {
+                throw new Exception("category不能为空");
+            }
             var book = await _bookServices.GetByIdAsync(bookId);
+            book.CategoryId = cate.Id;
             var entityHash = _hashFactory.GetHash(book);
             if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
             {

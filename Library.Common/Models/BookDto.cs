@@ -34,13 +34,13 @@ namespace Library.Common.Models
         [JsonProperty("isLend", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public bool IsLend { get; set; }
 
-        [JsonProperty("categoryId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public Guid CategoryId { get; set; }
+        [JsonProperty("category", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Category { get; set; }
 
         #region ctor
 
         public BookDto(Guid id, string title, string? summary, decimal? price, string? isbn, string? image, int pages,
-            string author, string location, bool isLend, Guid categoryId)
+            string author, string location, bool isLend, string category)
         {
             Id = id;
             Title = title;
@@ -52,7 +52,7 @@ namespace Library.Common.Models
             Author = author;
             Location = location;
             IsLend = isLend;
-            CategoryId = categoryId;
+            Category = category;
         }
 
         public BookDto()

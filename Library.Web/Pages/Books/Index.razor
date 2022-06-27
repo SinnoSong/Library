@@ -22,13 +22,8 @@
                 <Input @bind-Value="@context.ibsn" Placeholder="ibsn" />
             </FormItem>
             <FormItem>
-                @*                <AutoComplete @bind-Value="@category" OptionDataItems="@categories" CompareWith="@_compareWith" OnSelectionChange="@OnSelectionChange">
-                <OptionTemplate Context="option">
-                <AutoCompleteOption Value="@option.Value" Label="@option.Label">
-                </AutoCompleteOption>
-                </OptionTemplate>
-                </AutoComplete>*@
-                <Input @bind-Value="@context.category"></Input>
+                <AutoComplete @bind-Value="@context.category" Options="@categories" OnSelectionChange="@OnSelectionChange">
+                </AutoComplete>
             </FormItem>
             <FormItem>
                 <Button Type="@ButtonType.Primary" HtmlType="submit">
@@ -44,7 +39,8 @@
 
 @code {
     private readonly List<string> _sortOptions = new() { "title", "author", "ibsn", "category" };
-    private List<CategoryDto> categories = new List<CategoryDto> { };
+    private List<string> categories = new List<string> { };
+    private List<CategoryDto> categoryDtos = new List<CategoryDto> { };
     private List<BookDto> Books = new List<BookDto> { new BookDto { Title = "123981" }, new BookDto { Title = "book1" } };
     private int TotalSize = 50;
     private BookQueryParameters _queryParameters = new BookQueryParameters();
@@ -60,7 +56,8 @@
         var categoryResponse = await categoryService.GetAsync(new CategoryQueryParameters());
         if (categoryResponse.Success)
         {
-            categories = categoryResponse.Data;
+            categories = categoryResponse.Data.Select(category => category.Name).ToList();
+            categoryDtos = categoryResponse.Data;
         }
     }
 
@@ -97,9 +94,10 @@
 
     private void OnSelectionChange(AutoCompleteOption option)
     {
-        if (option.Value is CategoryDto categoryDto)
+        if (option.Value is string category)
         {
-            category = categoryDto.Id;
+            var guid = categoryDtos.FirstOrDefault(c => c.Name == category).Id;
+
         }
     }
 
