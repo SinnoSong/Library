@@ -23,15 +23,17 @@ namespace Library.API.Controllers
     [Authorize(Roles = "Administrator,SuperAdministrator")]
     public class CategoryController : ControllerBase
     {
-
         #region field
+
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
         private readonly HashFactory _hashFactory;
         private readonly Dictionary<string, PropertyMapping> _mappingDict;
+
         #endregion
 
         #region ctor
+
         public CategoryController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
         {
             _categoryService = repositoryWrapper.Category;
@@ -39,17 +41,19 @@ namespace Library.API.Controllers
             _hashFactory = hashFactory;
             _mappingDict = new Dictionary<string, PropertyMapping>()
             {
-                {"id",new PropertyMapping("Id") },
-                {"name",new PropertyMapping("Name") },
+                {"id", new PropertyMapping("Id")},
+                {"name", new PropertyMapping("Name")},
             };
         }
+
         #endregion
 
         #region Get
 
         // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<ActionResult<PagedList<CategoryDto>>> Get(string sort = "id", string? search = null, int page = 1, int pageSize = 25)
+        public async Task<ActionResult<PagedList<CategoryDto>>> Get(string sort = "id", string? search = null,
+            int page = 1, int pageSize = 25)
         {
             IQueryable<Category>? categories;
             if (search == null)
@@ -60,8 +64,10 @@ namespace Library.API.Controllers
             {
                 categories = await _categoryService.GetByConditionAsync(category => category.Name.Contains(search));
             }
+
             categories = categories.Sort(sort, _mappingDict);
-            return await PagedList<CategoryDto>.CreateAsync(categories.ProjectTo<CategoryDto>(_mapper.ConfigurationProvider), page, pageSize);
+            return await PagedList<CategoryDto>.CreateAsync(
+                categories.ProjectTo<CategoryDto>(_mapper.ConfigurationProvider), page, pageSize);
         }
 
         // GET api/<CategoryController>/5
@@ -73,6 +79,7 @@ namespace Library.API.Controllers
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<CategoryDto>(category);
         }
+
         #endregion
 
         #region Post
@@ -86,21 +93,11 @@ namespace Library.API.Controllers
             {
                 throw new Exception("创建资源Category失败！");
             }
+
             var vo = _mapper.Map<CategoryDto>(result);
-            return CreatedAtRoute(nameof(Get), new { id = result.Id }, vo);
+            return CreatedAtRoute(nameof(Get), new {id = result.Id}, vo);
         }
 
-        [HttpPost("categories")]
-        public async Task<IActionResult> AddCategoriesAsync(CategoryCreateCollectionDto dto)
-        {
-            var categories = _mapper.Map<IEnumerable<Category>>(dto.Categories);
-            await _categoryService.AddAsync(categories);
-            if (!await _categoryService.SaveAsync())
-            {
-                throw new Exception("创建资源Category失败！");
-            }
-            return Ok(dto.Categories);
-        }
         #endregion
 
         #region Put
@@ -116,12 +113,14 @@ namespace Library.API.Controllers
             {
                 return StatusCode(StatusCodes.Status412PreconditionFailed);
             }
+
             _mapper.Map(dto, category);
             await _categoryService.UpdateAsync(category);
             var entityNewHash = _hashFactory.GetHash(category);
             Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
+
         #endregion
 
         #region Delete
@@ -134,7 +133,7 @@ namespace Library.API.Controllers
             await _categoryService.DeleteAsync(category);
             return NoContent();
         }
-        #endregion
 
+        #endregion
     }
 }

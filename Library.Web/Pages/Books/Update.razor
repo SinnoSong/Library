@@ -1,0 +1,80 @@
+﻿@page "/books/update/{id}"
+@inject IBookService BookService
+@inject NavigationManager NavigationManager
+@inject ICategoryService CategoryService
+
+<PageContainer Title="修改书籍">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>Book</BreadcrumbItem>
+            <BreadcrumbItem>Edit</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Form Model="_book" OnFinish="HandleBookUpdate">
+                <FormItem>
+                    <Input @bind-Value="@_book.Title" Placeholder="请输入书籍名称" DefaultValue="context.Title"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Summary" Placeholder="请输入简介" DefaultValue="context.Summary"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Author" Placeholder="请输入作者" DefaultValue="context.Author"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Isbn" Placeholder="请输入Isbn" DefaultValue="context.Isbn"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Price" Placeholder="请输入价格" Type="number" DefaultValue="context.Price"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Location" Placeholder="请输入位置" DefaultValue="context.Location"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Image" Placeholder="请输入图片链接地址" DefaultValue="context.Image"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_book.Pages" Placeholder="请输入页数" Type="number" DefaultValue="context.Pages"/>
+                </FormItem>
+                <FormItem>
+                    <AutoComplete @bind-Value="_book.Category" Options="@_categories" Placeholder="请输入类别"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="submit">修改书籍信息</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/books/"))">返回列表</Button>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private readonly BookUpdateDto _book = new();
+    private List<string> _categories = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await CategoryService.GetAsync(new CategoryQueryParameters());
+        if (response.Success)
+        {
+            _categories = response.Data.Select(category => category.Name).ToList();
+        }
+    }
+
+    private async Task HandleBookUpdate()
+    {
+        var response = await BookService.EditAsync(Id, _book);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/books/");
+        }
+    }
+
+}

@@ -1,0 +1,50 @@
+﻿@page "/books/detail/{id}"
+@inject IBookService BookService
+@inject NavigationManager NavigationManager
+
+<PageContainer Title="书籍信息">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>Book</BreadcrumbItem>
+            <BreadcrumbItem>Detail</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Descriptions Title="书籍信息" Bordered>
+                <DescriptionsItem Title="名称">@_bookDto.Title</DescriptionsItem>
+                <DescriptionsItem Title="作者">@_bookDto.Author</DescriptionsItem>
+                <DescriptionsItem Title="类别">@_bookDto.Category</DescriptionsItem>
+                <DescriptionsItem Title="简介">@_bookDto.Summary</DescriptionsItem>
+                <DescriptionsItem Title="价格">@_bookDto.Price</DescriptionsItem>
+                <DescriptionsItem Title="isbn">@_bookDto.Isbn</DescriptionsItem>
+                <DescriptionsItem Title="封面">@_bookDto.Image</DescriptionsItem>
+                <DescriptionsItem Title="总页数">@_bookDto.Pages</DescriptionsItem>
+                <DescriptionsItem Title="位置">@_bookDto.Location</DescriptionsItem>
+            </Descriptions>
+            <Divider Style="margin-bottom: 32px;"/>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/books/"))">返回列表</Button>
+            <Button OnClick="@(() => NavigationManager.NavigateTo($"/books/update/{_bookDto.Id}"))">修改书籍</Button>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private BookDto _bookDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await BookService.GetAsync(Id);
+        if (response.Success)
+        {
+            _bookDto = response.Data;
+        }
+    }
+
+}

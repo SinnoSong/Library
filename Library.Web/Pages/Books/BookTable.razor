@@ -1,4 +1,4 @@
-﻿@inject IBookService bookService
+﻿@inject IBookService BookService
 
 <Table TItem="BookDto" DataSource="@Books">
     <Selection Key="@(context.Id.ToString())"/>
@@ -15,7 +15,7 @@
                 <Button Danger OnClick="@(async () => await Delete(context.Id))">Delete</Button>
             </SpaceItem>
             <SpaceItem>
-                <a href="/book/details/@context.Id">Details</a>
+                <a href="/books/detail/@context.Id">Details</a>
             </SpaceItem>
         </Space>
     </ActionColumn>
@@ -27,7 +27,7 @@
     public EventCallback<Guid> OnDelete { get; set; }
 
     [Parameter]
-    public List<BookDto> Books { get; set; }
+    public List<BookDto> Books { get; set; } = null!;
 
     [Parameter]
     public EventCallback<BookQueryParameters> OnScroll { get; set; }
@@ -39,7 +39,7 @@
     protected override async Task OnInitializedAsync()
     {
         var queryParameters = new BookQueryParameters();
-        Books = (await bookService.GetAsync(queryParameters)).Data;
+        Books = (await BookService.GetAsync(queryParameters)).Data;
     }
 
     private async Task Delete(Guid id)

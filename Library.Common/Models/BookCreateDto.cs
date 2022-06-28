@@ -28,14 +28,11 @@ namespace Library.Common.Models
         [JsonProperty("location", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Location { get; set; }
 
-        [JsonProperty("isLend", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
-        public bool IsLend { get; set; }
-
         [JsonProperty("category", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Category { get; set; }
 
         public BookCreateDto(string title, string? summary, decimal? price, string? isbn, string? image, int pages,
-            string author, string location, bool isLend, string category)
+            string author, string location, string category)
         {
             Title = title;
             Summary = summary;
@@ -45,7 +42,6 @@ namespace Library.Common.Models
             Pages = pages;
             Author = author;
             Location = location;
-            IsLend = isLend;
             Category = category;
         }
 

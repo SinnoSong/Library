@@ -1,28 +1,30 @@
 ﻿@page "/books"
-@inject IBookService bookService
-@inject ICategoryService categoryService
-@inject IJSRuntime js
+@inject IBookService BookService
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime Js
 
 <PageContainer Title="Books">
     <Content>
-        <Form Model="@_queryParameters" Layout="Inline">
+        <Button OnClick="@(() => NavigationManager.NavigateTo("/books/create"))"></Button>
+        <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
             <FormItem Label="是否借出">
                 <Switch @bind-Value="@context.isLend" Checked="@false"></Switch>
             </FormItem>
             <FormItem>
-                <AutoComplete @bind-Value="@context.sort" Options="@_sortOptions" Placeholder="请选择排序字段" />
+                <AutoComplete @bind-Value="@context.sort" Options="@_sortOptions" Placeholder="请选择排序字段"/>
             </FormItem>
             <FormItem>
-                <Input @bind-Value="@context.title" Placeholder="请输入查询书籍名称" />
+                <Input @bind-Value="@context.title" Placeholder="请输入查询书籍名称"/>
             </FormItem>
             <FormItem>
-                <Input @bind-Value="@context.author" Placeholder="请输入作者" />
+                <Input @bind-Value="@context.author" Placeholder="请输入作者"/>
             </FormItem>
             <FormItem>
-                <Input @bind-Value="@context.ibsn" Placeholder="ibsn" />
+                <Input @bind-Value="@context.ibsn" Placeholder="ibsn"/>
             </FormItem>
             <FormItem>
-                <AutoComplete @bind-Value="@context.category" Options="@categories" OnSelectionChange="@OnSelectionChange">
+                <AutoComplete @bind-Value="@context.category" Options="@_categories">
                 </AutoComplete>
             </FormItem>
             <FormItem>
@@ -33,71 +35,55 @@
         </Form>
     </Content>
     <ChildContent>
-        <BookTable Books="@Books" TotalSize="@TotalSize" OnScroll="@GetBooksAsync" OnDelete="@Delete"></BookTable>
+        <BookTable Books="@_books" TotalSize="@_totalSize" OnScroll="@GetBooksAsync" OnDelete="@Delete"></BookTable>
     </ChildContent>
 </PageContainer>
 
 @code {
-    private readonly List<string> _sortOptions = new() { "title", "author", "ibsn", "category" };
-    private List<string> categories = new List<string> { };
-    private List<CategoryDto> categoryDtos = new List<CategoryDto> { };
-    private List<BookDto> Books = new List<BookDto> { new BookDto { Title = "123981" }, new BookDto { Title = "book1" } };
-    private int TotalSize = 50;
-    private BookQueryParameters _queryParameters = new BookQueryParameters();
-    private Guid category;
+    private readonly List<string> _sortOptions = new() {"title", "author", "ibsn", "category"};
+    private List<string> _categories = new();
+    private List<BookDto> _books = new() {new BookDto {Title = "123981"}, new BookDto {Title = "book1"}};
+    private int _totalSize = 50;
+    private readonly BookQueryParameters _queryParameters = new();
 
     protected override async Task OnInitializedAsync()
     {
-        //var response = await bookService.GetAsync(new BookQueryParameters());
-        //if (response.Success)
-        //{
-        //    Books = response.Data;
-        //}
-        var categoryResponse = await categoryService.GetAsync(new CategoryQueryParameters());
+    //var response = await bookService.GetAsync(new BookQueryParameters());
+    //if (response.Success)
+    //{
+    //    Books = response.Data;
+    //}
+        var categoryResponse = await CategoryService.GetAsync(new CategoryQueryParameters());
         if (categoryResponse.Success)
         {
-            categories = categoryResponse.Data.Select(category => category.Name).ToList();
-            categoryDtos = categoryResponse.Data;
+            _categories = categoryResponse.Data.Select(category => category.Name).ToList();
         }
+    }
+
+    private async Task OnFinish(EditContext context)
+    {
+        await GetBooksAsync(_queryParameters);
     }
 
     private async Task GetBooksAsync(BookQueryParameters queryParameters)
     {
-        var result = await bookService.GetAsync(queryParameters);
-        Books = result.Data;
-        // todo 总数不对，待修改
-        TotalSize = result.Data.Count;
+        var result = await BookService.GetAsync(queryParameters);
+        _books = result.Data;
+    // todo 总数不对，待修改
+        _totalSize = result.Data.Count;
     }
 
     private async Task Delete(Guid bookId)
     {
-        var book = Books.First(q => q.Id == bookId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {book.Title}?");
+        var book = _books.First(q => q.Id == bookId);
+        var confirm = await Js.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {book.Title}?");
         if (confirm)
         {
-            var response = await bookService.DeleteAsync(bookId.ToString());
+            var response = await BookService.DeleteAsync(bookId.ToString());
             if (response.Success)
             {
                 await OnInitializedAsync();
             }
-        }
-    }
-
-    private readonly Func<object, object, bool> _compareWith = (a, b) =>
-    {
-        if (a is CategoryDto o1 && b is CategoryDto o2)
-        {
-            return o1.Id == o2.Id;
-        }
-        return false;
-    };
-
-    private void OnSelectionChange(AutoCompleteOption option)
-    {
-        if (option.Value is string category)
-        {
-            var guid = categoryDtos.FirstOrDefault(c => c.Name == category).Id;
-
         }
     }
 
