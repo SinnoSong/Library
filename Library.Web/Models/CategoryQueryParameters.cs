@@ -1,7 +1,12 @@
-﻿namespace Library.Web.Models;
+﻿using Newtonsoft.Json;
+
+namespace Library.Web.Models;
 
 public class CategoryQueryParameters : QueryParameters
 {
-    public string sort { get; set; }
-    public string? search { get; set; }
+    [JsonProperty("sort", Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+    public string Sort { get; set; }
+
+    [JsonProperty("search", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+    public string? Search { get; set; }
 }

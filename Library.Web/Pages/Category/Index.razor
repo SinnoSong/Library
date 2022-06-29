@@ -1,0 +1,66 @@
+﻿@page "/categories"
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime Js
+
+<PageContainer Title="Categories">
+    <Content>
+        <Button OnClick="@(() => NavigationManager.NavigateTo("/categories/create"))">创建分类</Button>
+        <Form Model="_parameters" Layout="Inline" OnFinish="OnFinish">
+            <FormItem Label="排序字段">
+                <AutoComplete @bind-Value="@context.Sort" Options="_sortOptions"/>
+            </FormItem>
+            <FormItem Label="搜索内容">
+                <Input @bind-Value="@context.Search"/>
+            </FormItem>
+            <FormItem>
+                <Button Type="@ButtonType.Primary" HtmlType="submit">
+                    Submit
+                </Button>
+            </FormItem>
+        </Form>
+    </Content>
+    <ChildContent>
+        <CategoryTable CategoryDtos="_categories" OnDelete="Delete" OnScroll="OnFinish"></CategoryTable>
+    </ChildContent>
+</PageContainer>
+
+
+@code {
+    private readonly List<string> _sortOptions = new() {"id", "name"};
+    private readonly CategoryQueryParameters _parameters = new();
+    private List<CategoryDto> _categories = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await CategoryService.GetAsync(new CategoryQueryParameters());
+        if (response.Success)
+        {
+            _categories = response.Data;
+        }
+    }
+
+    private async Task OnFinish()
+    {
+        var result = await CategoryService.GetAsync(_parameters);
+        if (result.Success)
+        {
+            _categories = result.Data;
+        }
+    }
+
+    private async Task Delete(Guid categoryId)
+    {
+        var category = _categories.First(q => q.Id == categoryId);
+        var confirm = await Js.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {category.Name}?");
+        if (confirm)
+        {
+            var response = await CategoryService.DeleteAsync(categoryId.ToString());
+            if (response.Success)
+            {
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+}

@@ -1,0 +1,44 @@
+﻿@page "/categories/create"
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+
+<PageContainer Title="创建分类">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>Category</BreadcrumbItem>
+            <BreadcrumbItem>Create</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <Card>
+        <ChildContent>
+            <Form Model="_category" OnFinish="HandleBookCreate">
+                <FormItem Label="分类名称">
+                    <Input @bind-Value="@_category.Name"/>
+                </FormItem>
+                <FormItem Label="简介">
+                    <Input @bind-Value="@_category.Summary"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">创建分类</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/categories"))">返回列表</Button>
+            </Form>
+        </ChildContent>
+    </Card>
+</PageContainer>
+
+@code {
+    private readonly CategoryCreateDto _category = new();
+
+    private async Task HandleBookCreate()
+    {
+        var response = await CategoryService.CreateAsync(_category);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/categories");
+        }
+    }
+
+}

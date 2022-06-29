@@ -6,7 +6,7 @@
 
 <PageContainer Title="Books">
     <Content>
-        <Button OnClick="@(() => NavigationManager.NavigateTo("/books/create"))"></Button>
+        <Button OnClick="@(() => NavigationManager.NavigateTo("/books/create"))">创建书籍</Button>
         <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
             <FormItem Label="是否借出">
                 <Switch @bind-Value="@context.isLend" Checked="@false"></Switch>

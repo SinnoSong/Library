@@ -1,0 +1,44 @@
+﻿@page "/categories/detail/{id}"
+@inject NavigationManager NavigationManager
+@inject ICategoryService CategoryService
+
+<PageContainer Title="分类信息">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>Category</BreadcrumbItem>
+            <BreadcrumbItem>Detail</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Descriptions Title="分类信息" Bordered>
+                <DescriptionsItem Title="Id">@_categoryDto.Id</DescriptionsItem>
+                <DescriptionsItem Title="名称">@_categoryDto.Name</DescriptionsItem>
+                <DescriptionsItem Title="简介">@_categoryDto.Summary</DescriptionsItem>
+            </Descriptions>
+            <Divider Style="margin-bottom: 32px;"/>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/categories"))">返回列表</Button>
+            <Button OnClick="@(() => NavigationManager.NavigateTo($"/categories/update/{_categoryDto.Id}"))">修改分类</Button>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private CategoryDto _categoryDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await CategoryService.GetAsync(Id);
+        if (response.Success)
+        {
+            _categoryDto = response.Data;
+        }
+    }
+
+}

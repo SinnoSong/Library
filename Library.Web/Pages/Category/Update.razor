@@ -1,0 +1,48 @@
+﻿@page "/categories/update/{id}"
+@inject NavigationManager NavigationManager
+@inject ICategoryService CategoryService
+
+<PageContainer Title="修改分类">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>Category</BreadcrumbItem>
+            <BreadcrumbItem>Edit</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Form Model="_categoryDto" OnFinish="HandleCategoryUpdate">
+                <FormItem Label="分类名称">
+                    <Input @bind-Value="@_categoryDto.Name"/>
+                </FormItem>
+                <FormItem Label="简介">
+                    <Input @bind-Value="@_categoryDto.Summary"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">修改分类</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/categories"))">返回列表</Button>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private readonly CategoryCreateDto _categoryDto = new();
+
+    private async Task HandleCategoryUpdate()
+    {
+        var response = await CategoryService.EditAsync(Id, _categoryDto);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/categories");
+        }
+    }
+
+}

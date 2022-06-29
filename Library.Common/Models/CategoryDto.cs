@@ -19,5 +19,9 @@ namespace Library.Common.Models
             Name = name;
             Summary = summary;
         }
+
+        public CategoryDto()
+        {
+        }
     }
 }
