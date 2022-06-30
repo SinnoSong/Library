@@ -1,0 +1,54 @@
+﻿@page "/lendConfigs"
+@inject ILendConfigService LendConfigService 
+@inject NavigationManager NavigationManager
+@inject IJSRuntime Js
+
+
+<PageContainer Title="LendConfig">
+    <Content>
+        <Card>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/lendConfigs/create"))">创建借阅规则</Button>
+        </Card>
+    </Content>
+    <ChildContent>
+        <Card>
+            <Table DataSource="_lendConfigs" TItem="LendConfigDto">
+                <Selection Key="@(context.Id.ToString())"/>
+                <Column @bind-Field="@context.Id" Sortable/>
+                <Column @bind-Field="@context.ReaderGrade" Sortable/>
+                <Column @bind-Field="@context.MaxLendDays" Sortable/>
+                <Column @bind-Field="@context.MaxLendNumber" Sortable/>
+                <ActionColumn>
+                    <Space>
+                        <SpaceItem>
+                            <Button Danger OnClick="@(async () => await Delete(context.Id))">Delete</Button>
+                        </SpaceItem>
+                        <SpaceItem>
+                            <a href="/lendConfigs/detail/@context.Id">Details</a>
+                        </SpaceItem>
+                    </Space>
+                </ActionColumn>
+            </Table>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    private List<LendConfigDto> _lendConfigs;
+
+    private async Task Delete(Guid guid)
+    {
+        var category = _lendConfigs.First(q => q.Id == guid);
+        var confirm = await Js.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {category.ReaderGrade}?");
+        if (confirm)
+        {
+            var response = await LendConfigService.DeleteAsync(guid.ToString());
+            if (response.Success)
+            {
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+}

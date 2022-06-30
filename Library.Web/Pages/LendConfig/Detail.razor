@@ -1,0 +1,45 @@
+﻿@page "/lendConfigs/detail/{id}"
+@inject NavigationManager NavigationManager
+@inject ILendConfigService LendConfigService
+
+<PageContainer Title="借阅规则详细信息">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>LendConfig</BreadcrumbItem>
+            <BreadcrumbItem>Detail</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Descriptions Title="借阅规则详细信息" Bordered>
+                <DescriptionsItem Title="Id">@_lendConfig.Id</DescriptionsItem>
+                <DescriptionsItem Title="借阅规则对应读者等级">@_lendConfig.ReaderGrade</DescriptionsItem>
+                <DescriptionsItem Title="最长借阅时间（单位：天）">@_lendConfig.MaxLendDays</DescriptionsItem>
+                <DescriptionsItem Title="最多借阅数量">@_lendConfig.MaxLendNumber</DescriptionsItem>
+            </Descriptions>
+            <Divider Style="margin-bottom: 32px;"/>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/lendConfigs"))">返回列表</Button>
+            <Button OnClick="@(() => NavigationManager.NavigateTo($"/lendConfigs/update/{_lendConfig.Id}"))">修改借阅规则</Button>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private LendConfigDto _lendConfig = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await LendConfigService.GetAsync(Id);
+        if (response.Success)
+        {
+            _lendConfig = response.Data;
+        }
+    }
+
+}

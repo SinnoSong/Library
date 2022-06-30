@@ -1,0 +1,48 @@
+﻿@page "/lendConfigs/update/{id}"
+@inject NavigationManager NavigationManager
+@inject ILendConfigService LendConfigService
+
+<PageContainer Title="修改借阅规则">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>LendConfig</BreadcrumbItem>
+            <BreadcrumbItem>Edit</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Form Model="_lendConfigCreateDto" OnFinish="HandleCategoryUpdate">
+                <FormItem Label="最大借阅时长（单位：天）">
+                    <Input @bind-Value="@_lendConfigCreateDto.MaxLendDays"/>
+                </FormItem>
+                <FormItem Label="最多借阅数量">
+                    <Input @bind-Value="@_lendConfigCreateDto.MaxLendNumber"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">修改借阅规则</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/lendConfigs"))">返回列表</Button>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private readonly LendConfigCreateDto _lendConfigCreateDto = new();
+
+    private async Task HandleCategoryUpdate()
+    {
+        var response = await LendConfigService.EditAsync(Id, _lendConfigCreateDto);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/lendConfigs");
+        }
+    }
+
+}

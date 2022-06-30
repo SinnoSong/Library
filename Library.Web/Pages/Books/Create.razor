@@ -12,8 +12,8 @@
         </Breadcrumb>
     </Breadcrumb>
 
-    <Card>
-        <ChildContent>
+    <ChildContent>
+        <Card>
             <Form Model="_book" OnFinish="HandleBookCreate">
                 <FormItem>
                     <Input @bind-Value="@_book.Title" Placeholder="请输入书籍名称"/>
@@ -47,8 +47,8 @@
                 </FormItem>
                 <Button OnClick="@(() => NavigationManager.NavigateTo("/books/"))">返回列表</Button>
             </Form>
-        </ChildContent>
-    </Card>
+        </Card>
+    </ChildContent>
 </PageContainer>
 
 

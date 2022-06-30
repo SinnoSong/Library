@@ -11,8 +11,8 @@
         </Breadcrumb>
     </Breadcrumb>
 
-    <Card>
-        <ChildContent>
+    <ChildContent>
+        <Card>
             <Form Model="_category" OnFinish="HandleBookCreate">
                 <FormItem Label="分类名称">
                     <Input @bind-Value="@_category.Name"/>
@@ -25,8 +25,8 @@
                 </FormItem>
                 <Button OnClick="@(() => NavigationManager.NavigateTo("/categories"))">返回列表</Button>
             </Form>
-        </ChildContent>
-    </Card>
+        </Card>
+    </ChildContent>
 </PageContainer>
 
 @code {

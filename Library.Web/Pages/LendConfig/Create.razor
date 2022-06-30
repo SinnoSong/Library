@@ -1,0 +1,47 @@
+﻿@page "/lendConfigs/create"
+@inject ILendConfigService LendConfigService
+@inject NavigationManager NavigationManager
+
+<PageContainer Title="创建借阅规则">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>LendConfig</BreadcrumbItem>
+            <BreadcrumbItem>Create</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Form Model="_lendConfig" OnFinish="HandleLendConfigCreate">
+                <FormItem Label="借阅规则对应读者等级">
+                    <Input @bind-Value="@_lendConfig.ReaderGrade"/>
+                </FormItem>
+                <FormItem Label="最多借阅时长（单位：天）">
+                    <Input @bind-Value="@_lendConfig.MaxLendDays"/>
+                </FormItem>
+                <FormItem Label="最大借阅数量">
+                    <Input @bind-Value="@_lendConfig.MaxLendNumber"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">创建规则</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/lendConfigs"))">返回列表</Button>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+    private readonly LendConfigCreateDto _lendConfig = new();
+
+    private async Task HandleLendConfigCreate()
+    {
+        var response = await LendConfigService.CreateAsync(_lendConfig);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/lendConfigs");
+        }
+    }
+
+}
