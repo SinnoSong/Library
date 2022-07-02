@@ -1,0 +1,47 @@
+﻿@page "/lendRecords/detail/{id}"
+@inject NavigationManager NavigationManager
+@inject ILendRecordService LendRecordService
+
+<PageContainer Title="借阅详细信息">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>LendRecord</BreadcrumbItem>
+            <BreadcrumbItem>Detail</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Descriptions Title="借阅详细信息" Bordered>
+                <DescriptionsItem Title="Id">@_lendRecord.Id</DescriptionsItem>
+                <DescriptionsItem Title="书籍ID">@_lendRecord.BookId</DescriptionsItem>
+                <DescriptionsItem Title="借出时间">@_lendRecord.StartTime</DescriptionsItem>
+                <DescriptionsItem Title="预计归还时间">@_lendRecord.EndTime</DescriptionsItem>
+                <DescriptionsItem Title="真实归还时间">@_lendRecord.RealReturnTime</DescriptionsItem>
+                <DescriptionsItem Title="操作人">@_lendRecord.Processor</DescriptionsItem>
+            </Descriptions>
+            <Divider Style="margin-bottom: 32px;"/>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/lendRecords"))">返回列表</Button>
+            <Button OnClick="@(() => NavigationManager.NavigateTo($"/lendRecords/update/{_lendRecord.Id}"))">归回书籍</Button>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private LendRecordDto _lendRecord = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await LendRecordService.GetAsync(Id);
+        if (response.Success)
+        {
+            _lendRecord = response.Data;
+        }
+    }
+
+}

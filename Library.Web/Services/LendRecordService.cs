@@ -9,11 +9,14 @@ namespace Library.Web.Services
     public class LendRecordService : BaseHttpService, ILendRecordService
     {
         #region field
+
         private readonly IClient _client;
         private readonly IMapper _mapper;
+
         #endregion
 
-        public LendRecordService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
+        public LendRecordService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
+            localStorage)
         {
             _client = client;
             _mapper = mapper;
@@ -31,6 +34,7 @@ namespace Library.Web.Services
             {
                 response = ConvertApiException<int>(e);
             }
+
             return response;
         }
 
@@ -46,21 +50,21 @@ namespace Library.Web.Services
             {
                 response = ConvertApiException<int>(e);
             }
+
             return response;
         }
 
-        public async Task<Response<int>> EditAsync(string id, LendRecordCreateDto updateDto)
+        public async Task<Response<int>> PutAsync(string id)
         {
-            Response<int> response = new();
-
+            var response = new Response<int>();
             try
             {
                 await GetBearerToken();
-                await _client.UpdateLendRecordAsync(id, updateDto);
+                await _client.ReturnBookAsync(id);
             }
-            catch (ApiException exception)
+            catch (ApiException e)
             {
-                response = ConvertApiException<int>(exception);
+                response = ConvertApiException<int>(e);
             }
 
             return response;

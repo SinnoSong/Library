@@ -1,0 +1,42 @@
+﻿@inject ILendRecordService LendRecordService
+
+<Table TItem="LendRecordDto" DataSource="Records">
+    <Selection Key="@(context.Id.ToString())"/>
+    <Column @bind-Field="@context.Id" Sortable/>
+    <Column @bind-Field="@context.BookId" Sortable/>
+    <Column @bind-Field="@context.StartTime" Sortable/>
+    <Column @bind-Field="@context.EndTime" Sortable/>
+    <Column @bind-Field="@context.RealReturnTime" Sortable/>
+    <Column @bind-Field="@context.Processor" Sortable/>
+    <ActionColumn>
+        <Space>
+            <SpaceItem>
+                <Button Danger OnClick="@(async () => await LendRecordService.PutAsync(context.Id.ToString()))">归还图书</Button>
+            </SpaceItem>
+            <SpaceItem>
+                <Button Danger OnClick="@(async () => await Delete(context.Id))">Delete</Button>
+            </SpaceItem>
+            <SpaceItem>
+                <a href="/lendRecords/detail/@context.Id">Details</a>
+            </SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
+
+@code {
+
+    [Parameter]
+    public List<LendRecordDto> Records { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<LendRecordQueryParameters> OnScroll { get; set; }
+
+    private async Task Delete(Guid guid)
+    {
+        await OnDelete.InvokeAsync(guid);
+    }
+
+}

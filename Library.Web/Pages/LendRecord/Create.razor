@@ -1,0 +1,44 @@
+﻿@page "/lendRecords/create"
+@inject ILendRecordService LendRecordService
+@inject NavigationManager NavigationManager 
+
+<PageContainer Title="新增借阅记录">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>LendRecord</BreadcrumbItem>
+            <BreadcrumbItem>Create</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Form Model="_recordCreateDto" OnFinish="HandleLendRecordCreate">
+                <FormItem Label="书Id">
+                    <Input @bind-Value="@_recordCreateDto.BookId"/>
+                </FormItem>
+                <FormItem Label="用户Id">
+                    <Input @bind-Value="@_recordCreateDto.UserId"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">创建分类</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/lendRecords"))">返回列表</Button>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+@code {
+    private readonly LendRecordCreateDto _recordCreateDto = new();
+
+    private async Task HandleLendRecordCreate()
+    {
+        var response = await LendRecordService.CreateAsync(_recordCreateDto);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/lendRecords");
+        }
+    }
+
+}

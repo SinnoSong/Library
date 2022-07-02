@@ -1,0 +1,64 @@
+﻿@page "/lendRecords"
+@inject ILendRecordService LendRecordService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+<PageContainer Title="LendRecords">
+    <Content>
+        <Button OnClick="@(() => NavigationManager.NavigateTo("/lendRecords/create"))">添加借阅记录</Button>
+        <Form Model="_parameters" Layout="Inline" OnFinish="OnFinish">
+            <FormItem Label="排序字段">
+                <AutoComplete @bind-Value="@context.Sort" Options="_sortOptions"></AutoComplete>
+            </FormItem>
+            <FormItem Label="用户Id">
+                <Input @bind-Value="@context.UserId"/>
+            </FormItem>
+            <FormItem Label="借出时间">
+                <DatePicker @bind-Value="@context.LendTime"/>
+            </FormItem>
+            <FormItem Label="归还时间">
+                <DatePicker @bind-Value="@context.ReturnTime"/>
+            </FormItem>
+            <FormItem>
+                <Button Type="@ButtonType.Primary" HtmlType="submit">
+                    查询
+                </Button>
+            </FormItem>
+        </Form>
+    </Content>
+
+    <ChildContent>
+        <LendRecordTable Records="_records" OnDelete="Delete" OnScroll="OnFinish"></LendRecordTable>
+    </ChildContent>
+</PageContainer>
+
+@code {
+
+    private readonly LendRecordQueryParameters _parameters = new();
+    private List<LendRecordDto> _records = new();
+    private readonly List<string> _sortOptions = new() {"id", "userId", "bookId", "lendTime", "returnTime"};
+
+    private async Task OnFinish()
+    {
+        var result = await LendRecordService.GetAsync(_parameters);
+        if (result.Success)
+        {
+            _records = result.Data;
+        }
+    }
+
+    private async Task Delete(Guid recordId)
+    {
+        var record = _records.First(q => q.Id == recordId);
+        var confirm = await JsRuntime.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {record.Id}?");
+        if (confirm)
+        {
+            var response = await LendRecordService.DeleteAsync(recordId.ToString());
+            if (response.Success)
+            {
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+}

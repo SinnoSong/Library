@@ -1,9 +1,15 @@
-﻿namespace Library.Web.Models;
+﻿using Newtonsoft.Json;
+
+namespace Library.Web.Models;
 
 public class LendRecordQueryParameters : QueryParameters
 {
-    public string sort { get; set; }
-    public Guid? userId { get; set; }
-    public string? lendTime { get; set; }
-    public string? returnTime { get; set; }
+    [JsonProperty("sort")]
+    public string? Sort { get; set; }
+    [JsonProperty("userId")]
+    public Guid? UserId { get; set; }
+    [JsonProperty("lendTime")]
+    public string? LendTime { get; set; }
+    [JsonProperty("returnTime")]
+    public string? ReturnTime { get; set; }
 }

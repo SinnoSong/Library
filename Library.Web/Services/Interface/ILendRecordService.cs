@@ -8,7 +8,7 @@ namespace Library.Web.Services.Interface
         Task<Response<List<LendRecordDto>>> GetAsync(LendRecordQueryParameters queryParameters);
         Task<Response<LendRecordDto>> GetAsync(string id);
         Task<Response<int>> CreateAsync(LendRecordCreateDto bookCreateDto);
-        Task<Response<int>> EditAsync(string id, LendRecordCreateDto bookUpdateDto);
         Task<Response<int>> DeleteAsync(string id);
+        Task<Response<int>> PutAsync(string id);
     }
 }

@@ -1,6 +1,4 @@
-﻿@inject ICategoryService CategoryService
-
-<Table TItem="CategoryDto" DataSource="@CategoryDtos">
+﻿<Table TItem="CategoryDto" DataSource="@CategoryDtos">
     <Selection Key="@(context.Id.ToString())"/>
     <Column @bind-Field="@context.Id" Sortable/>
     <Column @bind-Field="@context.Name" Sortable/>

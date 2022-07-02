@@ -44,9 +44,9 @@ namespace Library.Web.Services.Interface
 
         Task<LendRecordDto> CreateLendRecordAsync(LendRecordCreateDto body);
         Task DeleteLendRecordAsync(string id);
-        Task UpdateLendRecordAsync(string id, LendRecordCreateDto updateDto);
         Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters);
         Task<LendRecordDto> GetLendRecordById(string id);
+        Task ReturnBookAsync(string id);
 
         #endregion
 

@@ -157,7 +157,7 @@ namespace Library.API.Controllers
 
         #region Put
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         [Authorize(Roles = "Administrator,SuperAdministrator")]
         [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> PutAsync(Guid id)

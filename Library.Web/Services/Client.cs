@@ -52,7 +52,8 @@ namespace Library.Web.Services
             using var request = new HttpRequestMessage(method, queryUrl);
             if (accessToken != null)
             {
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                request.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
             }
 
             if (json != null)
@@ -71,7 +72,7 @@ namespace Library.Web.Services
             foreach (var item in response.Content.Headers)
                 headers[item.Key] = item.Value;
 
-            var status = (int)response.StatusCode;
+            var status = (int) response.StatusCode;
             if (status == 200)
             {
                 var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -107,7 +108,8 @@ namespace Library.Web.Services
             }
 
             using var request = new HttpRequestMessage(method, queryUrl);
-            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
             if (json != null)
             {
                 var content = new StringContent(json);
@@ -281,13 +283,6 @@ namespace Library.Web.Services
             await SendRequest(HttpMethod.Post, apiUrl, accessToken);
         }
 
-        public async Task UpdateLendRecordAsync(string id, LendRecordCreateDto updateDto)
-        {
-            var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
-            var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
-        }
-
         public async Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters)
         {
             var apiUrl = ApplicationUrl + Apis.CreateLendRecord;
@@ -301,6 +296,13 @@ namespace Library.Web.Services
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
             return await SendRequest<LendRecordDto>(HttpMethod.Post, apiUrl, accessToken);
+        }
+
+        public async Task ReturnBookAsync(string id)
+        {
+            var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            await SendRequest(HttpMethod.Put, apiUrl, accessToken);
         }
 
         #endregion
