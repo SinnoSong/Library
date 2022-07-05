@@ -9,7 +9,7 @@ public class LendRecordQueryParameters : QueryParameters
     [JsonProperty("userId")]
     public Guid? UserId { get; set; }
     [JsonProperty("lendTime")]
-    public string? LendTime { get; set; }
+    public DateTime? LendTime { get; set; }
     [JsonProperty("returnTime")]
-    public string? ReturnTime { get; set; }
+    public DateTime? ReturnTime { get; set; }
 }

@@ -14,10 +14,10 @@
                 <Input @bind-Value="@context.UserId"/>
             </FormItem>
             <FormItem Label="借出时间">
-                <DatePicker @bind-Value="@context.LendTime"/>
+                <DatePicker @bind-Value="@context.LendTime" Style="width: 100%"/>
             </FormItem>
             <FormItem Label="归还时间">
-                <DatePicker @bind-Value="@context.ReturnTime"/>
+                <DatePicker @bind-Value="@context.ReturnTime" Style="width: 100%"/>
             </FormItem>
             <FormItem>
                 <Button Type="@ButtonType.Primary" HtmlType="submit">
