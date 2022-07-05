@@ -1,20 +1,21 @@
 ﻿@using Microsoft.IdentityModel.JsonWebTokens
 @inherits AntDomComponentBase
-@inject AuthenticationStateProvider authProvider
-@inject NavigationManager navManager
+@inject INoticeService NoticeService
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavManager
+@inject IMapper Mapper 
 
 <Space Class="@ClassMapper.Class" Size="@("24")">
     <SpaceItem>
         <HeaderSearch Class="action search"
                       Placeholder="Site Search"
-                      DefaultValue="umi ui"
-                      Options="DefaultOptions" />
+                      DefaultValue="umi ui"/>
     </SpaceItem>
     <SpaceItem>
         <AntDesign.Tooltip Title="@("Help")" Placement="@Placement.Bottom">
             <Unbound>
                 <span @ref="@context.Current" class="action">
-                    <Icon Type="question-circle" Theme="outline" />
+                    <Icon Type="question-circle" Theme="outline"/>
                 </span>
             </Unbound>
         </AntDesign.Tooltip>
@@ -29,66 +30,57 @@
                         Title="Notifications"
                         EmptyText="You have viewed all notifications"
                         ShowViewMore
-                        Data="_notifications" />
+                        Data="_notifications"/>
         </NoticeIcon>
     </SpaceItem>
     <SpaceItem>
-        <AvatarDropdown Name="@userName"
+        <AvatarDropdown Name="@_userName"
                         MenuItems="@AvatarMenuItems"
-                        OnItemSelected="HandleSelectUser" />
+                        OnItemSelected="HandleSelectUser"/>
     </SpaceItem>
 </Space>
 
 @code {
-    private string userName;
-    private NoticeIconData[] _notifications = { };
+    private string _userName;
+    private List<NoticeIconData> _notifications = new();
     private int _count = 0;
 
-    private List<AutoCompleteDataItem<string>> DefaultOptions { get; set; } = new List<AutoCompleteDataItem<string>>
-        {
-            new AutoCompleteDataItem<string>
-            {
-                Label = "umi ui",
-                Value = "umi ui"
-            },
-            new AutoCompleteDataItem<string>
-            {
-                Label = "Pro Table",
-                Value = "Pro Table"
-            },
-            new AutoCompleteDataItem<string>
-            {
-                Label = "Pro Layout",
-                Value = "Pro Layout"
-            }
-        };
-
-    public AvatarMenuItem[] AvatarMenuItems { get; set; } = new AvatarMenuItem[]
-    {
-            new() { Key = "center", IconType = "user", Option = "个人中心"},
-            new() { Key = "setting", IconType = "setting", Option = "个人设置"},
-            new() { IsDivider = true },
-            new() { Key = "logout", IconType = "logout", Option = "退出登录"}
+    private AvatarMenuItem[] AvatarMenuItems { get; } = {
+        new() {Key = "center", IconType = "user", Option = "个人中心"},
+        new() {Key = "setting", IconType = "setting", Option = "个人设置"},
+        new() {IsDivider = true},
+        new() {Key = "logout", IconType = "logout", Option = "退出登录"}
     };
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        userName = await setUser();
+        SetClassMap();
+        _userName = await setUser();
+        _notifications = await SetNotices();
     }
 
     protected void SetClassMap()
     {
-        ClassMapper
-            .Clear()
-            .Add("right");
+        ClassMapper.Clear().Add("right");
     }
 
     private async Task<string> setUser()
     {
-        //var authenticationState = await authProvider.GetAuthenticationStateAsync();
-        //return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+    //var authenticationState = await authProvider.GetAuthenticationStateAsync();
+    //return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
         return "测试用户";
+    }
+
+    private async Task<List<NoticeIconData>> SetNotices()
+    {
+        var response = await NoticeService.GetAsync(new QueryParameters());
+        var data = new List<NoticeDto>();
+        if (response.Success)
+        {
+            data = response.Data;
+        }
+        return Mapper.Map<List<NoticeIconData>>(data);
     }
 
     public void HandleSelectUser(MenuItem item)
@@ -96,24 +88,25 @@
         switch (item.Key)
         {
             case "center":
-                navManager.NavigateTo("/account/center");
+                NavManager.NavigateTo("/account/center");
                 break;
             case "setting":
-                navManager.NavigateTo("/account/settings");
+                NavManager.NavigateTo("/account/settings");
                 break;
             case "logout":
-                navManager.NavigateTo("/user/login");
+                NavManager.NavigateTo("/user/login");
                 break;
         }
     }
 
     public async Task HandleClear(string key)
     {
-        _notifications = new NoticeIconData[] { };
+        _notifications = new List<NoticeIconData>();
     }
 
-    public async Task HandleViewMore(string key)
+    public static async Task HandleViewMore(string key)
     {
         Console.WriteLine("Click on view more");
     }
+
 }

@@ -3,19 +3,19 @@
 
 <BasicLayout MenuData="MenuData">
     <RightContentRender>
-        <Library.Web.Components.RightContent />
+        <Library.Web.Components.RightContent/>
     </RightContentRender>
     <ChildContent>
         @Body
     </ChildContent>
     <FooterRender>
-        <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
+        <FooterView Copyright="2022 Ant Design Blazor" Links="Links"></FooterView>
     </FooterRender>
 </BasicLayout>
-<SettingDrawer />
+<SettingDrawer/>
 
 @code {
-    private MenuDataItem[] MenuData { get; set; } = { };
+    private MenuDataItem[] MenuData { get; set; } = {};
 
     protected override async Task OnInitializedAsync()
     {
@@ -25,28 +25,29 @@
         MenuData = JsonConvert.DeserializeObject<MenuDataItem[]>(menuJson);
     }
 
-    public LinkItem[] Links { get; set; } =
-    {
-        new LinkItem
+    private LinkItem[] Links { get; } =
         {
-            Key = "Ant Design Blazor",
-            Title = "Ant Design Blazor",
-            Href = "https://antblazor.com",
-            BlankTarget = true,
-        },
-        new LinkItem
-        {
-            Key = "github",
-            Title = (RenderFragment)(@<Icon Type="github" />),
-            Href = "https://github.com/SinnoSong/Library.API",
-            BlankTarget = true,
-        },
-        new LinkItem
-        {
-            Key = "Blazor",
-            Title = "Blazor",
-            Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
-            BlankTarget = true,
-        }
-    };
+            new()
+            {
+                Key = "Ant Design Blazor",
+                Title = "Ant Design Blazor",
+                Href = "https://antblazor.com",
+                BlankTarget = true,
+            },
+            new()
+            {
+                Key = "github",
+                Title = (RenderFragment) (@<Icon Type="github"/>),
+                Href = "https://github.com/SinnoSong/Library.API",
+                BlankTarget = true,
+            },
+            new()
+            {
+                Key = "Blazor",
+                Title = "Blazor",
+                Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
+                BlankTarget = true,
+            }
+        };
+
 }
