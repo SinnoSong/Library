@@ -41,7 +41,7 @@
 </Space>
 
 @code {
-    private string _userName;
+    private string? _userName;
     private List<NoticeIconData> _notifications = new();
     private int _count = 0;
 
@@ -56,20 +56,19 @@
     {
         await base.OnInitializedAsync();
         SetClassMap();
-        _userName = await setUser();
+        _userName = await SetUser();
         _notifications = await SetNotices();
     }
 
-    protected void SetClassMap()
+    private void SetClassMap()
     {
         ClassMapper.Clear().Add("right");
     }
 
-    private async Task<string> setUser()
+    private async Task<string?> SetUser()
     {
-    //var authenticationState = await authProvider.GetAuthenticationStateAsync();
-    //return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
-        return "测试用户";
+        var authenticationState = await AuthProvider.GetAuthenticationStateAsync();
+        return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
     }
 
     private async Task<List<NoticeIconData>> SetNotices()
@@ -83,7 +82,7 @@
         return Mapper.Map<List<NoticeIconData>>(data);
     }
 
-    public void HandleSelectUser(MenuItem item)
+    private void HandleSelectUser(MenuItem item)
     {
         switch (item.Key)
         {
@@ -99,7 +98,7 @@
         }
     }
 
-    public async Task HandleClear(string key)
+    private void HandleClear(string key)
     {
         _notifications = new List<NoticeIconData>();
     }

@@ -1,7 +1,7 @@
 ﻿@page "/user/register"
 @layout UserLayout
-@inject IAuthenticationService authService
-@inject NavigationManager navManager
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavManager
 
 <PageTitle>Register</PageTitle>
 
@@ -33,7 +33,7 @@
 
             <FormItem>
                 <Button Type="submit" Size="large" Class="submit" OnClick="HandleRegistration">注册</Button>
-                <a class="login" href="/user/login">Log in with an existing account</a>
+                <NavLink class="login" href="/user/login">Log in with an existing account</NavLink>
             </FormItem>
         </Form>
     </div>
@@ -46,11 +46,11 @@
 
     private async Task HandleRegistration()
     {
-        var response = await authService.RegisterAsync(user);
+        var response = await AuthService.RegisterAsync(user);
 
         if (response.Success)
         {
-            navManager.NavigateTo("/login");
+            NavManager.NavigateTo("/login");
         }
         message = response.Message;
     }

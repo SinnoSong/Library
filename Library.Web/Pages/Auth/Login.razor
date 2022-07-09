@@ -1,8 +1,8 @@
 ﻿@page "/user/login"
 @layout UserLayout
-@inject IAuthenticationService authService
-@inject NavigationManager navManager
-
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthProvider
 
 <div class="main__b__0">
     <div class="login">
@@ -35,15 +35,15 @@
 
 @code {
     private string? message;
-    LoginUserDto loginModel = new LoginUserDto();
+    LoginUserDto loginModel = new();
 
     private async Task HandleLogin()
     {
-        var response = await authService.AuthenticateAsync(loginModel);
-
+        var response = await AuthService.AuthenticateAsync(loginModel);
+        
         if (response.Success)
         {
-            navManager.NavigateTo("/");
+            NavManager.NavigateTo("/");
         }
         message = response.Message;
     }

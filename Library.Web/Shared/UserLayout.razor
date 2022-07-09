@@ -13,27 +13,28 @@
         </div>
         @Body
     </div>
-    <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
+    <FooterView Copyright="2022 Ant Design Blazor" Links="Links"></FooterView>
 </div>
 
 @code {
-    public LinkItem[] Links { get; set; } =
+
+    private LinkItem[] Links { get; set; } =
     {
-        new LinkItem
+        new()
         {
             Key = "Ant Design Blazor",
             Title = "Ant Design Blazor",
             Href = "https://antblazor.com",
             BlankTarget = true,
         },
-        new LinkItem
+        new()
         {
             Key = "github",
             Title = (RenderFragment)(@<Icon Type="github" />),
-            Href = "https://github.com/SinnoSong/Library.API",
+            Href = "https://github.com/SinnoSong/Library",
             BlankTarget = true,
         },
-        new LinkItem
+        new()
         {
             Key = "Blazor",
             Title = "Blazor",

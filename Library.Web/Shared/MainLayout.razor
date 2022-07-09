@@ -1,18 +1,25 @@
 ﻿@using Newtonsoft.Json
 @inherits LayoutComponentBase
 
-<BasicLayout MenuData="MenuData">
-    <RightContentRender>
-        <Library.Web.Components.RightContent/>
-    </RightContentRender>
-    <ChildContent>
-        @Body
-    </ChildContent>
-    <FooterRender>
-        <FooterView Copyright="2022 Ant Design Blazor" Links="Links"></FooterView>
-    </FooterRender>
-</BasicLayout>
-<SettingDrawer/>
+<AuthorizeView>
+    <Authorized>
+        <BasicLayout MenuData="MenuData">
+            <RightContentRender>
+                <Library.Web.Components.RightContent/>
+            </RightContentRender>
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <FooterRender>
+                <FooterView Copyright="2022 Ant Design Blazor" Links="Links"></FooterView>
+            </FooterRender>
+        </BasicLayout>
+        <SettingDrawer/>
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin></RedirectToLogin>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private MenuDataItem[] MenuData { get; set; } = {};

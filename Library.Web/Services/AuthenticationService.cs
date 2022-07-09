@@ -13,7 +13,7 @@ namespace Library.Web.Services
 
         private readonly IClient _httpClient;
         private readonly ILocalStorageService _localStorage;
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private readonly ApiAuthenticationStateProvider _authenticationStateProvider;
 
         #endregion
 
@@ -22,7 +22,7 @@ namespace Library.Web.Services
         {
             _httpClient = client;
             _localStorage = localStorage;
-            _authenticationStateProvider = authenticationStateProvider;
+            _authenticationStateProvider = (authenticationStateProvider as ApiAuthenticationStateProvider)!;
         }
 
         public async Task<Response<AuthResponse>> AuthenticateAsync(LoginUserDto loginUser)
@@ -36,9 +36,9 @@ namespace Library.Web.Services
                     Data = result,
                     Success = true,
                 };
-                await _localStorage.SetItemAsync("accessToken", result.Token);
+                await _localStorage.SetItemAsStringAsync("accessToken", result.Token);
 
-                await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
+                await _authenticationStateProvider.LoggedIn();
             }
             catch (ApiException exception)
             {
@@ -50,7 +50,7 @@ namespace Library.Web.Services
 
         public async Task Logout()
         {
-            await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
+            await _authenticationStateProvider.LoggedOut();
         }
 
         public async Task<Response<bool>> RegisterAsync(RegisterUser registerUser)

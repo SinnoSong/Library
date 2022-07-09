@@ -12,11 +12,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
 
 namespace Library.API.Controllers
 {
-    // location:9090/auth/user/8CA50E1B-4DC4-421C-BA9C-E1112C782611
     [Route("auth")]
     [ApiController]
     [AllowAnonymous]
@@ -24,15 +22,13 @@ namespace Library.API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly IMapper _mapper;
 
         public AuthenticateController(IConfiguration configuration, UserManager<User> userManager,
-            RoleManager<Role> roleManager, IMapper mapper)
+            RoleManager<Role> roleManager)
         {
             Configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
-            _mapper = mapper;
         }
 
         public IConfiguration Configuration { get; }
@@ -106,48 +102,11 @@ namespace Library.API.Controllers
                 await _userManager.AddToRoleAsync(user, role.Name);
                 return Ok();
             }
-
-            ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault()?.Description);
-            return BadRequest(ModelState);
-        }
-
-        [HttpPut("/user/{id:guid}", Name = nameof(UpdateUserAsync))]
-        public async Task<IActionResult> UpdateUserAsync(Guid id, UserUpdateDto userDto)
-        {
-            // todo 待重新修改
-            var userEntity = await _userManager.FindByIdAsync(id.ToString());
-            if (userEntity == null)
+            else
             {
-                throw new Exception("用户不存在！");
+                ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault()?.Description);
+                return BadRequest(ModelState);
             }
-
-            var user = _mapper.Map<User>(userDto);
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-
-            ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault()?.Description);
-            return BadRequest(ModelState);
-        }
-
-        [HttpDelete("/user/{id:guid}", Name = nameof(DeleteUserAsync))]
-        public async Task<IActionResult> DeleteUserAsync(Guid id)
-        {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user == null)
-            {
-                throw new Exception("用户不存在！");
-            }
-
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return NoContent();
-            }
-
-            throw new Exception("删除失败！");
         }
     }
 }
