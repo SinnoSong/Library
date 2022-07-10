@@ -159,14 +159,14 @@ namespace Library.Web.Services
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken);
+            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
         public async Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(bookUpdateDto));
+            await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(bookUpdateDto));
         }
 
         public async Task<List<BookDto>> GetBooksAsync(BookQueryParameters? queryParameters)
@@ -174,14 +174,14 @@ namespace Library.Web.Services
             var apiUrl = ApplicationUrl + Apis.CreateBook;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
             var dict = queryParameters.ToDictionary();
-            return await SendRequest<List<BookDto>>(HttpMethod.Post, apiUrl, accessToken, queryPairs: dict);
+            return await SendRequest<List<BookDto>>(HttpMethod.Get, apiUrl, accessToken, queryPairs: dict);
         }
 
         public async Task<BookDto> GetBookById(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            return await SendRequest<BookDto>(HttpMethod.Post, apiUrl, accessToken);
+            return await SendRequest<BookDto>(HttpMethod.Get, apiUrl, accessToken);
         }
 
         #endregion
@@ -200,14 +200,14 @@ namespace Library.Web.Services
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetCategory + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken);
+            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
         public async Task UpdateCategoryAsync(string id, CategoryCreateDto updateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetCategory + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
+            await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
         }
 
         public async Task<List<CategoryDto>> GetCategoriesAsync(CategoryQueryParameters queryParameters)
@@ -215,14 +215,14 @@ namespace Library.Web.Services
             var apiUrl = ApplicationUrl + Apis.CreateCategory;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
             var dict = queryParameters.ToDictionary();
-            return await SendRequest<List<CategoryDto>>(HttpMethod.Post, apiUrl, accessToken, queryPairs: dict);
+            return await SendRequest<List<CategoryDto>>(HttpMethod.Get, apiUrl, accessToken, queryPairs: dict);
         }
 
         public async Task<CategoryDto> GetCategoryById(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetCategory + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            return await SendRequest<CategoryDto>(HttpMethod.Post, apiUrl, accessToken);
+            return await SendRequest<CategoryDto>(HttpMethod.Get, apiUrl, accessToken);
         }
 
         #endregion
@@ -241,28 +241,28 @@ namespace Library.Web.Services
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendConfig + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken);
+            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
         public async Task UpdateLendConfigAsync(string id, LendConfigCreateDto updateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendConfig + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
+            await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
         }
 
         public async Task<List<LendConfigDto>> GetLendConfigsAsync()
         {
             var apiUrl = ApplicationUrl + Apis.CreateLendConfig;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            return await SendRequest<List<LendConfigDto>>(HttpMethod.Post, apiUrl, accessToken);
+            return await SendRequest<List<LendConfigDto>>(HttpMethod.Get, apiUrl, accessToken);
         }
 
         public async Task<LendConfigDto> GetLendConfigById(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendConfig + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            return await SendRequest<LendConfigDto>(HttpMethod.Post, apiUrl, accessToken);
+            return await SendRequest<LendConfigDto>(HttpMethod.Get, apiUrl, accessToken);
         }
 
         #endregion
@@ -281,7 +281,7 @@ namespace Library.Web.Services
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken);
+            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
         public async Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters)
@@ -289,17 +289,17 @@ namespace Library.Web.Services
             var apiUrl = ApplicationUrl + Apis.CreateLendRecord;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
             var dict = queryParameters.ToDictionary();
-            return await SendRequest<List<LendRecordDto>>(HttpMethod.Post, apiUrl, accessToken, queryPairs: dict);
+            return await SendRequest<List<LendRecordDto>>(HttpMethod.Get, apiUrl, accessToken, queryPairs: dict);
         }
 
         public async Task<LendRecordDto> GetLendRecordById(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            return await SendRequest<LendRecordDto>(HttpMethod.Post, apiUrl, accessToken);
+            return await SendRequest<LendRecordDto>(HttpMethod.Get, apiUrl, accessToken);
         }
 
-        public async Task ReturnBookAsync(string id)
+        public async Task UpdateLendRecordAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
@@ -322,7 +322,7 @@ namespace Library.Web.Services
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetNotice + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken);
+            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
         public async Task UpdateNoticeAsync(string id, NoticeCreateDto updateDto)
@@ -344,7 +344,7 @@ namespace Library.Web.Services
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetNotice + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            return await SendRequest<NoticeDto>(HttpMethod.Post, apiUrl, accessToken);
+            return await SendRequest<NoticeDto>(HttpMethod.Get, apiUrl, accessToken);
         }
 
         #endregion

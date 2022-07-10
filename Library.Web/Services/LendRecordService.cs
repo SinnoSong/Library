@@ -60,7 +60,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.ReturnBookAsync(id);
+                await _client.UpdateLendRecordAsync(id);
             }
             catch (ApiException e)
             {

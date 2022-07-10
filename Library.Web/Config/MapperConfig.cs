@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using AntDesign.ProLayout;
+using AutoMapper;
+using Library.Common.Models;
 
 namespace Library.Web.Config
 {
@@ -6,7 +8,8 @@ namespace Library.Web.Config
     {
         public MapperConfig()
         {
-            // todo 添加mapping
+            CreateMap<NoticeNoContentVo, NoticeIconData>()
+                .ForMember(d => d.Datetime, opt => opt.MapFrom(src => src.CreateTime));
         }
     }
 }
