@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿using System.Net.Http.Headers;
+using Blazored.LocalStorage;
 using Library.Common.Models;
 using Library.Web.Constants;
 using Library.Web.Helper;
@@ -13,7 +14,7 @@ namespace Library.Web.Services
     {
         #region field
 
-        private const string ApplicationUrl = "http://localhost:5000/";
+        private const string ApplicationUrl = "https://localhost:5001/";
         public HttpClient HttpClient { get; }
 
         private readonly ILocalStorageService _localStorageService;
@@ -53,7 +54,7 @@ namespace Library.Web.Services
             if (accessToken != null)
             {
                 request.Headers.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                    new AuthenticationHeaderValue("Bearer", accessToken);
             }
 
             if (json != null)
@@ -61,11 +62,11 @@ namespace Library.Web.Services
                 var content = new StringContent(json);
                 request.Content = content;
                 content.Headers.ContentType =
-                    System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                request.Method = HttpMethod.Post;
-                request.Headers.Accept.Add(
-                    System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    new MediaTypeHeaderValue("application/json");
             }
+            
+            request.Headers.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
 
             using var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
             var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
@@ -109,17 +110,17 @@ namespace Library.Web.Services
 
             using var request = new HttpRequestMessage(method, queryUrl);
             request.Headers.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                new AuthenticationHeaderValue("Bearer", accessToken);
             if (json != null)
             {
                 var content = new StringContent(json);
                 request.Content = content;
                 content.Headers.ContentType =
-                    System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                request.Method = HttpMethod.Post;
-                request.Headers.Accept.Add(
-                    System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    new MediaTypeHeaderValue("application/json");
             }
+            
+            request.Headers.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
 
             using var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
             return response.IsSuccessStatusCode;
@@ -331,12 +332,12 @@ namespace Library.Web.Services
             await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
         }
 
-        public async Task<List<NoticeDto>> GetNoticesAsync(QueryParameters queryParameters)
+        public async Task<List<NoticeNoContentVo>> GetNoticesAsync(QueryParameters queryParameters)
         {
             var apiUrl = ApplicationUrl + Apis.CreateNotice;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
             var dict = queryParameters.ToDictionary();
-            return await SendRequest<List<NoticeDto>>(HttpMethod.Post, apiUrl, accessToken, queryPairs: dict);
+            return await SendRequest<List<NoticeNoContentVo>>(HttpMethod.Get, apiUrl, accessToken, queryPairs: dict);
         }
 
         public async Task<NoticeDto> GetNoticeById(string id)

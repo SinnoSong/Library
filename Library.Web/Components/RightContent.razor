@@ -74,7 +74,7 @@
     private async Task<List<NoticeIconData>> SetNotices()
     {
         var response = await NoticeService.GetAsync(new QueryParameters());
-        var data = new List<NoticeDto>();
+        var data = new List<NoticeNoContentVo>();
         if (response.Success)
         {
             data = response.Data;

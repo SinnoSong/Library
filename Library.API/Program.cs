@@ -61,7 +61,6 @@ builder.Services.AddControllers(config =>
 {
     config.ReturnHttpNotAcceptable = true;
     config.Filters.Add<JsonExceptionFilter>();
-    config.CacheProfiles.Add("Default", new CacheProfile { Duration = 60 });
 });
 
 // Ìí¼ÓSerilog
@@ -138,7 +137,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseRouting();
 //app.UseCors(builder => builder.WithOrigins("https://localhost:5001"));
 app.UseCors("AllowAnyOriginPolicy");
 

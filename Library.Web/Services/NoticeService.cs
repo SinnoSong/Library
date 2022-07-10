@@ -68,15 +68,15 @@ namespace Library.Web.Services
             return response;
         }
 
-        public async Task<Response<List<NoticeDto>>> GetAsync(QueryParameters queryParameters)
+        public async Task<Response<List<NoticeNoContentVo>>> GetAsync(QueryParameters queryParameters)
         {
-            Response<List<NoticeDto>> response;
+            Response<List<NoticeNoContentVo>> response;
 
             try
             {
                 await GetBearerToken();
                 var data = await _client.GetNoticesAsync(queryParameters);
-                response = new Response<List<NoticeDto>>
+                response = new Response<List<NoticeNoContentVo>>
                 {
                     Data = data,
                     Success = true
@@ -84,7 +84,7 @@ namespace Library.Web.Services
             }
             catch (ApiException exception)
             {
-                response = ConvertApiException<List<NoticeDto>>(exception);
+                response = ConvertApiException<List<NoticeNoContentVo>>(exception);
             }
 
             return response;

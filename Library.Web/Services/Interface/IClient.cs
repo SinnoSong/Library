@@ -55,7 +55,7 @@ namespace Library.Web.Services.Interface
         Task<NoticeDto> CreateNoticeAsync(NoticeCreateDto body);
         Task DeleteNoticeAsync(string id);
         Task UpdateNoticeAsync(string id, NoticeCreateDto updateDto);
-        Task<List<NoticeDto>> GetNoticesAsync(QueryParameters queryParameters);
+        Task<List<NoticeNoContentVo>> GetNoticesAsync(QueryParameters queryParameters);
         Task<NoticeDto> GetNoticeById(string id);
 
         #endregion
