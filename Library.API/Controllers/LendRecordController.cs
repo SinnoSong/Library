@@ -32,22 +32,19 @@ namespace Library.API.Controllers
         private readonly IBookService _bookService;
         private readonly ILendConfigService _lendConfigService;
         private readonly IMapper _mapper;
-        private readonly HashFactory _hashFactory;
         private readonly Dictionary<string, PropertyMapping> _mappingDict;
 
         #endregion
 
         #region ctor
 
-        public LendRecordController(IServicesWrapper serviceWrapper, IMapper mapper, HashFactory hashFactory,
-            UserManager<User> userManager)
+        public LendRecordController(IServicesWrapper serviceWrapper, IMapper mapper, UserManager<User> userManager)
         {
             _lendConfigService = serviceWrapper.LendConfig;
             _lendRecordService = serviceWrapper.LendRecord;
             _bookService = serviceWrapper.Book;
             _userManager = userManager;
             _mapper = mapper;
-            _hashFactory = hashFactory;
             _mappingDict = new Dictionary<string, PropertyMapping>
             {
                 { "id", new PropertyMapping("Id") },
@@ -98,8 +95,6 @@ namespace Library.API.Controllers
         {
             var record = await _lendRecordService.GetByIdAsync(id);
 
-            var entityNewHash = _hashFactory.GetHash(record);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<LendRecordDto>(record);
         }
 
@@ -164,16 +159,8 @@ namespace Library.API.Controllers
         {
             var record = await _lendRecordService.GetByIdAsync(id);
 
-            var entityHash = _hashFactory.GetHash(record);
-            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
-            {
-                return StatusCode(StatusCodes.Status412PreconditionFailed);
-            }
-
             record.RealReturnTime = DateTime.Now;
             await _lendRecordService.UpdateAsync(record);
-            var entityNewHash = _hashFactory.GetHash(record);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
 

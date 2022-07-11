@@ -27,18 +27,16 @@ namespace Library.API.Controllers
 
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-        private readonly HashFactory _hashFactory;
         private readonly Dictionary<string, PropertyMapping> _mappingDict;
 
         #endregion
 
         #region ctor
 
-        public CategoryController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
+        public CategoryController(IServicesWrapper repositoryWrapper, IMapper mapper)
         {
             _categoryService = repositoryWrapper.Category;
             _mapper = mapper;
-            _hashFactory = hashFactory;
             _mappingDict = new Dictionary<string, PropertyMapping>()
             {
                 {"id", new PropertyMapping("Id")},
@@ -75,8 +73,6 @@ namespace Library.API.Controllers
         public async Task<ActionResult<CategoryDto>> Get(Guid id)
         {
             var category = await _categoryService.GetByIdAsync(id);
-            var entityNewHash = _hashFactory.GetHash(category);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<CategoryDto>(category);
         }
 
@@ -95,7 +91,7 @@ namespace Library.API.Controllers
             }
 
             var vo = _mapper.Map<CategoryDto>(result);
-            return CreatedAtRoute(nameof(Get), new {id = result.Id}, vo);
+            return CreatedAtRoute(nameof(Get), new { id = result.Id }, vo);
         }
 
         #endregion
@@ -105,19 +101,12 @@ namespace Library.API.Controllers
         // PUT api/<CategoryController>/5
         [HttpPut("{id:guid}")]
         [CheckIfMatchHeaderFilter]
-        public async Task<IActionResult> PutAsync(Guid id, CategoryCreateDto dto)
+        public async Task<IActionResult> PutAsync(Guid id, [FromBody] CategoryCreateDto dto)
         {
             var category = await _categoryService.GetByIdAsync(id);
-            var entityHash = _hashFactory.GetHash(category);
-            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
-            {
-                return StatusCode(StatusCodes.Status412PreconditionFailed);
-            }
 
             _mapper.Map(dto, category);
             await _categoryService.UpdateAsync(category);
-            var entityNewHash = _hashFactory.GetHash(category);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
 

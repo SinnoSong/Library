@@ -19,7 +19,7 @@ public static class Apis
     #region Category
 
     public const string CreateCategory = "api/Category";
-    public const string DeleteOrUpdateOrGetCategory = "api/books/";
+    public const string DeleteOrUpdateOrGetCategory = "api/Category/";
 
     #endregion
 

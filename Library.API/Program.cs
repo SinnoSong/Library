@@ -56,7 +56,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
 // Ìí¼Órepository°ü×°
 builder.Services.AddScoped<IServicesWrapper, ServicesWrapper>();
-builder.Services.AddSingleton<HashFactory>();
 builder.Services.AddControllers(config =>
 {
     config.ReturnHttpNotAcceptable = true;
@@ -100,7 +99,6 @@ var tokenSection = builder.Configuration.GetSection("Security:Token");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

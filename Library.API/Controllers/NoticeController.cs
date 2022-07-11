@@ -21,15 +21,13 @@ namespace Library.API.Controllers
         #region field
         private readonly INoticeService _noticeService;
         private readonly IMapper _mapper;
-        private readonly HashFactory _hashFactory;
         #endregion
 
         #region ctor
-        public NoticeController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
+        public NoticeController(IServicesWrapper repositoryWrapper, IMapper mapper)
         {
             _noticeService = repositoryWrapper.Notice;
             _mapper = mapper;
-            _hashFactory = hashFactory;
         }
         #endregion
 
@@ -51,8 +49,6 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            var entityNewHash = _hashFactory.GetHash(notice);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<NoticeDto>(notice);
         }
         #endregion
@@ -101,15 +97,8 @@ namespace Library.API.Controllers
             {
                 return NotFound();
             }
-            var entityHash = _hashFactory.GetHash(notice);
-            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
-            {
-                return StatusCode(StatusCodes.Status412PreconditionFailed);
-            }
             _mapper.Map(dto, notice);
             await _noticeService.UpdateAsync(notice);
-            var entityNewHash = _hashFactory.GetHash(notice);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
         #endregion

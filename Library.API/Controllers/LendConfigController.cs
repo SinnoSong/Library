@@ -25,17 +25,15 @@ namespace Library.API.Controllers
 
         private readonly ILendConfigService _lendConfigService;
         private readonly IMapper _mapper;
-        private readonly HashFactory _hashFactory;
 
         #endregion
 
         #region ctor
 
-        public LendConfigController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory)
+        public LendConfigController(IServicesWrapper repositoryWrapper, IMapper mapper)
         {
             _lendConfigService = repositoryWrapper.LendConfig;
             _mapper = mapper;
-            _hashFactory = hashFactory;
         }
 
         #endregion
@@ -53,8 +51,6 @@ namespace Library.API.Controllers
         public async Task<ActionResult<LendConfigDto>> GetAsync(Guid id)
         {
             var lendConfig = await _lendConfigService.GetByIdAsync(id);
-            var entityNewHash = _hashFactory.GetHash(lendConfig);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<LendConfigDto>(lendConfig);
         }
 
@@ -96,16 +92,9 @@ namespace Library.API.Controllers
         public async Task<IActionResult> PutAsync(Guid id, LendConfigCreateDto dto)
         {
             var category = await _lendConfigService.GetByIdAsync(id);
-            var entityHash = _hashFactory.GetHash(category);
-            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
-            {
-                return StatusCode(StatusCodes.Status412PreconditionFailed);
-            }
 
             _mapper.Map(dto, category);
             await _lendConfigService.UpdateAsync(category);
-            var entityNewHash = _hashFactory.GetHash(category);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
 

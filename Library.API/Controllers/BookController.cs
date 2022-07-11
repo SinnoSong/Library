@@ -29,18 +29,16 @@ namespace Library.API.Controllers
         private readonly IBookService _bookServices;
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-        private readonly HashFactory _hashFactory;
         private readonly Dictionary<string, PropertyMapping> _mappingDict;
 
         #endregion
 
         #region ctor
 
-        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper, HashFactory hashFactory, ICategoryService categoryService)
+        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper, ICategoryService categoryService)
         {
             _bookServices = repositoryWrapper.Book;
             _mapper = mapper;
-            _hashFactory = hashFactory;
             _mappingDict = new Dictionary<string, PropertyMapping>
             {
                 { "title", new PropertyMapping("Title") },
@@ -93,8 +91,6 @@ namespace Library.API.Controllers
         public async Task<ActionResult<BookDto>> GetBookAsync(Guid bookId)
         {
             var book = await _bookServices.GetByIdAsync(bookId);
-            var entityNewHash = _hashFactory.GetHash(book);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return _mapper.Map<BookDto>(book);
         }
 
@@ -152,16 +148,9 @@ namespace Library.API.Controllers
             }
             var book = await _bookServices.GetByIdAsync(bookId);
             book.CategoryId = cate.Id;
-            var entityHash = _hashFactory.GetHash(book);
-            if (Request.Headers.TryGetValue(HeaderNames.IfMatch, out var requestETag) && requestETag != entityHash)
-            {
-                return StatusCode(StatusCodes.Status412PreconditionFailed);
-            }
 
             _mapper.Map(updateBook, book);
             await _bookServices.UpdateAsync(book);
-            var entityNewHash = _hashFactory.GetHash(book);
-            Response.Headers[HeaderNames.ETag] = entityNewHash;
             return NoContent();
         }
 
