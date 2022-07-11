@@ -49,7 +49,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.DeleteBookAsync(id);
+                response.Success = await _client.DeleteBookAsync(id);
             }
             catch (ApiException e)
             {
@@ -66,7 +66,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.UpdateBookAsync(id, bookUpdateDto);
+                response.Success = await _client.UpdateBookAsync(id, bookUpdateDto);
             }
             catch (ApiException exception)
             {

@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Library.API.Configs.Filters;
 using Library.API.Entities;
-using Library.API.Helper;
 using Library.API.Service.Interface;
 using Library.Common.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +84,6 @@ namespace Library.API.Controllers
         #region Put
 
         [HttpPut("{id:guid}")]
-        [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> PutAsync(Guid id, LendConfigCreateDto dto)
         {
             var category = await _lendConfigService.GetByIdAsync(id);

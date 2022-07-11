@@ -29,13 +29,6 @@
     [Parameter]
     public List<BookDto> Books { get; set; } = null!;
 
-    // todo 没有实现数据刷新如何处理
-    [Parameter]
-    public EventCallback<BookQueryParameters> OnScroll { get; set; }
-
-    [Parameter]
-    public int TotalSize { get; set; }
-
     private async Task Delete(Guid id)
     {
         await OnDelete.InvokeAsync(id);

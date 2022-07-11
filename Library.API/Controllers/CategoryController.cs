@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Library.API.Configs;
-using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Extentions;
-using Library.API.Helper;
 using Library.API.Service.Interface;
 using Library.Common.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,7 +96,6 @@ namespace Library.API.Controllers
 
         // PUT api/<CategoryController>/5
         [HttpPut("{id:guid}")]
-        [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> PutAsync(Guid id, [FromBody] CategoryCreateDto dto)
         {
             var category = await _categoryService.GetByIdAsync(id);

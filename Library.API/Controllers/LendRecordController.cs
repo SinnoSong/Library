@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
 using Library.API.Configs;
-using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Extentions;
 using Library.API.Helper;
 using Library.API.Service.Interface;
 using Library.Common.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -154,7 +151,6 @@ namespace Library.API.Controllers
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = "Administrator,SuperAdministrator")]
-        [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> PutAsync(Guid id)
         {
             var record = await _lendRecordService.GetByIdAsync(id);

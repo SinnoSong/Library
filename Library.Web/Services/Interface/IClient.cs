@@ -13,8 +13,8 @@ namespace Library.Web.Services.Interface
         #region book
 
         Task<BookCreateDto> CreateBookAsync(BookCreateDto body);
-        Task DeleteBookAsync(string id);
-        Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto);
+        Task<bool> DeleteBookAsync(string id);
+        Task<bool> UpdateBookAsync(string id, BookUpdateDto bookUpdateDto);
         Task<List<BookDto>> GetBooksAsync(BookQueryParameters? queryParameters);
         Task<BookDto> GetBookById(string id);
 
@@ -23,8 +23,8 @@ namespace Library.Web.Services.Interface
         #region category
 
         Task<CategoryCreateDto> CreateCategoryAsync(CategoryCreateDto body);
-        Task DeleteCategoryAsync(string id);
-        Task UpdateCategoryAsync(string id, CategoryCreateDto updateDto);
+        Task<bool> DeleteCategoryAsync(string id);
+        Task<bool> UpdateCategoryAsync(string id, CategoryCreateDto updateDto);
         Task<List<CategoryDto>> GetCategoriesAsync(CategoryQueryParameters queryParameters);
         Task<CategoryDto> GetCategoryById(string id);
 
@@ -33,8 +33,8 @@ namespace Library.Web.Services.Interface
         #region lendConfig
 
         Task<LendConfigDto> CreateLendConfigAsync(LendConfigCreateDto body);
-        Task DeleteLendConfigAsync(string id);
-        Task UpdateLendConfigAsync(string id, LendConfigCreateDto updateDto);
+        Task<bool> DeleteLendConfigAsync(string id);
+        Task<bool> UpdateLendConfigAsync(string id, LendConfigCreateDto updateDto);
         Task<List<LendConfigDto>> GetLendConfigsAsync();
         Task<LendConfigDto> GetLendConfigById(string id);
 
@@ -43,18 +43,18 @@ namespace Library.Web.Services.Interface
         #region lendRecord
 
         Task<LendRecordDto> CreateLendRecordAsync(LendRecordCreateDto body);
-        Task DeleteLendRecordAsync(string id);
+        Task<bool> DeleteLendRecordAsync(string id);
         Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters);
         Task<LendRecordDto> GetLendRecordById(string id);
-        Task UpdateLendRecordAsync(string id);
+        Task<bool> UpdateLendRecordAsync(string id);
 
         #endregion
 
         #region notice
 
         Task<NoticeDto> CreateNoticeAsync(NoticeCreateDto body);
-        Task DeleteNoticeAsync(string id);
-        Task UpdateNoticeAsync(string id, NoticeCreateDto updateDto);
+        Task<bool> DeleteNoticeAsync(string id);
+        Task<bool> UpdateNoticeAsync(string id, NoticeCreateDto updateDto);
         Task<List<NoticeNoContentVo>> GetNoticesAsync(QueryParameters queryParameters);
         Task<NoticeDto> GetNoticeById(string id);
 

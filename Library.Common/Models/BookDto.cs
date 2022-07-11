@@ -13,10 +13,10 @@ namespace Library.Common.Models
         [JsonProperty("summary", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string? Summary { get; set; }
 
-        [JsonProperty("price", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("price", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public decimal? Price { get; set; }
 
-        [JsonProperty("isbn", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("isbn", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string? Isbn { get; set; }
 
         [JsonProperty("image", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
@@ -34,7 +34,7 @@ namespace Library.Common.Models
         [JsonProperty("isLend", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public bool IsLend { get; set; }
 
-        [JsonProperty("category", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("category", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Category { get; set; }
 
         #region ctor

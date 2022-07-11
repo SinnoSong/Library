@@ -10,7 +10,7 @@ namespace Library.Common.Models
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
 
-        [JsonProperty("summary", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("summary", Required = Required.Always)]
         public string? Summary { get; set; }
 
         public CategoryDto(Guid id, string name, string? summary)

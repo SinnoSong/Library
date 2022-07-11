@@ -2,10 +2,15 @@
 
 public class BookQueryParameters : QueryParameters
 {
-    public bool isLend { get; set; }
-    public string? sort { get; set; }
-    public string? title { get; set; }
-    public string? author { get; set; }
-    public string? ibsn { get; set; }
-    public string? category { get; set; }
+    public bool IsLend { get; set; }
+
+    public string Sort { get; set; } = "title";
+
+    public string? Title { get; set; }
+
+    public string? Author { get; set; }
+
+    public string? Ibsn { get; set; }
+
+    public string? Category { get; set; }
 }

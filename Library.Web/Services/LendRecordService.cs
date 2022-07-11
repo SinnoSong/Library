@@ -44,7 +44,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.DeleteLendRecordAsync(id);
+                response.Success = await _client.DeleteLendRecordAsync(id);
             }
             catch (ApiException e)
             {
@@ -60,7 +60,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.UpdateLendRecordAsync(id);
+                response.Success = await _client.UpdateLendRecordAsync(id);
             }
             catch (ApiException e)
             {

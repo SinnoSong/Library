@@ -5,23 +5,27 @@
 
 <PageContainer Title="Categories">
     <Content>
-        <Button OnClick="@(() => NavigationManager.NavigateTo("/categories/create"))">创建分类</Button>
-        <Form Model="_parameters" Layout="Inline" OnFinish="OnFinish">
-            <FormItem Label="排序字段">
-                <AutoComplete @bind-Value="@context.Sort" Options="_sortOptions"/>
-            </FormItem>
-            <FormItem Label="搜索内容">
-                <Input @bind-Value="@context.Search"/>
-            </FormItem>
-            <FormItem>
-                <Button Type="@ButtonType.Primary" HtmlType="submit">
-                    查询
-                </Button>
-            </FormItem>
-        </Form>
+        <Card>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/categories/create"))">创建分类</Button>
+        </Card>
+        <Card>
+            <Form Model="_parameters" Layout="Inline" OnFinish="OnFinish">
+                <FormItem Label="排序字段">
+                    <AutoComplete @bind-Value="@context.Sort" Options="_sortOptions"/>
+                </FormItem>
+                <FormItem Label="搜索内容">
+                    <Input @bind-Value="@context.Search"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">
+                        查询
+                    </Button>
+                </FormItem>
+            </Form>
+        </Card>
     </Content>
     <ChildContent>
-        <CategoryTable CategoryDtos="_categories" OnDelete="Delete" OnScroll="OnFinish"></CategoryTable>
+        <CategoryTable CategoryDtos="_categories" OnDelete="Delete"></CategoryTable>
     </ChildContent>
 </PageContainer>
 

@@ -1,11 +1,11 @@
-﻿using System.Net.Http.Headers;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using Library.Common.Models;
 using Library.Web.Constants;
 using Library.Web.Helper;
 using Library.Web.Models;
 using Library.Web.Services.Interface;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Library.Web.Services
@@ -64,7 +64,7 @@ namespace Library.Web.Services
                 content.Headers.ContentType =
                     new MediaTypeHeaderValue("application/json");
             }
-            
+
             request.Headers.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -73,7 +73,7 @@ namespace Library.Web.Services
             foreach (var item in response.Content.Headers)
                 headers[item.Key] = item.Value;
 
-            var status = (int) response.StatusCode;
+            var status = (int)response.StatusCode;
             if (status == 200)
             {
                 var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -118,7 +118,7 @@ namespace Library.Web.Services
                 content.Headers.ContentType =
                     new MediaTypeHeaderValue("application/json");
             }
-            
+
             request.Headers.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -155,18 +155,18 @@ namespace Library.Web.Services
                 JsonConvert.SerializeObject(body));
         }
 
-        public async Task DeleteBookAsync(string id)
+        public async Task<bool> DeleteBookAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
+            return await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
-        public async Task UpdateBookAsync(string id, BookUpdateDto bookUpdateDto)
+        public async Task<bool> UpdateBookAsync(string id, BookUpdateDto bookUpdateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetBook + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(bookUpdateDto));
+            return await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(bookUpdateDto));
         }
 
         public async Task<List<BookDto>> GetBooksAsync(BookQueryParameters? queryParameters)
@@ -196,18 +196,18 @@ namespace Library.Web.Services
                 JsonConvert.SerializeObject(body));
         }
 
-        public async Task DeleteCategoryAsync(string id)
+        public async Task<bool> DeleteCategoryAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetCategory + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
+            return await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
-        public async Task UpdateCategoryAsync(string id, CategoryCreateDto updateDto)
+        public async Task<bool> UpdateCategoryAsync(string id, CategoryCreateDto updateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetCategory + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
+            return await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
         }
 
         public async Task<List<CategoryDto>> GetCategoriesAsync(CategoryQueryParameters queryParameters)
@@ -237,18 +237,18 @@ namespace Library.Web.Services
                 JsonConvert.SerializeObject(body));
         }
 
-        public async Task DeleteLendConfigAsync(string id)
+        public async Task<bool> DeleteLendConfigAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendConfig + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
+            return await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
-        public async Task UpdateLendConfigAsync(string id, LendConfigCreateDto updateDto)
+        public async Task<bool> UpdateLendConfigAsync(string id, LendConfigCreateDto updateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendConfig + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
+            return await SendRequest(HttpMethod.Put, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
         }
 
         public async Task<List<LendConfigDto>> GetLendConfigsAsync()
@@ -277,11 +277,11 @@ namespace Library.Web.Services
                 JsonConvert.SerializeObject(body));
         }
 
-        public async Task DeleteLendRecordAsync(string id)
+        public async Task<bool> DeleteLendRecordAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
+            return await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
         public async Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters)
@@ -299,11 +299,11 @@ namespace Library.Web.Services
             return await SendRequest<LendRecordDto>(HttpMethod.Get, apiUrl, accessToken);
         }
 
-        public async Task UpdateLendRecordAsync(string id)
+        public async Task<bool> UpdateLendRecordAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Put, apiUrl, accessToken);
+            return await SendRequest(HttpMethod.Put, apiUrl, accessToken);
         }
 
         #endregion
@@ -318,18 +318,18 @@ namespace Library.Web.Services
                 JsonConvert.SerializeObject(body));
         }
 
-        public async Task DeleteNoticeAsync(string id)
+        public async Task<bool> DeleteNoticeAsync(string id)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetNotice + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
+            return await SendRequest(HttpMethod.Delete, apiUrl, accessToken);
         }
 
-        public async Task UpdateNoticeAsync(string id, NoticeCreateDto updateDto)
+        public async Task<bool> UpdateNoticeAsync(string id, NoticeCreateDto updateDto)
         {
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetNotice + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
-            await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
+            return await SendRequest(HttpMethod.Post, apiUrl, accessToken, JsonConvert.SerializeObject(updateDto));
         }
 
         public async Task<List<NoticeNoContentVo>> GetNoticesAsync(QueryParameters queryParameters)

@@ -44,7 +44,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.DeleteCategoryAsync(id);
+                response.Success = await _client.DeleteCategoryAsync(id);
             }
             catch (ApiException e)
             {
@@ -61,7 +61,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.UpdateCategoryAsync(id, categoryUpdateDto);
+                response.Success = await _client.UpdateCategoryAsync(id, categoryUpdateDto);
             }
             catch (ApiException exception)
             {

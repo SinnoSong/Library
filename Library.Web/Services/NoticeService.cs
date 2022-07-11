@@ -9,16 +9,21 @@ namespace Library.Web.Services
     public class NoticeService : BaseHttpService, INoticeService
     {
         #region field
+
         private readonly IClient _client;
         private readonly IMapper _mapper;
+
         #endregion
 
         #region ctor
-        public NoticeService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client, localStorage)
+
+        public NoticeService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
+            localStorage)
         {
             _client = client;
             _mapper = mapper;
         }
+
         #endregion
 
         public async Task<Response<int>> CreateAsync(NoticeCreateDto createDto)
@@ -33,6 +38,7 @@ namespace Library.Web.Services
             {
                 response = ConvertApiException<int>(e);
             }
+
             return response;
         }
 
@@ -42,12 +48,13 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.DeleteNoticeAsync(id);
+                response.Success = await _client.DeleteNoticeAsync(id);
             }
             catch (ApiException e)
             {
                 response = ConvertApiException<int>(e);
             }
+
             return response;
         }
 
@@ -58,7 +65,7 @@ namespace Library.Web.Services
             try
             {
                 await GetBearerToken();
-                await _client.UpdateNoticeAsync(id, updateDto);
+                response.Success = await _client.UpdateNoticeAsync(id, updateDto);
             }
             catch (ApiException exception)
             {

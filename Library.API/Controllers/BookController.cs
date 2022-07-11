@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Library.API.Configs;
-using Library.API.Configs.Filters;
 using Library.API.Entities;
 using Library.API.Extentions;
 using Library.API.Helper;
 using Library.API.Service.Interface;
 using Library.Common.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +32,7 @@ namespace Library.API.Controllers
 
         #region ctor
 
-        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper, ICategoryService categoryService)
+        public BookController(IServicesWrapper repositoryWrapper, IMapper mapper)
         {
             _bookServices = repositoryWrapper.Book;
             _mapper = mapper;
@@ -46,7 +43,7 @@ namespace Library.API.Controllers
                 { "ibsn", new PropertyMapping(targetProperty: "Ibsn") },
                 { "category", new PropertyMapping(targetProperty: "Category") }
             };
-            _categoryService = categoryService;
+            _categoryService = repositoryWrapper.Category;
         }
 
         #endregion
@@ -138,7 +135,6 @@ namespace Library.API.Controllers
 
         [HttpPut("{bookId:guid}")]
         [Authorize(Roles = "Administrator,SuperAdministrator")]
-        [CheckIfMatchHeaderFilter]
         public async Task<IActionResult> UpdateBookAsync(Guid bookId, BookUpdateDto updateBook)
         {
             var cate = (await _categoryService.GetByConditionAsync(c => c.Name == updateBook.Category)).FirstOrDefault();

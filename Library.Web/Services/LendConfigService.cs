@@ -89,7 +89,7 @@ public class LendConfigService : BaseHttpService, ILendConfigService
         try
         {
             await GetBearerToken();
-            await _client.UpdateLendConfigAsync(id, updateDto);
+            response.Success = await _client.UpdateLendConfigAsync(id, updateDto);
         }
         catch (ApiException exception)
         {
@@ -105,7 +105,7 @@ public class LendConfigService : BaseHttpService, ILendConfigService
         try
         {
             await GetBearerToken();
-            await _client.DeleteLendConfigAsync(id);
+            response.Success = await _client.DeleteLendConfigAsync(id);
         }
         catch (ApiException e)
         {

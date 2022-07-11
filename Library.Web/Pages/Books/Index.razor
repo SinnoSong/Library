@@ -9,22 +9,22 @@
         <Button OnClick="@(() => NavigationManager.NavigateTo("/books/create"))">创建书籍</Button>
         <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
             <FormItem Label="是否借出">
-                <Switch @bind-Value="@context.isLend" Checked="@false"></Switch>
+                <Switch @bind-Value="@context.IsLend" Checked="@false"></Switch>
             </FormItem>
             <FormItem>
-                <AutoComplete @bind-Value="@context.sort" Options="@_sortOptions" Placeholder="请选择排序字段"/>
+                <AutoComplete @bind-Value="@context.Sort" Options="@_sortOptions" Placeholder="请选择排序字段"/>
             </FormItem>
             <FormItem>
-                <Input @bind-Value="@context.title" Placeholder="请输入查询书籍名称"/>
+                <Input @bind-Value="@context.Title" Placeholder="请输入查询书籍名称"/>
             </FormItem>
             <FormItem>
-                <Input @bind-Value="@context.author" Placeholder="请输入作者"/>
+                <Input @bind-Value="@context.Author" Placeholder="请输入作者"/>
             </FormItem>
             <FormItem>
-                <Input @bind-Value="@context.ibsn" Placeholder="ibsn"/>
+                <Input @bind-Value="@context.Ibsn" Placeholder="ibsn"/>
             </FormItem>
             <FormItem>
-                <AutoComplete @bind-Value="@context.category" Options="@_categories">
+                <AutoComplete @bind-Value="@context.Category" Options="@_categories">
                 </AutoComplete>
             </FormItem>
             <FormItem>
@@ -35,24 +35,23 @@
         </Form>
     </Content>
     <ChildContent>
-        <BookTable Books="@_books" TotalSize="@_totalSize" OnScroll="@GetBooksAsync" OnDelete="@Delete"></BookTable>
+        <BookTable Books="@_books" OnDelete="@Delete"></BookTable>
     </ChildContent>
 </PageContainer>
 
 @code {
     private readonly List<string> _sortOptions = new() {"title", "author", "ibsn", "category"};
     private List<string> _categories = new();
-    private List<BookDto> _books = new() {new BookDto {Title = "123981"}, new BookDto {Title = "book1"}};
-    private int _totalSize = 50;
+    private List<BookDto> _books = new();
     private readonly BookQueryParameters _queryParameters = new();
 
     protected override async Task OnInitializedAsync()
     {
-    //var response = await bookService.GetAsync(new BookQueryParameters());
-    //if (response.Success)
-    //{
-    //    Books = response.Data;
-    //}
+        var response = await BookService.GetAsync(new BookQueryParameters());
+        if (response.Success)
+        {
+            _books = response.Data;
+        }
         var categoryResponse = await CategoryService.GetAsync(new CategoryQueryParameters());
         if (categoryResponse.Success)
         {
@@ -62,15 +61,8 @@
 
     private async Task OnFinish(EditContext context)
     {
-        await GetBooksAsync(_queryParameters);
-    }
-
-    private async Task GetBooksAsync(BookQueryParameters queryParameters)
-    {
-        var result = await BookService.GetAsync(queryParameters);
+        var result = await BookService.GetAsync(_queryParameters);
         _books = result.Data;
-    // todo 总数不对，待修改
-        _totalSize = result.Data.Count;
     }
 
     private async Task Delete(Guid bookId)

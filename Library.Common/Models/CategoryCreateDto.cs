@@ -7,7 +7,7 @@ namespace Library.Common.Models
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
 
-        [JsonProperty("summary", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("summary", Required = Required.Always)]
         public string? Summary { get; set; }
 
         public CategoryCreateDto(string name, string? summary)
