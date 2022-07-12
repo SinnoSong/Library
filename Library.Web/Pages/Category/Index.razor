@@ -31,17 +31,13 @@
 
 
 @code {
-    private readonly List<string> _sortOptions = new() {"id", "name"};
+    private readonly List<string> _sortOptions = new() { "id", "name" };
     private readonly CategoryQueryParameters _parameters = new();
     private List<CategoryDto> _categories = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await CategoryService.GetAsync(new CategoryQueryParameters());
-        if (response.Success)
-        {
-            _categories = response.Data;
-        }
+        await OnFinish();
     }
 
     private async Task OnFinish()

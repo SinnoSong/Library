@@ -35,7 +35,16 @@
 
 @code {
 
-    private List<LendConfigDto> _lendConfigs;
+    private List<LendConfigDto> _lendConfigs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await LendConfigService.GetAsync();
+        if (response.Success)
+        {
+            _lendConfigs = response.Data;
+        }
+    }
 
     private async Task Delete(Guid guid)
     {

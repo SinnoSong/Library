@@ -2,6 +2,7 @@
 @inject IBookService BookService
 @inject NavigationManager NavigationManager
 @inject ICategoryService CategoryService
+@inject IMapper Mapper
 
 <PageContainer Title="修改书籍">
     <Breadcrumb>
@@ -56,11 +57,16 @@
     [Parameter]
     public string Id { get; set; } = null!;
 
-    private readonly BookUpdateDto _book = new();
+    private BookUpdateDto _book = new();
     private List<string> _categories = new();
 
     protected override async Task OnInitializedAsync()
     {
+        var resp = await BookService.GetAsync(Id);
+        if (resp.Success)
+        {
+            _book = Mapper.Map<BookUpdateDto>(resp.Data);
+        }
         var response = await CategoryService.GetAsync(new CategoryQueryParameters());
         if (response.Success)
         {

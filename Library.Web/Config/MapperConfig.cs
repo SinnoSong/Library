@@ -10,6 +10,8 @@ namespace Library.Web.Config
         {
             CreateMap<NoticeNoContentVo, NoticeIconData>()
                 .ForMember(d => d.Datetime, opt => opt.MapFrom(src => src.CreateTime));
+            CreateMap<CategoryDto, CategoryCreateDto>();
+            CreateMap<BookDto, BookUpdateDto>();
         }
     }
 }

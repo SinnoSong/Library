@@ -1,6 +1,7 @@
 ﻿@page "/lendConfigs/update/{id}"
 @inject NavigationManager NavigationManager
 @inject ILendConfigService LendConfigService
+@inject IMapper Mapper
 
 <PageContainer Title="修改借阅规则">
     <Breadcrumb>
@@ -34,7 +35,16 @@
     [Parameter]
     public string Id { get; set; } = null!;
 
-    private readonly LendConfigCreateDto _lendConfigCreateDto = new();
+    private LendConfigCreateDto _lendConfigCreateDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await LendConfigService.GetAsync(Id);
+        if (response.Success)
+        {
+            _lendConfigCreateDto = Mapper.Map<LendConfigCreateDto>(response.Data);
+        }
+    }
 
     private async Task HandleCategoryUpdate()
     {

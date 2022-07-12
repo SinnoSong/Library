@@ -28,7 +28,7 @@
     </Content>
 
     <ChildContent>
-        <LendRecordTable Records="_records" OnDelete="Delete" OnScroll="OnFinish"></LendRecordTable>
+        <LendRecordTable Records="_records" OnDelete="Delete"></LendRecordTable>
     </ChildContent>
 </PageContainer>
 
@@ -36,7 +36,12 @@
 
     private readonly LendRecordQueryParameters _parameters = new();
     private List<LendRecordDto> _records = new();
-    private readonly List<string> _sortOptions = new() {"id", "userId", "bookId", "lendTime", "returnTime"};
+    private readonly List<string> _sortOptions = new() { "id", "userId", "bookId", "lendTime", "returnTime" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnFinish();
+    }
 
     private async Task OnFinish()
     {

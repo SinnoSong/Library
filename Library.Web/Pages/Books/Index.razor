@@ -6,33 +6,37 @@
 
 <PageContainer Title="Books">
     <Content>
-        <Button OnClick="@(() => NavigationManager.NavigateTo("/books/create"))">创建书籍</Button>
-        <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
-            <FormItem Label="是否借出">
-                <Switch @bind-Value="@context.IsLend" Checked="@false"></Switch>
-            </FormItem>
-            <FormItem>
-                <AutoComplete @bind-Value="@context.Sort" Options="@_sortOptions" Placeholder="请选择排序字段"/>
-            </FormItem>
-            <FormItem>
-                <Input @bind-Value="@context.Title" Placeholder="请输入查询书籍名称"/>
-            </FormItem>
-            <FormItem>
-                <Input @bind-Value="@context.Author" Placeholder="请输入作者"/>
-            </FormItem>
-            <FormItem>
-                <Input @bind-Value="@context.Ibsn" Placeholder="ibsn"/>
-            </FormItem>
-            <FormItem>
-                <AutoComplete @bind-Value="@context.Category" Options="@_categories">
-                </AutoComplete>
-            </FormItem>
-            <FormItem>
-                <Button Type="@ButtonType.Primary" HtmlType="submit">
-                    Submit
-                </Button>
-            </FormItem>
-        </Form>
+        <Card>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/books/create"))">创建书籍</Button>
+        </Card>
+        <Card>
+            <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
+                <FormItem Label="是否借出">
+                    <Switch @bind-Value="@context.IsLend" Checked="@false"></Switch>
+                </FormItem>
+                <FormItem>
+                    <AutoComplete @bind-Value="@context.Sort" Options="@_sortOptions" Placeholder="请选择排序字段"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@context.Title" Placeholder="请输入查询书籍名称"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@context.Author" Placeholder="请输入作者"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@context.Ibsn" Placeholder="ibsn"/>
+                </FormItem>
+                <FormItem>
+                    <AutoComplete @bind-Value="@context.Category" Options="@_categories">
+                    </AutoComplete>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">
+                        查询
+                    </Button>
+                </FormItem>
+            </Form>
+        </Card>
     </Content>
     <ChildContent>
         <BookTable Books="@_books" OnDelete="@Delete"></BookTable>
@@ -40,18 +44,14 @@
 </PageContainer>
 
 @code {
-    private readonly List<string> _sortOptions = new() {"title", "author", "ibsn", "category"};
+    private readonly List<string> _sortOptions = new() { "title", "author", "ibsn", "category" };
     private List<string> _categories = new();
     private List<BookDto> _books = new();
     private readonly BookQueryParameters _queryParameters = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await BookService.GetAsync(new BookQueryParameters());
-        if (response.Success)
-        {
-            _books = response.Data;
-        }
+        await OnFinish();
         var categoryResponse = await CategoryService.GetAsync(new CategoryQueryParameters());
         if (categoryResponse.Success)
         {
@@ -59,7 +59,7 @@
         }
     }
 
-    private async Task OnFinish(EditContext context)
+    private async Task OnFinish()
     {
         var result = await BookService.GetAsync(_queryParameters);
         _books = result.Data;

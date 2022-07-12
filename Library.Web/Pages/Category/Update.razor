@@ -1,6 +1,7 @@
 ﻿@page "/categories/update/{id}"
 @inject NavigationManager NavigationManager
 @inject ICategoryService CategoryService
+@inject IMapper Mapper
 
 <PageContainer Title="修改分类">
     <Breadcrumb>
@@ -34,7 +35,16 @@
     [Parameter]
     public string Id { get; set; } = null!;
 
-    private readonly CategoryCreateDto _categoryDto = new();
+    private CategoryCreateDto _categoryDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await CategoryService.GetAsync(Id);
+        if (response.Success)
+        {
+            _categoryDto = Mapper.Map<CategoryCreateDto>(response.Data);
+        }
+    }
 
     private async Task HandleCategoryUpdate()
     {

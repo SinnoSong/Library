@@ -19,13 +19,14 @@ namespace Library.Common.Models
         [JsonProperty("returnTime", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public DateTime RealReturnTime { get; set; }
 
-        [JsonProperty("processor", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("processor", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Processor { get; set; }
 
         public LendRecordDto(string processor)
         {
             Processor = processor;
         }
+
         public LendRecordDto()
         {
         }

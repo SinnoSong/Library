@@ -23,7 +23,7 @@ namespace Library.API.Controllers
     {
         #region field
 
-        private readonly IBookService _bookServices;
+        private readonly IBookService _bookService;
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
         private readonly Dictionary<string, PropertyMapping> _mappingDict;
@@ -34,7 +34,7 @@ namespace Library.API.Controllers
 
         public BookController(IServicesWrapper repositoryWrapper, IMapper mapper)
         {
-            _bookServices = repositoryWrapper.Book;
+            _bookService = repositoryWrapper.Book;
             _mapper = mapper;
             _mappingDict = new Dictionary<string, PropertyMapping>
             {
@@ -78,7 +78,7 @@ namespace Library.API.Controllers
                 select = select.And(book => book.Isbn == ibsn);
             }
 
-            var books = await _bookServices.GetByConditionAsync(select);
+            var books = await _bookService.GetByConditionAsync(select);
             books = books.Sort(sort, _mappingDict);
             return await PagedList<BookDto>.CreateAsync(books.ProjectTo<BookDto>(_mapper.ConfigurationProvider), page,
                 pageSize);
@@ -87,7 +87,7 @@ namespace Library.API.Controllers
         [HttpGet("{bookId:guid}", Name = nameof(GetBookAsync))]
         public async Task<ActionResult<BookDto>> GetBookAsync(Guid bookId)
         {
-            var book = await _bookServices.GetByIdAsync(bookId);
+            var book = await _bookService.GetByIdAsync(bookId);
             return _mapper.Map<BookDto>(book);
         }
 
@@ -106,7 +106,7 @@ namespace Library.API.Controllers
             }
             var book = _mapper.Map<Book>(bookForCreationDto);
             book.CategoryId = cate.Id;
-            var result = await _bookServices.AddAsync(book);
+            var result = await _bookService.AddAsync(book);
             if (result == null)
             {
                 throw new Exception("创建资源Book失败");
@@ -124,8 +124,8 @@ namespace Library.API.Controllers
         [Authorize(Roles = "Administrator,SuperAdministrator")]
         public async Task<IActionResult> DeleteBookAsync(Guid bookId)
         {
-            var book = await _bookServices.GetByIdAsync(bookId);
-            await _bookServices.DeleteAsync(book);
+            var book = await _bookService.GetByIdAsync(bookId);
+            await _bookService.DeleteAsync(book);
             return NoContent();
         }
 
@@ -142,11 +142,11 @@ namespace Library.API.Controllers
             {
                 throw new Exception("category不能为空");
             }
-            var book = await _bookServices.GetByIdAsync(bookId);
+            var book = await _bookService.GetByIdAsync(bookId);
             book.CategoryId = cate.Id;
 
             _mapper.Map(updateBook, book);
-            await _bookServices.UpdateAsync(book);
+            await _bookService.UpdateAsync(book);
             return NoContent();
         }
 
