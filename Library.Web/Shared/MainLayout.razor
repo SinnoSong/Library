@@ -27,7 +27,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var menuJson = "[{\"path\":\"/books\",\"name\":\"Book\",\"key\":\"book\"},{\"path\":\"/categories\",\"name\":\"Category\",\"key\":\"category\"},{\"path\":\"/lendConfigs\",\"name\":\"LendConfig\",\"key\":\"lendConfig\"},{\"path\":\"/lendRecords\",\"name\":\"LendRecords\",\"key\":\"lendRecords\"},{\"path\":\"/account\",\"name\":\"Account\",\"key\":\"account\",\"icon\":\"user\"}]";
+        var menuJson = "[{\"path\":\"/books\",\"name\":\"书籍管理\",\"key\":\"book\"},{\"path\":\"/categories\",\"name\":\"书籍类别管理\",\"key\":\"category\"},{\"path\":\"/lendConfigs\",\"name\":\"借阅规则管理\",\"key\":\"lendConfig\"},{\"path\":\"/lendRecords\",\"name\":\"借阅管理\",\"key\":\"lendRecords\"},{\"path\":\"/account\",\"name\":\"账号管理\",\"key\":\"account\"}]";
 
         MenuData = JsonConvert.DeserializeObject<MenuDataItem[]>(menuJson);
     }

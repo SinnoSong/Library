@@ -7,6 +7,7 @@ using Library.Web.Services.Interface;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace Library.Web.Services
 {
@@ -85,12 +86,10 @@ namespace Library.Web.Services
 
                 return objectResponse;
             }
-            else
-            {
-                var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                throw new ApiException("The HTTP status code of the response was not expected (" + status + ").",
-                    status, responseData, headers);
-            }
+
+            var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData, headers);
         }
 
         private async Task<bool> SendRequest(HttpMethod method, string queryUrl, string? accessToken = null,
@@ -123,7 +122,19 @@ namespace Library.Web.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             using var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
-            return response.IsSuccessStatusCode;
+            var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
+            foreach (var item in response.Content.Headers)
+                headers[item.Key] = item.Value;
+
+            var status = (int)response.StatusCode;
+            if (status == 200)
+            {
+                return true;
+            }
+
+            var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData, headers);
         }
 
         #endregion
