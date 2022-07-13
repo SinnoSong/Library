@@ -14,7 +14,7 @@ namespace Library.API.Entities
         public Guid BookId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public DateTime RealReturnTime { get; set; }
+        public DateTime? RealReturnTime { get; set; }
         public Guid Processer { get; set; }
 
         #region ctor

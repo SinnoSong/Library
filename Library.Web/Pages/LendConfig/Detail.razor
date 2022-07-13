@@ -1,6 +1,7 @@
 ﻿@page "/lendConfigs/detail/{id}"
 @inject NavigationManager NavigationManager
 @inject ILendConfigService LendConfigService
+@inject MessageService MessageService
 
 <PageContainer Title="借阅规则详细信息">
     <Breadcrumb>
@@ -39,6 +40,10 @@
         if (response.Success)
         {
             _lendConfig = response.Data;
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

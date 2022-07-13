@@ -39,14 +39,18 @@ builder.Services.AddSwaggerGen(options =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            new OpenApiSecurityScheme{
-                Reference =new OpenApiReference{
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
                     Type = ReferenceType.SecurityScheme,
-                    Id ="Bearer"
+                    Id = "Bearer"
                 }
-            },new string[]{ }
+            },
+            new string[] { }
         }
     });
 });
@@ -85,13 +89,13 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true; //配置客户端未指定版本时是否只用默认值
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.ReportApiVersions = true; //配置响应中是否展示支持和不支持的版本列表
-                                      //options.ApiVersionReader = new QueryStringApiVersionReader("ver"); //自定义api版本查询参数名称
-                                      //options.ApiVersionReader = new HeaderApiVersionReader("api-version"); // 添加api-version消息头
-                                      //options.ApiVersionReader = new MediaTypeApiVersionReader(); //添加Accept或Content-Type指定Api版本
+    //options.ApiVersionReader = new QueryStringApiVersionReader("ver"); //自定义api版本查询参数名称
+    //options.ApiVersionReader = new HeaderApiVersionReader("api-version"); // 添加api-version消息头
+    //options.ApiVersionReader = new MediaTypeApiVersionReader(); //添加Accept或Content-Type指定Api版本
     options.ApiVersionReader = ApiVersionReader.Combine(
         new MediaTypeApiVersionReader(),
         new QueryStringApiVersionReader("api-version")
-        );
+    );
 });
 // 添加认证
 var tokenSection = builder.Configuration.GetSection("Security:Token");
@@ -120,10 +124,9 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(builder => builder.WithOrigins("https://localhost:5001"));
 });
 // 添加支持名称带async的方法名称
-builder.Services.AddMvc(options =>
-{
-    options.SuppressAsyncSuffixInActionNames = false;
-});
+builder.Services.AddMvc(options => { options.SuppressAsyncSuffixInActionNames = false; });
+// 添加定时任务
+builder.Services.AddHostedService<BookStatusService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -132,6 +135,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

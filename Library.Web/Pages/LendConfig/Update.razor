@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject ILendConfigService LendConfigService
 @inject IMapper Mapper
+@inject MessageService MessageService
 
 <PageContainer Title="修改借阅规则">
     <Breadcrumb>
@@ -44,6 +45,10 @@
         {
             _lendConfigCreateDto = Mapper.Map<LendConfigCreateDto>(response.Data);
         }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
     }
 
     private async Task HandleCategoryUpdate()
@@ -52,6 +57,10 @@
         if (response.Success)
         {
             NavigationManager.NavigateTo("/lendConfigs");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

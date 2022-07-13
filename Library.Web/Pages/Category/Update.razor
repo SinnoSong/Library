@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject ICategoryService CategoryService
 @inject IMapper Mapper
+@inject MessageService MessageService
 
 <PageContainer Title="修改分类">
     <Breadcrumb>
@@ -44,6 +45,10 @@
         {
             _categoryDto = Mapper.Map<CategoryCreateDto>(response.Data);
         }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
     }
 
     private async Task HandleCategoryUpdate()
@@ -52,6 +57,10 @@
         if (response.Success)
         {
             NavigationManager.NavigateTo("/categories");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

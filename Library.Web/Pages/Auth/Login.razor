@@ -2,50 +2,51 @@
 @layout UserLayout
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavManager
-@inject AuthenticationStateProvider AuthProvider
+@inject MessageService MessageService
 
 <div class="main__b__0">
     <div class="login">
-        @if (!string.IsNullOrEmpty(message))
-        {
-            <div class="alert alert-danger">
-                <p>@message</p>
-            </div>
-        }
-        <Form Model="loginModel" OnFinish="HandleLogin" Layout="@FormLayout.Horizontal" ValidateOnChange="true">
+        <Form Model="_loginModel" OnFinish="HandleLogin" Layout="@FormLayout.Horizontal" ValidateOnChange="true">
             <FormItem Label="用户名">
                 <Input @bind-Value="@context.UserName" Placeholder="请输入用户名">
-                <Prefix><Icon Type="user" /></Prefix>
+                    <Prefix>
+                        <Icon Type="user"/>
+                    </Prefix>
                 </Input>
             </FormItem>
             <FormItem Label="密码">
                 <InputPassword @bind-Value="@context.Password" Placeholder="请输入密码">
-                    <Prefix><Icon Type="lock" /></Prefix>
+                    <Prefix>
+                        <Icon Type="lock"/>
+                    </Prefix>
                 </InputPassword>
             </FormItem>
             <FormItem>
                 <Button Type="@ButtonType.Primary" HtmlType="Submit" Size="large" Block OnClick="HandleLogin">Submit</Button>
             </FormItem>
-            <div> <a class="register" href="/user/register">Register Account</a></div>
+            <div>
+                <a class="register" href="/user/register">Register Account</a>
+            </div>
         </Form>
     </div>
 </div>
 
 
-
 @code {
-    private string? message;
-    LoginUserDto loginModel = new();
+    private LoginUserDto _loginModel = new();
 
     private async Task HandleLogin()
     {
-        var response = await AuthService.AuthenticateAsync(loginModel);
-        
+        var response = await AuthService.AuthenticateAsync(_loginModel);
+
         if (response.Success)
         {
             NavManager.NavigateTo("/");
         }
-        message = response.Message;
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
     }
 
 }

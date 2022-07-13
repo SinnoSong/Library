@@ -2,6 +2,7 @@
 @inject IBookService BookService
 @inject NavigationManager NavigationManager
 @inject ICategoryService CategoryService
+@inject MessageService MessageService
 
 <PageContainer Title="创建书籍">
     <Breadcrumb>
@@ -64,6 +65,10 @@
         {
             _categories = response.Data.Select(category => category.Name).ToList();
         }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
     }
 
     private async Task HandleBookCreate()
@@ -72,6 +77,10 @@
         if (response.Success)
         {
             NavigationManager.NavigateTo("/books/");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

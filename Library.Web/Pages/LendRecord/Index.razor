@@ -1,7 +1,8 @@
 ﻿@page "/lendRecords"
 @inject ILendRecordService LendRecordService
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JsRuntime
+@inject ModalService ModalService
+@inject MessageService MessageService
 
 <PageContainer Title="LendRecords">
     <Content>
@@ -40,7 +41,7 @@
 
     private readonly LendRecordQueryParameters _parameters = new();
     private List<LendRecordDto> _records = new();
-    private readonly List<string> _sortOptions = new() { "id", "userId", "bookId", "lendTime", "returnTime" };
+    private readonly List<string> _sortOptions = new() {"id", "userId", "bookId", "lendTime", "returnTime"};
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,20 +55,34 @@
         {
             _records = result.Data;
         }
+        else
+        {
+            await MessageService.Error(result.Message);
+        }
     }
 
-    private async Task Delete(Guid recordId)
+    private Task Delete(Guid recordId)
     {
         var record = _records.First(q => q.Id == recordId);
-        var confirm = await JsRuntime.InvokeAsync<bool>("confirm", $"是否删除Id为：{record.Id}的借阅记录?");
-        if (confirm)
+        ModalService.Confirm(new ConfirmOptions()
         {
-            var response = await LendRecordService.DeleteAsync(recordId.ToString());
-            if (response.Success)
+            Title = "删除借阅记录",
+            Content = $"是否删除Id为：{record.Id}的借阅记录?",
+            OnOk = async (e) =>
             {
-                await OnInitializedAsync();
-            }
-        }
+                var response = await LendRecordService.DeleteAsync(recordId.ToString());
+                if (response.Success)
+                {
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    await MessageService.Error(response.Message);
+                }
+            },
+            OkType = "danger",
+        });
+        return Task.CompletedTask;
     }
 
 }

@@ -2,19 +2,14 @@
 @layout UserLayout
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavManager
+@inject MessageService MessageService
 
 <PageTitle>Register</PageTitle>
 
 <div class="main__b__1">
     <div class="register">
         <h3>注册</h3>
-        @if (!string.IsNullOrEmpty(message))
-        {
-            <div class="alert alert-danger">
-                <p>@message</p>
-            </div>
-        }
-        <Form Model="user">
+        <Form Model="_user">
             <FormItem>
                 <Input Placeholder="请输入用户名" @bind-Value="@context.UserName" Size="@InputSize.Large"></Input>
             </FormItem>
@@ -41,17 +36,20 @@
 
 
 @code {
-    private string? message;
-    private readonly RegisterUser user = new();
+    private RegisterUser _user = new();
 
     private async Task HandleRegistration()
     {
-        var response = await AuthService.RegisterAsync(user);
+        var response = await AuthService.RegisterAsync(_user);
 
         if (response.Success)
         {
             NavManager.NavigateTo("/login");
         }
-        message = response.Message;
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
     }
+
 }
