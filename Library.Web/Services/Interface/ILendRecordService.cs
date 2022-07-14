@@ -10,5 +10,6 @@ namespace Library.Web.Services.Interface
         Task<Response<int>> CreateAsync(LendRecordCreateDto bookCreateDto);
         Task<Response<int>> DeleteAsync(string id);
         Task<Response<int>> PutAsync(string id);
+        Task<Response<int>> RenewAsync(string id);
     }
 }

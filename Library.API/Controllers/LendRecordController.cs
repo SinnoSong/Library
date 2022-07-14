@@ -22,8 +22,6 @@ namespace Library.API.Controllers
     [Authorize]
     public class LendRecordController : ControllerBase
     {
-        // todo 续借：普通用户登录页面，查找借阅记录，点击要续借图书的选项“续借”，只能续借一次，一次1月
-        // todo 超期处理：归还时前查询是否超期，如果超期页面提示需要缴纳 违约金，超期1天一块钱，上限20元
         #region field
 
         private readonly ILendRecordService _lendRecordService;
@@ -97,7 +95,7 @@ namespace Library.API.Controllers
         public async Task<ActionResult<LendRecordDto>> GetRecordAsync(Guid id)
         {
             var record = await _lendRecordService.GetByIdAsync(id);
-            
+
             return _mapper.Map<LendRecordDto>(record);
         }
 
@@ -125,7 +123,7 @@ namespace Library.API.Controllers
             var token = new JwtSecurityToken(Request.Headers.Authorization[0]["Bearer ".Length..]);
             var email = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email)!.Value;
             var processor = await _userManager.FindByEmailAsync(email);
-            lendRecord.Processer = new Guid(processor.Id);
+            lendRecord.Processor = new Guid(processor.Id);
             var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
             if (user.Grade == null)
             {
@@ -166,7 +164,7 @@ namespace Library.API.Controllers
             var token = new JwtSecurityToken(Request.Headers.Authorization[0]["Bearer ".Length..]);
             var email = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email)!.Value;
             var processor = await _userManager.FindByEmailAsync(email);
-            lendRecord.Processer = new Guid(processor.Id);
+            lendRecord.Processor = new Guid(processor.Id);
             var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
             if (user.Grade == null)
             {
@@ -196,6 +194,21 @@ namespace Library.API.Controllers
             var record = await _lendRecordService.GetByIdAsync(id);
 
             record.RealReturnTime = DateTime.Now;
+            await _lendRecordService.UpdateAsync(record);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// 续借
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("/renew/{id:guid}")]
+        public async Task<IActionResult> RenewAsync(Guid id)
+        {
+            var record = await _lendRecordService.GetByIdAsync(id);
+
+            record.EndTime = record.EndTime.AddDays(7);
             await _lendRecordService.UpdateAsync(record);
             return NoContent();
         }

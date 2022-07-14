@@ -316,6 +316,13 @@ namespace Library.Web.Services
             return await SendRequest(HttpMethod.Put, apiUrl, accessToken);
         }
 
+        public async Task<bool> RenewAsync(string id)
+        {
+            var apiUrl = $"{ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord}renew/{id}";
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            return await SendRequest(HttpMethod.Put, apiUrl, accessToken);
+        }
+
         #endregion
 
         #region notice

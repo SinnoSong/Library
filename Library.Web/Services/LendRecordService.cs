@@ -70,6 +70,22 @@ namespace Library.Web.Services
             return response;
         }
 
+        public async Task<Response<int>> RenewAsync(string id)
+        {
+            var response = new Response<int>();
+            try
+            {
+                await GetBearerToken();
+                response.Success = await _client.UpdateLendRecordAsync(id);
+            }
+            catch (ApiException e)
+            {
+                response = ConvertApiException<int>(e);
+            }
+
+            return response;
+        }
+
         public async Task<Response<List<LendRecordDto>>> GetAsync(LendRecordQueryParameters queryParameters)
         {
             Response<List<LendRecordDto>> response;
