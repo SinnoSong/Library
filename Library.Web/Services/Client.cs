@@ -5,9 +5,9 @@ using Library.Web.Helper;
 using Library.Web.Models;
 using Library.Web.Services.Interface;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
-using Newtonsoft.Json.Linq;
 
 namespace Library.Web.Services
 {
@@ -74,7 +74,7 @@ namespace Library.Web.Services
             foreach (var item in response.Content.Headers)
                 headers[item.Key] = item.Value;
 
-            var status = (int) response.StatusCode;
+            var status = (int)response.StatusCode;
             if (status == 200)
             {
                 var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -133,7 +133,7 @@ namespace Library.Web.Services
 
             var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
-            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", (int) response.StatusCode, responseData, headers);
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", (int)response.StatusCode, responseData, headers);
         }
 
         #endregion

@@ -2,13 +2,13 @@
 
 <Table TItem="BookDto" DataSource="@Books">
     <Selection Key="@(context.Id.ToString())"/>
-    <Column @bind-Field="@context.Id" Sortable/>
-    <Column @bind-Field="@context.Title" Sortable/>
-    <Column @bind-Field="@context.Summary" Sortable/>
-    <Column @bind-Field="@context.Price" Sortable/>
-    <Column @bind-Field="@context.Isbn" Sortable/>
-    <Column @bind-Field="@context.Author" Sortable/>
-    <Column @bind-Field="@context.Location" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Id" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Title" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Summary" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Price" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Isbn" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Author" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Location" Sortable/>
     <ActionColumn>
         <Space>
             <SpaceItem>

@@ -15,10 +15,10 @@
         <Card>
             <Table DataSource="_lendConfigs" TItem="LendConfigDto">
                 <Selection Key="@(context.Id.ToString())"/>
-                <Column @bind-Field="@context.Id" Sortable/>
-                <Column @bind-Field="@context.ReaderGrade" Sortable/>
-                <Column @bind-Field="@context.MaxLendDays" Sortable/>
-                <Column @bind-Field="@context.MaxLendNumber" Sortable/>
+                <AntDesign.Column @bind-Field="@context.Id" Sortable/>
+                <AntDesign.Column @bind-Field="@context.ReaderGrade" Sortable/>
+                <AntDesign.Column @bind-Field="@context.MaxLendDays" Sortable/>
+                <AntDesign.Column @bind-Field="@context.MaxLendNumber" Sortable/>
                 <ActionColumn>
                     <Space>
                         <SpaceItem>

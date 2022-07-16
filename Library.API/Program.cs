@@ -59,6 +59,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
 // 添加repository包装
 builder.Services.AddScoped<IServicesWrapper, ServicesWrapper>();
+// 添加定时任务
+builder.Services.AddHostedService<BookStatusService>();
 builder.Services.AddControllers(config =>
 {
     config.ReturnHttpNotAcceptable = true;
@@ -125,8 +127,6 @@ builder.Services.AddCors(options =>
 });
 // 添加支持名称带async的方法名称
 builder.Services.AddMvc(options => { options.SuppressAsyncSuffixInActionNames = false; });
-// 添加定时任务
-builder.Services.AddHostedService<BookStatusService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

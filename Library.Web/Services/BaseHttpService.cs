@@ -30,7 +30,8 @@ namespace Library.Web.Services
             {
                 return new Response<TGuid>()
                 {
-                    Message = "数据校验失败！", ValidationErrors = apiException.Response,
+                    Message = "数据校验失败！",
+                    ValidationErrors = apiException.Response,
                     Success = false
                 };
             }
