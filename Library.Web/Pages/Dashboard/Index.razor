@@ -2,13 +2,14 @@
 
 <GridContent>
     <Row Type="flex" Gutter="24">
-        <AntDesign.Col Xs="24" Sm="12" Md="12" Lg="12" Xl="6" Style="margin-bottom: 24px;">
-            <Card>
-                <span>最近30天借阅数量</span>
-                <MiniArea/>
-            </Card>
+        <AntDesign.Col Span="24" Style="margin-bottom: 24px;">
+            <Title Level="4">30天内租借数据</Title>
+            <AntDesign.Charts.Column Data="@DataItem" Config="_visitChartConfig"/>
         </AntDesign.Col>
+    </Row>
+    <Row>
         <AntDesign.Col Xl="16" Lg="12" Md="12" Sm="24" Xs="24">
+            <Title Level="4">1年内每月租借统计</Title>
             <AntDesign.Charts.Column Data="@DataItems" Config="_saleChartConfig"/>
         </AntDesign.Col>
         <AntDesign.Col Xl="8" Lg="12" Md="12" Sm="24" Xs="24">
@@ -39,20 +40,55 @@
 
 @code {
 
-    private readonly ColumnConfig _saleChartConfig = new ColumnConfig
+    private ChartDataItem[] DataItem =
     {
-        Title = new AntDesign.Charts.Title
-        {
-            Visible = true,
-            Text = "Stores Sales Trend"
-        },
+        new() {X = "2022-7-17", Y = 20},
+        new() {X = "2022-7-18", Y = 15},
+        new() {X = "2022-7-19", Y = 22},
+        new() {X = "2022-7-20", Y = 9},
+        new() {X = "2022-7-21", Y = 2},
+        new() {X = "2022-7-22", Y = 32},
+        new() {X = "2022-7-23", Y = 15},
+        new() {X = "2022-7-24", Y = 7},
+        new() {X = "2022-7-25", Y = 24},
+        new() {X = "2022-7-26", Y = 13},
+        new() {X = "2022-7-27", Y = 22},
+        new() {X = "2022-7-28", Y = 20},
+        new() {X = "2022-7-29", Y = 15},
+        new() {X = "2022-7-30", Y = 22},
+        new() {X = "2022-8-1", Y = 9},
+        new() {X = "2022-8-2", Y = 2},
+        new() {X = "2022-8-3", Y = 32},
+        new() {X = "2022-8-4", Y = 15},
+        new() {X = "2022-8-5", Y = 7},
+        new() {X = "2022-8-6", Y = 24},
+        new() {X = "2022-8-7", Y = 13},
+        new() {X = "2022-8-8", Y = 22},
+        new() {X = "2022-8-9", Y = 20},
+        new() {X = "2022-8-10", Y = 15},
+        new() {X = "2022-8-11", Y = 22},
+        new() {X = "2022-8-12", Y = 9},
+        new() {X = "2022-8-13", Y = 2},
+        new() {X = "2022-8-14", Y = 32},
+        new() {X = "2022-8-15", Y = 15},
+        new() {X = "2022-8-16", Y = 7},
+    };
+
+    private readonly ColumnConfig _visitChartConfig = new ColumnConfig
+    {
         ForceFit = true,
         Padding = "auto",
         XField = "x",
         YField = "y"
     };
 
-    private IChartComponent _saleChart;
+    private readonly ColumnConfig _saleChartConfig = new ColumnConfig
+    {
+        ForceFit = true,
+        Padding = "auto",
+        XField = "x",
+        YField = "y"
+    };
 
     private RecordRank[] Items { get; } =
         {
@@ -68,17 +104,17 @@
     private ChartDataItem[] DataItems = new ChartDataItem[]
     {
         new ChartDataItem {X = "1", Y = 1},
-        new ChartDataItem {X = "1", Y = 2},
-        new ChartDataItem {X = "1", Y = 3},
-        new ChartDataItem {X = "1", Y = 4},
-        new ChartDataItem {X = "1", Y = 5},
-        new ChartDataItem {X = "1", Y = 6},
-        new ChartDataItem {X = "1", Y = 7},
-        new ChartDataItem {X = "1", Y = 8},
-        new ChartDataItem {X = "1", Y = 9},
-        new ChartDataItem {X = "1", Y = 10},
-        new ChartDataItem {X = "1", Y = 11},
-        new ChartDataItem {X = "1", Y = 12},
+        new ChartDataItem {X = "2", Y = 2},
+        new ChartDataItem {X = "3", Y = 3},
+        new ChartDataItem {X = "4", Y = 4},
+        new ChartDataItem {X = "5", Y = 5},
+        new ChartDataItem {X = "6", Y = 6},
+        new ChartDataItem {X = "7", Y = 7},
+        new ChartDataItem {X = "8", Y = 8},
+        new ChartDataItem {X = "9", Y = 9},
+        new ChartDataItem {X = "10", Y = 10},
+        new ChartDataItem {X = "11", Y = 11},
+        new ChartDataItem {X = "12", Y = 12},
     };
 
     protected override async Task OnInitializedAsync()

@@ -74,7 +74,7 @@ namespace Library.Web.Services
             foreach (var item in response.Content.Headers)
                 headers[item.Key] = item.Value;
 
-            var status = (int)response.StatusCode;
+            var status = (int) response.StatusCode;
             if (status == 200)
             {
                 var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -87,9 +87,15 @@ namespace Library.Web.Services
                 return objectResponse;
             }
 
-            var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
-            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData, headers);
+            string? jsonMessage = null;
+            string? responseData = null;
+            if (status != 404)
+            {
+                responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
+            }
+
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData ?? "", headers);
         }
 
         private async Task<bool> SendRequest(HttpMethod method, string queryUrl, string? accessToken = null,
@@ -125,15 +131,21 @@ namespace Library.Web.Services
             var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
             foreach (var item in response.Content.Headers)
                 headers[item.Key] = item.Value;
-
-            if (response.IsSuccessStatusCode)
+            var status = (int) response.StatusCode;
+            if (status == 200)
             {
                 return true;
             }
 
-            var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
-            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", (int)response.StatusCode, responseData, headers);
+            string? jsonMessage = null;
+            string? responseData = null;
+            if (status != 404)
+            {
+                responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
+            }
+
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData ?? "", headers);
         }
 
         #endregion

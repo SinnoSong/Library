@@ -21,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // 获取appsettings中配置的db链接字符串
-var connString = builder.Configuration.GetConnectionString("LiBraryAPIDbConnection");
+var connString = builder.Configuration.GetConnectionString("LibraryAPIDbConnection");
 builder.Services.AddDbContext<LibraryDbContext>(options => options.UseSqlServer(connString));
 
 // 添加autoMapper
