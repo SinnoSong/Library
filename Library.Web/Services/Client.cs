@@ -377,5 +377,23 @@ namespace Library.Web.Services
         }
 
         #endregion
+
+        #region dashBoard
+
+        public async Task<List<ChartDataItem>> SelectLast30DaysData()
+        {
+            var apiUrl = ApplicationUrl + Apis.SelectMonth;
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            return await SendRequest<List<ChartDataItem>>(HttpMethod.Get, apiUrl, accessToken);
+        }
+
+        public async Task<List<ChartDataItem>> SelectLastYearData()
+        {
+            var apiUrl = ApplicationUrl + Apis.SelectYear;
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            return await SendRequest<List<ChartDataItem>>(HttpMethod.Get, apiUrl, accessToken);
+        }
+
+        #endregion
     }
 }

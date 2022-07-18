@@ -60,5 +60,12 @@ namespace Library.Web.Services.Interface
         Task<NoticeDto> GetNoticeById(string id);
 
         #endregion
+
+        #region dashBoard
+
+        Task<List<ChartDataItem>> SelectLast30DaysData();
+        Task<List<ChartDataItem>> SelectLastYearData();
+
+        #endregion
     }
 }

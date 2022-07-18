@@ -1,16 +1,18 @@
 ﻿@page "/dashboard"
+@inject IDashBoardService DashBoardService
+@inject MessageService MessageService 
 
 <GridContent>
     <Row Type="flex" Gutter="24">
         <AntDesign.Col Span="24" Style="margin-bottom: 24px;">
             <Title Level="4">30天内租借数据</Title>
-            <AntDesign.Charts.Column Data="@DataItem" Config="_visitChartConfig"/>
+            <AntDesign.Charts.Column Data="@_oneMonthDataItems" Config="_visitChartConfig"/>
         </AntDesign.Col>
     </Row>
     <Row>
         <AntDesign.Col Xl="16" Lg="12" Md="12" Sm="24" Xs="24">
             <Title Level="4">1年内每月租借统计</Title>
-            <AntDesign.Charts.Column Data="@DataItems" Config="_saleChartConfig"/>
+            <AntDesign.Charts.Column Data="@_oneYearItems" Config="_saleChartConfig"/>
         </AntDesign.Col>
         <AntDesign.Col Xl="8" Lg="12" Md="12" Sm="24" Xs="24">
             <div class="salesRank">
@@ -40,7 +42,7 @@
 
 @code {
 
-    private ChartDataItem[] DataItem =
+    private List<ChartDataItem> _oneMonthDataItems = new()
     {
         new() {X = "2022-7-17", Y = 20},
         new() {X = "2022-7-18", Y = 15},
@@ -90,6 +92,7 @@
         YField = "y"
     };
 
+    // todo 根据每月借阅数量排序
     private RecordRank[] Items { get; } =
         {
             new RecordRank {Rank = 1, Title = "Gongzhuan No.0 shop", Total = "323,234"},
@@ -101,7 +104,7 @@
             new RecordRank {Rank = 7, Title = "Gongzhuan No.6 shop", Total = "323,234"}
         };
 
-    private ChartDataItem[] DataItems = new ChartDataItem[]
+    private List<ChartDataItem> _oneYearItems = new()
     {
         new ChartDataItem {X = "1", Y = 1},
         new ChartDataItem {X = "2", Y = 2},
@@ -119,8 +122,25 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var response = await DashBoardService.SelectLastYearData();
+        if (response.Success)
+        {
+            _oneYearItems = response.Data;
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
+        var resp = await DashBoardService.SelectLast30DaysData();
+        if (resp.Success)
+        {
+            _oneMonthDataItems = resp.Data;
+        }
+        else
+        {
+            await MessageService.Error(resp.Message);
+        }
         await base.OnInitializedAsync();
-    // todo 调用接口获取数据
     }
 
 }

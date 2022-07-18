@@ -43,4 +43,12 @@ public static class Apis
     public const string DeleteOrUpdateOrGetNotice = "api/Notice/";
 
     #endregion
+
+    #region dashBoard
+
+    public const string SelectMonth = "api/DashBoard/month";
+
+    public const string SelectYear = "api/DashBoard/year";
+
+    #endregion
 }
