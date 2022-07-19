@@ -1,19 +1,11 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace Library.Common.Models
 {
-    public class RegisterUser
+    public class RegisterUser : UserDto
     {
-        [Required, MinLength(4)]
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
 
-        [JsonProperty("email")][EmailAddress] public string Email { get; set; }
-
-        [JsonProperty("password")]
-        [MinLength(6)]
-        public string Password { get; set; }
         [Required]
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }

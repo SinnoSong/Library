@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using Library.API.Configs;
 using Library.API.Configs.Filters;
 using Library.API.Entities;
@@ -15,8 +17,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using System;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen(options =>
 
 // 添加identityCore，基于user和role
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>().AddDefaultTokenProviders();
-;
+
 // 添加repository包装
 builder.Services.AddScoped<IServicesWrapper, ServicesWrapper>();
 builder.Services.AddControllers(config =>

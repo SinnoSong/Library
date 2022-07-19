@@ -1,7 +1,7 @@
-﻿using Library.API.Entities;
+﻿using System;
+using Library.API.Entities;
 using Library.API.Repository.BASE;
 using Library.API.Service.Interface;
-using System;
 
 namespace Library.API.Service
 {

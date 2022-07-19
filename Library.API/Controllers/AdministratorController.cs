@@ -1,12 +1,11 @@
-﻿using Library.API.Entities;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Library.API.Entities;
 using Library.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace Library.API.Controllers
@@ -18,39 +17,37 @@ namespace Library.API.Controllers
     {
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
-        public AdministratorController(IConfiguration configuration, RoleManager<Role> roleManager,UserManager<User> userManager)
+        public AdministratorController(RoleManager<Role> roleManager, UserManager<User> userManager)
         {
-            Configuration = configuration;
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        public IConfiguration Configuration { get; }
-        
-        [HttpPost("put")]
-         public async Task<IActionResult> PutUserGreadAsync(PutUserGreadDto putUserGread)
+
+        [HttpPut("{userID:guid}")]
+        public async Task<IActionResult> PutUserGradeAsync(Guid userID, byte grade)
         {
-            var user = await _userManager.FindByEmailAsync(putUserGread.UserName);
-            if (putUserGread.Grade is > 4 or 0)
+            var user = await _userManager.FindByIdAsync(userID.ToString());
+            if (grade is > 4 or 0)
             {
                 throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
             }
-            user.Grade = putUserGread.Grade;
+            user.Grade = grade;
             await _userManager.UpdateAsync(user);
-            return Ok();    
+            return Ok();
         }
-        [HttpPost("AddGeneralAdministrator")]
-        public async Task<IActionResult> AddGeneralAdministratorAsync(AddGeneralAdministratorDto addGeneralAdministrator)
+        [HttpPost("GeneralAdministrator")]
+        public async Task<IActionResult> AddGeneralAdministratorAsync(UserDto addGeneralAdministrator)
         {
-            var GeneralAdministrator = new User()
+            var generalAdministrator = new User()
             {
                 UserName = addGeneralAdministrator.UserName,
                 Email = addGeneralAdministrator.Email,
             };
-            var result = await _userManager.CreateAsync(GeneralAdministrator, addGeneralAdministrator.Password);
+            var result = await _userManager.CreateAsync(generalAdministrator, addGeneralAdministrator.Password);
             if (result.Succeeded)
             {
                 var role = await _roleManager.FindByNameAsync("Administrator");
-                await _userManager.AddToRoleAsync(GeneralAdministrator, role.Name);
+                await _userManager.AddToRoleAsync(generalAdministrator, role.Name);
                 return Ok();
             }
             else
@@ -58,6 +55,6 @@ namespace Library.API.Controllers
                 ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault()?.Description);
                 return BadRequest(ModelState);
             }
-        } 
-    } 
+        }
+    }
 }

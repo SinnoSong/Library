@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Library.Common.Models
 {
-    public class AddGeneralAdministratorDto
+    public class UserDto
     {
         [Required, MinLength(4)]
         [JsonProperty("userName")]
