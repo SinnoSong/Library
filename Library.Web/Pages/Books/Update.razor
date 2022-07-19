@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject ICategoryService CategoryService
 @inject IMapper Mapper
+@inject MessageService MessageService
 
 <PageContainer Title="修改书籍">
     <Breadcrumb>
@@ -67,10 +68,18 @@
         {
             _book = Mapper.Map<BookUpdateDto>(resp.Data);
         }
+        else
+        {
+            await MessageService.Error(resp.Message);
+        }
         var response = await CategoryService.GetAsync(new CategoryQueryParameters());
         if (response.Success)
         {
             _categories = response.Data.Select(category => category.Name).ToList();
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 
@@ -80,6 +89,10 @@
         if (response.Success)
         {
             NavigationManager.NavigateTo("/books/");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

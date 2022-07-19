@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.API.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20220619105316_InitData")]
-    partial class InitData
+    [Migration("20220717060456_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -164,18 +164,20 @@ namespace Library.API.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Processer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("HasRenew")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("RealReturnTime")
+                    b.Property<Guid>("Processor")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("RealReturnTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("StudentId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -236,21 +238,21 @@ namespace Library.API.Migrations
                         new
                         {
                             Id = "77967ECF-0A18-4993-A243-FDCC86F7EC1B",
-                            ConcurrencyStamp = "f6f4b977-3e0e-45d0-9261-a00c0413a4c7",
+                            ConcurrencyStamp = "d15d0ac3-633c-440b-a960-0d3a96135a43",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "2093BF77-ED2E-453B-911F-325BC99C4504",
-                            ConcurrencyStamp = "f732b8c6-486e-45ad-af74-9e477028080f",
+                            ConcurrencyStamp = "94bb1607-38fd-4b45-95bf-de6cc67045cc",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "BCC4BFC0-6252-4A32-B5B8-9005E4560402",
-                            ConcurrencyStamp = "4c57bdf8-3391-4cd4-8033-0d759bd82372",
+                            ConcurrencyStamp = "ad0e9ae0-d7bc-4596-9764-07bb4c7ff336",
                             Name = "SuperAdministrator",
                             NormalizedName = "SUPERADMINISTRATOR"
                         });
@@ -328,15 +330,16 @@ namespace Library.API.Migrations
                         {
                             Id = "8e448afa-f008-446e-a52f-13c449803c2e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "edd2c020-56a9-4419-85db-2f8f83497340",
+                            ConcurrencyStamp = "99c2edb6-5feb-49d2-8c51-f9970b07897f",
                             Email = "admin@library.com",
                             EmailConfirmed = false,
+                            Grade = (byte)1,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LIBRARY.COM",
                             NormalizedUserName = "ADMIN@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBr6gQn6yawom5qQUYgktYkIlgmnVyZrBxpH/jP/2dOlmCfTCf9Eeg3OBn5crO/otw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOw7paXarbthziS4/TOMRaezw338l/o4LdvgZ5KGGDpM0O5A4oadX+aMnU3QEsx8xg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0d00579f-3a57-48d4-aef3-b367cce45ed5",
+                            SecurityStamp = "ea8ba8c9-4cff-495a-8d58-4910335478c7",
                             TwoFactorEnabled = false,
                             UserName = "admin@library.com"
                         },
@@ -344,15 +347,15 @@ namespace Library.API.Migrations
                         {
                             Id = "30a24107-d279-4e37-96fd-01af5b38cb27",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "710230d9-590a-41f8-859c-82a7adb68ac0",
+                            ConcurrencyStamp = "4b1bc868-a994-4650-aa81-5f7aaa2128c5",
                             Email = "user@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@LIBRARY.COM",
                             NormalizedUserName = "USER@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELbSR9VQJsVVjdhmR8xg82A4oh+XTlIw53PTIvrMQJXMnNvR5awoPTn5Y5pWSgy08g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJIUEEw6ww84ayyxy3+xOD7Z/VGYj1HVKPeigvt2ZMv49cGReFdGxFyCf34Ve9xpog==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "de7865cc-05cd-4e25-b4ea-3bfa39ac347e",
+                            SecurityStamp = "a1e0fd4b-5393-442d-ab8d-d59edcb293ab",
                             TwoFactorEnabled = false,
                             UserName = "user@library.com"
                         },
@@ -360,15 +363,15 @@ namespace Library.API.Migrations
                         {
                             Id = "32A61BDD-DF3C-4B71-9444-F5730F8A619B",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb07aa59-dc4a-4992-afc6-f4ea01045e72",
+                            ConcurrencyStamp = "6b66879a-6cbb-4b57-a035-9c648d7bd9cf",
                             Email = "super@library.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "SUPER@LIBRARY.COM",
                             NormalizedUserName = "SUPER@LIBRARY.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE4z+qY0a3tzseE/mx3DXI4RUGg9phvWdi143fAj6mlKc/j5wSUvbw5mUCcf+LMmbQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENI2pEX+8Yqi71b3Wch1ag2LRrTWmAXx8h86F4wPIebehG8VonhaiQPFc8iVnBJZAA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "98c990d9-42e5-4d26-b443-7758c81a2791",
+                            SecurityStamp = "bdbb1738-3b7c-4abc-bc54-7779477bb389",
                             TwoFactorEnabled = false,
                             UserName = "super@library.com"
                         });

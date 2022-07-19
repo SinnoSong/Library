@@ -1,6 +1,7 @@
 ﻿@page "/lendRecords/create"
 @inject ILendRecordService LendRecordService
 @inject NavigationManager NavigationManager 
+@inject MessageService MessageService
 
 <PageContainer Title="新增借阅记录">
     <Breadcrumb>
@@ -38,6 +39,10 @@
         if (response.Success)
         {
             NavigationManager.NavigateTo("/lendRecords");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

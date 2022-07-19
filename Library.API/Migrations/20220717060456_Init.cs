@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.API.Migrations
 {
-    public partial class InitData : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -88,12 +88,13 @@ namespace Library.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StudentId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RealReturnTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Processer = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    RealReturnTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Processor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HasRenew = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -239,9 +240,9 @@ namespace Library.API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2093BF77-ED2E-453B-911F-325BC99C4504", "f732b8c6-486e-45ad-af74-9e477028080f", "Administrator", "ADMINISTRATOR" },
-                    { "77967ECF-0A18-4993-A243-FDCC86F7EC1B", "f6f4b977-3e0e-45d0-9261-a00c0413a4c7", "User", "USER" },
-                    { "BCC4BFC0-6252-4A32-B5B8-9005E4560402", "4c57bdf8-3391-4cd4-8033-0d759bd82372", "SuperAdministrator", "SUPERADMINISTRATOR" }
+                    { "2093BF77-ED2E-453B-911F-325BC99C4504", "94bb1607-38fd-4b45-95bf-de6cc67045cc", "Administrator", "ADMINISTRATOR" },
+                    { "77967ECF-0A18-4993-A243-FDCC86F7EC1B", "d15d0ac3-633c-440b-a960-0d3a96135a43", "User", "USER" },
+                    { "BCC4BFC0-6252-4A32-B5B8-9005E4560402", "ad0e9ae0-d7bc-4596-9764-07bb4c7ff336", "SuperAdministrator", "SUPERADMINISTRATOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -249,9 +250,9 @@ namespace Library.API.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "Grade", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "30a24107-d279-4e37-96fd-01af5b38cb27", 0, "710230d9-590a-41f8-859c-82a7adb68ac0", "user@library.com", false, null, false, null, "USER@LIBRARY.COM", "USER@LIBRARY.COM", "AQAAAAEAACcQAAAAELbSR9VQJsVVjdhmR8xg82A4oh+XTlIw53PTIvrMQJXMnNvR5awoPTn5Y5pWSgy08g==", null, false, "de7865cc-05cd-4e25-b4ea-3bfa39ac347e", false, "user@library.com" },
-                    { "32A61BDD-DF3C-4B71-9444-F5730F8A619B", 0, "fb07aa59-dc4a-4992-afc6-f4ea01045e72", "super@library.com", false, null, false, null, "SUPER@LIBRARY.COM", "SUPER@LIBRARY.COM", "AQAAAAEAACcQAAAAEE4z+qY0a3tzseE/mx3DXI4RUGg9phvWdi143fAj6mlKc/j5wSUvbw5mUCcf+LMmbQ==", null, false, "98c990d9-42e5-4d26-b443-7758c81a2791", false, "super@library.com" },
-                    { "8e448afa-f008-446e-a52f-13c449803c2e", 0, "edd2c020-56a9-4419-85db-2f8f83497340", "admin@library.com", false, null, false, null, "ADMIN@LIBRARY.COM", "ADMIN@LIBRARY.COM", "AQAAAAEAACcQAAAAEBr6gQn6yawom5qQUYgktYkIlgmnVyZrBxpH/jP/2dOlmCfTCf9Eeg3OBn5crO/otw==", null, false, "0d00579f-3a57-48d4-aef3-b367cce45ed5", false, "admin@library.com" }
+                    { "30a24107-d279-4e37-96fd-01af5b38cb27", 0, "4b1bc868-a994-4650-aa81-5f7aaa2128c5", "user@library.com", false, null, false, null, "USER@LIBRARY.COM", "USER@LIBRARY.COM", "AQAAAAEAACcQAAAAEJIUEEw6ww84ayyxy3+xOD7Z/VGYj1HVKPeigvt2ZMv49cGReFdGxFyCf34Ve9xpog==", null, false, "a1e0fd4b-5393-442d-ab8d-d59edcb293ab", false, "user@library.com" },
+                    { "32A61BDD-DF3C-4B71-9444-F5730F8A619B", 0, "6b66879a-6cbb-4b57-a035-9c648d7bd9cf", "super@library.com", false, null, false, null, "SUPER@LIBRARY.COM", "SUPER@LIBRARY.COM", "AQAAAAEAACcQAAAAENI2pEX+8Yqi71b3Wch1ag2LRrTWmAXx8h86F4wPIebehG8VonhaiQPFc8iVnBJZAA==", null, false, "bdbb1738-3b7c-4abc-bc54-7779477bb389", false, "super@library.com" },
+                    { "8e448afa-f008-446e-a52f-13c449803c2e", 0, "99c2edb6-5feb-49d2-8c51-f9970b07897f", "admin@library.com", false, (byte)1, false, null, "ADMIN@LIBRARY.COM", "ADMIN@LIBRARY.COM", "AQAAAAEAACcQAAAAEOw7paXarbthziS4/TOMRaezw338l/o4LdvgZ5KGGDpM0O5A4oadX+aMnU3QEsx8xg==", null, false, "ea8ba8c9-4cff-495a-8d58-4910335478c7", false, "admin@library.com" }
                 });
 
             migrationBuilder.InsertData(

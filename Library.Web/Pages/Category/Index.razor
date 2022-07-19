@@ -1,7 +1,8 @@
 ﻿@page "/categories"
 @inject ICategoryService CategoryService
 @inject NavigationManager NavigationManager
-@inject IJSRuntime Js
+@inject ModalService ModalService
+@inject MessageService MessageService
 
 <PageContainer Title="Categories">
     <Content>
@@ -31,7 +32,7 @@
 
 
 @code {
-    private readonly List<string> _sortOptions = new() { "id", "name" };
+    private readonly List<string> _sortOptions = new() {"id", "name"};
     private readonly CategoryQueryParameters _parameters = new();
     private List<CategoryDto> _categories = new();
 
@@ -47,20 +48,34 @@
         {
             _categories = result.Data;
         }
+        else
+        {
+            await MessageService.Error(result.Message);
+        }
     }
 
-    private async Task Delete(Guid categoryId)
+    private Task Delete(Guid bookId)
     {
-        var category = _categories.First(q => q.Id == categoryId);
-        var confirm = await Js.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {category.Name}?");
-        if (confirm)
+        var book = _categories.First(q => q.Id == bookId);
+        ModalService.Confirm(new ConfirmOptions()
         {
-            var response = await CategoryService.DeleteAsync(categoryId.ToString());
-            if (response.Success)
+            Title = "删除类别",
+            Content = $"是否删除Id为：{book.Id}的类别?",
+            OnOk = async _ =>
             {
-                await OnInitializedAsync();
-            }
-        }
+                var response = await CategoryService.DeleteAsync(bookId.ToString());
+                if (response.Success)
+                {
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    await MessageService.Error(response.Message);
+                }
+            },
+            OkType = "danger",
+        });
+        return Task.CompletedTask;
     }
 
 }

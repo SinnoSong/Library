@@ -1,6 +1,7 @@
 ﻿@page "/lendConfigs/create"
 @inject ILendConfigService LendConfigService
 @inject NavigationManager NavigationManager
+@inject MessageService Message
 
 <PageContainer Title="创建借阅规则">
     <Breadcrumb>
@@ -41,6 +42,10 @@
         if (response.Success)
         {
             NavigationManager.NavigateTo("/lendConfigs");
+        }
+        else
+        {
+            await Message.Error(response.Message);
         }
     }
 

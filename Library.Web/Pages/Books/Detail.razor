@@ -1,6 +1,7 @@
 ﻿@page "/books/detail/{id}"
 @inject IBookService BookService
 @inject NavigationManager NavigationManager
+@inject MessageService MessageService
 
 <PageContainer Title="书籍信息">
     <Breadcrumb>
@@ -44,6 +45,10 @@
         if (response.Success)
         {
             _bookDto = response.Data;
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 

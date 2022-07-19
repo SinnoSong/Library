@@ -47,6 +47,7 @@ namespace Library.Web.Services.Interface
         Task<List<LendRecordDto>> GetLendRecordsAsync(LendRecordQueryParameters queryParameters);
         Task<LendRecordDto> GetLendRecordById(string id);
         Task<bool> UpdateLendRecordAsync(string id);
+        Task<bool> RenewAsync(string id);
 
         #endregion
 
@@ -57,6 +58,13 @@ namespace Library.Web.Services.Interface
         Task<bool> UpdateNoticeAsync(string id, NoticeCreateDto updateDto);
         Task<List<NoticeNoContentVo>> GetNoticesAsync(QueryParameters queryParameters);
         Task<NoticeDto> GetNoticeById(string id);
+
+        #endregion
+
+        #region dashBoard
+
+        Task<List<ChartDataItem>> SelectLast30DaysData();
+        Task<List<ChartDataItem>> SelectLastYearData();
 
         #endregion
     }

@@ -7,6 +7,9 @@ using Library.Web.Helper;
 using Library.Web.Models;
 using Library.Web.Services.Interface;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Library.Web.Services
 {
@@ -73,7 +76,7 @@ namespace Library.Web.Services
             foreach (var item in response.Content.Headers)
                 headers[item.Key] = item.Value;
 
-            var status = (int)response.StatusCode;
+            var status = (int) response.StatusCode;
             if (status == 200)
             {
                 var stringContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -85,12 +88,16 @@ namespace Library.Web.Services
 
                 return objectResponse;
             }
-            else
+
+            string? jsonMessage = null;
+            string? responseData = null;
+            if (status != 404)
             {
-                var responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                throw new ApiException("The HTTP status code of the response was not expected (" + status + ").",
-                    status, responseData, headers);
+                responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
             }
+
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData ?? "", headers);
         }
 
         private async Task<bool> SendRequest(HttpMethod method, string queryUrl, string? accessToken = null,
@@ -123,7 +130,24 @@ namespace Library.Web.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             using var response = await HttpClient.SendAsync(request).ConfigureAwait(false);
-            return response.IsSuccessStatusCode;
+            var headers = response.Headers.ToDictionary(h => h.Key, h => h.Value);
+            foreach (var item in response.Content.Headers)
+                headers[item.Key] = item.Value;
+            var status = (int) response.StatusCode;
+            if (status == 200)
+            {
+                return true;
+            }
+
+            string? jsonMessage = null;
+            string? responseData = null;
+            if (status != 404)
+            {
+                responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                jsonMessage = JObject.Parse(responseData).SelectToken("message")?.Value<string>();
+            }
+
+            throw new ApiException(jsonMessage ?? "服务器错误，请稍后重试！", status, responseData ?? "", headers);
         }
 
         #endregion
@@ -306,6 +330,13 @@ namespace Library.Web.Services
             return await SendRequest(HttpMethod.Put, apiUrl, accessToken);
         }
 
+        public async Task<bool> RenewAsync(string id)
+        {
+            var apiUrl = $"{ApplicationUrl + Apis.DeleteOrUpdateOrGetLendRecord}renew/{id}";
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            return await SendRequest(HttpMethod.Put, apiUrl, accessToken);
+        }
+
         #endregion
 
         #region notice
@@ -345,6 +376,24 @@ namespace Library.Web.Services
             var apiUrl = ApplicationUrl + Apis.DeleteOrUpdateOrGetNotice + id;
             var accessToken = await _localStorageService.GetAccessTokenAsync();
             return await SendRequest<NoticeDto>(HttpMethod.Get, apiUrl, accessToken);
+        }
+
+        #endregion
+
+        #region dashBoard
+
+        public async Task<List<ChartDataItem>> SelectLast30DaysData()
+        {
+            var apiUrl = ApplicationUrl + Apis.SelectMonth;
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            return await SendRequest<List<ChartDataItem>>(HttpMethod.Get, apiUrl, accessToken);
+        }
+
+        public async Task<List<ChartDataItem>> SelectLastYearData()
+        {
+            var apiUrl = ApplicationUrl + Apis.SelectYear;
+            var accessToken = await _localStorageService.GetAccessTokenAsync();
+            return await SendRequest<List<ChartDataItem>>(HttpMethod.Get, apiUrl, accessToken);
         }
 
         #endregion

@@ -29,9 +29,9 @@ namespace Library.API.Controllers
 
         #region ctor
 
-        public CategoryController(IServicesWrapper repositoryWrapper, IMapper mapper)
+        public CategoryController(IServicesWrapper servicesWrapper, IMapper mapper)
         {
-            _categoryService = repositoryWrapper.Category;
+            _categoryService = servicesWrapper.Category;
             _mapper = mapper;
             _mappingDict = new Dictionary<string, PropertyMapping>()
             {

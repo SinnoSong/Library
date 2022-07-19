@@ -1,7 +1,8 @@
 ﻿@page "/lendConfigs"
 @inject ILendConfigService LendConfigService 
 @inject NavigationManager NavigationManager
-@inject IJSRuntime Js
+@inject MessageService MessageService
+@inject ModalService ModalService
 
 
 <PageContainer Title="LendConfig">
@@ -14,10 +15,10 @@
         <Card>
             <Table DataSource="_lendConfigs" TItem="LendConfigDto">
                 <Selection Key="@(context.Id.ToString())"/>
-                <Column @bind-Field="@context.Id" Sortable/>
-                <Column @bind-Field="@context.ReaderGrade" Sortable/>
-                <Column @bind-Field="@context.MaxLendDays" Sortable/>
-                <Column @bind-Field="@context.MaxLendNumber" Sortable/>
+                <AntDesign.Column @bind-Field="@context.Id" Sortable/>
+                <AntDesign.Column @bind-Field="@context.ReaderGrade" Sortable/>
+                <AntDesign.Column @bind-Field="@context.MaxLendDays" Sortable/>
+                <AntDesign.Column @bind-Field="@context.MaxLendNumber" Sortable/>
                 <ActionColumn>
                     <Space>
                         <SpaceItem>
@@ -46,18 +47,28 @@
         }
     }
 
-    private async Task Delete(Guid guid)
+    private Task Delete(Guid guid)
     {
         var category = _lendConfigs.First(q => q.Id == guid);
-        var confirm = await Js.InvokeAsync<bool>("confirm", $"Are You Sure You Want To Delete {category.ReaderGrade}?");
-        if (confirm)
+        ModalService.Confirm(new ConfirmOptions()
         {
-            var response = await LendConfigService.DeleteAsync(guid.ToString());
-            if (response.Success)
+            Title = "删除借阅规则",
+            Content = $"是否删除Id为：{category.Id}的借阅规则?",
+            OnOk = async _ =>
             {
-                await OnInitializedAsync();
-            }
-        }
+                var response = await LendConfigService.DeleteAsync(guid.ToString());
+                if (response.Success)
+                {
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    await MessageService.Error(response.Message);
+                }
+            },
+            OkType = "danger",
+        });
+        return Task.CompletedTask;
     }
 
 }

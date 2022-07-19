@@ -8,47 +8,58 @@ namespace Library.Web.Services
     public class BaseHttpService
     {
         #region field
-        private readonly IClient client;
-        private readonly ILocalStorageService localStorage;
+
+        private readonly IClient _client;
+        private readonly ILocalStorageService _localStorage;
+
         #endregion
 
         #region ctor
-        public BaseHttpService(IClient client, ILocalStorageService localStorage)
+
+        protected BaseHttpService(IClient client, ILocalStorageService localStorage)
         {
-            this.client = client;
-            this.localStorage = localStorage;
+            _client = client;
+            _localStorage = localStorage;
         }
+
         #endregion
 
-        protected Response<Guid> ConvertApiException<Guid>(ApiException apiException)
+        protected static Response<TGuid> ConvertApiException<TGuid>(ApiException apiException)
         {
             if (apiException.StatusCode == 400)
             {
-                return new Response<Guid>() { Message = "Validation errors have occured.", ValidationErrors = apiException.Response, Success = false };
+                return new Response<TGuid>()
+                {
+                    Message = "数据校验失败！",
+                    ValidationErrors = apiException.Response,
+                    Success = false
+                };
             }
+
             if (apiException.StatusCode == 404)
             {
-                return new Response<Guid>() { Message = "The requested item could not be found.", Success = false };
+                return new Response<TGuid>() { Message = "没有找到请求内容，请稍后重试！", Success = false };
             }
+
             if (apiException.StatusCode == 401)
             {
-                return new Response<Guid>() { Message = "Invalid Credentials, Please Try Again", Success = false };
+                return new Response<TGuid>() { Message = "权限校验失败，请稍后重试！", Success = false };
             }
 
-            if (apiException.StatusCode >= 200 && apiException.StatusCode <= 299)
+            if (apiException.StatusCode is >= 200 and <= 299)
             {
-                return new Response<Guid>() { Message = "Operation Reported Success", Success = true };
+                return new Response<TGuid>() { Message = "Operation Reported Success", Success = true };
             }
 
-            return new Response<Guid>() { Message = "Something went wrong, please try again.", Success = false };
+            return new Response<TGuid>() { Message = apiException.Message, Success = false };
         }
 
         protected async Task GetBearerToken()
         {
-            var token = await localStorage.GetItemAsync<string>("accessToken");
+            var token = await _localStorage.GetItemAsync<string>("accessToken");
             if (token != null)
             {
-                client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                _client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
         }
     }

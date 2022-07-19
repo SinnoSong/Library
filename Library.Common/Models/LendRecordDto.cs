@@ -17,10 +17,12 @@ namespace Library.Common.Models
         public DateTime EndTime { get; set; }
 
         [JsonProperty("returnTime", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public DateTime RealReturnTime { get; set; }
+        public DateTime? RealReturnTime { get; set; }
 
         [JsonProperty("processor", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string Processor { get; set; }
+
+        public bool HasRenew { get; set; }
 
         public LendRecordDto(string processor)
         {

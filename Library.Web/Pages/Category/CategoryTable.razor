@@ -1,8 +1,8 @@
 ﻿<Table TItem="CategoryDto" DataSource="@CategoryDtos" >
     <Selection Key="@(context.Id.ToString())"/>
-    <Column @bind-Field="@context.Id" Sortable/>
-    <Column @bind-Field="@context.Name" Sortable/>
-    <Column @bind-Field="@context.Summary" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Id" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Name" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Summary" Sortable/>
     <ActionColumn>
         <Space>
             <SpaceItem>
@@ -22,11 +22,7 @@
 
     [Parameter]
     public EventCallback<Guid> OnDelete { get; set; }
-
-    [Parameter]
-    public EventCallback<CategoryQueryParameters> OnScroll { get; set; }
-
-
+    
     private async Task Delete(Guid guid)
     {
         await OnDelete.InvokeAsync(guid);

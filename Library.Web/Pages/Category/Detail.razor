@@ -1,6 +1,7 @@
 ﻿@page "/categories/detail/{id}"
 @inject NavigationManager NavigationManager
 @inject ICategoryService CategoryService
+@inject MessageService MessageService
 
 <PageContainer Title="分类信息">
     <Breadcrumb>
@@ -38,6 +39,10 @@
         if (response.Success)
         {
             _categoryDto = response.Data;
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
         }
     }
 
