@@ -3,28 +3,33 @@
     padding: 0;
     list-style: none;
 }
+
 .rankingList li {
     display: flex;
     align-items: center;
     margin-top: 16px;
     zoom: 1;
 }
+
 .rankingList li::before,
 .rankingList li::after {
     display: table;
     content: ' ';
 }
+
 .rankingList li::after {
     clear: both;
     height: 0;
     font-size: 0;
     visibility: hidden;
 }
+
 .rankingList li span {
     color: black;
     font-size: 14px;
     line-height: 22px;
 }
+
 .rankingList li .rankingItemNumber {
     display: inline-block;
     width: 20px;
@@ -38,10 +43,12 @@
     background-color: white;
     border-radius: 20px;
 }
+
 .rankingList li .rankingItemNumber.active {
     color: #fff;
     background-color: #314659;
 }
+
 .rankingList li .rankingItemTitle {
     flex: 1;
     margin-right: 8px;
@@ -49,6 +56,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
 .salesRank {
     padding: 0 32px 32px 72px;
 }

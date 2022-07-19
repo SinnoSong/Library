@@ -2,24 +2,23 @@
 using Library.API.Entities;
 using Library.Common.Models;
 
-namespace Library.API.Configs
+namespace Library.API.Configs;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<Book, BookDto>();
-            CreateMap<BookCreateDto, Book>();
-            CreateMap<BookUpdateDto, Book>().ReverseMap();
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<CategoryCreateDto, Category>();
-            CreateMap<LendConfig, LendConfigDto>().ReverseMap();
-            CreateMap<LendConfigCreateDto, LendConfig>();
-            CreateMap<LendRecord, LendRecordDto>().ReverseMap();
-            CreateMap<LendRecordCreateDto, LendRecord>();
-            CreateMap<Notice, NoticeDto>().ReverseMap();
-            CreateMap<Notice, NoticeNoContentVo>();
-            CreateMap<NoticeCreateDto, Notice>();
-        }
+        CreateMap<Book, BookDto>();
+        CreateMap<BookCreateDto, Book>();
+        CreateMap<BookUpdateDto, Book>().ReverseMap();
+        CreateMap<Category, CategoryDto>().ReverseMap();
+        CreateMap<CategoryCreateDto, Category>();
+        CreateMap<LendConfig, LendConfigDto>().ReverseMap();
+        CreateMap<LendConfigCreateDto, LendConfig>();
+        CreateMap<LendRecord, LendRecordDto>().ReverseMap();
+        CreateMap<LendRecordCreateDto, LendRecord>();
+        CreateMap<Notice, NoticeDto>().ReverseMap();
+        CreateMap<Notice, NoticeNoContentVo>();
+        CreateMap<NoticeCreateDto, Notice>();
     }
 }

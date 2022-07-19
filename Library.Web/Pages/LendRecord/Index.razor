@@ -64,11 +64,11 @@
     private Task Delete(Guid recordId)
     {
         var record = _records.First(q => q.Id == recordId);
-        ModalService.Confirm(new ConfirmOptions()
+        ModalService.Confirm(new ConfirmOptions
         {
             Title = "删除借阅记录",
             Content = $"是否删除Id为：{record.Id}的借阅记录?",
-            OnOk = async (e) =>
+            OnOk = async e =>
             {
                 var response = await LendRecordService.DeleteAsync(recordId.ToString());
                 if (response.Success)
@@ -80,7 +80,7 @@
                     await MessageService.Error(response.Message);
                 }
             },
-            OkType = "danger",
+            OkType = "danger"
         });
         return Task.CompletedTask;
     }

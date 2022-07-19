@@ -1,13 +1,8 @@
-﻿using Newtonsoft.Json;
-
-namespace Library.Common.Models;
+﻿namespace Library.Common.Models;
 
 public class RecordRank
 {
-    [JsonProperty("rank")]
-    public int Rank { get; set; }
-    [JsonProperty("title")]
+    public int? Rank { get; set; }
     public string Title { get; set; }
-    [JsonProperty("total")]
     public string Total { get; set; }
 }

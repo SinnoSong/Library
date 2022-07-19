@@ -3,57 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
-namespace Library.API.Repository.Interface
+namespace Library.API.Repository.Interface;
+
+public interface IBaseRepository<T, TId>
 {
-    public interface IBaseRepository<T, TId>
-    {
-        #region query
+    #region update
 
-        Task<IQueryable<T>> GetAllAsync();
-        Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression);
-        Task<T> GetByIdAsync(TId id);
+    Task<T> UpdateAsync(T entity);
 
-        #endregion
+    #endregion
 
-        #region add
+    #region exist
 
-        Task<T> AddAsync(T entity);
-        Task AddAsync(IEnumerable<T> entities);
+    Task<bool> IsExistAsync(TId id);
 
-        #endregion
+    #endregion
 
-        #region update
+    #region save
 
-        Task<T> UpdateAsync(T entity);
+    Task<bool> SaveAsync();
 
-        #endregion
+    #endregion
 
-        #region delete
+    #region query
 
-        Task DeleteAsync(T entity);
-        Task DeleteByConditionAsync(Expression<Func<T, bool>> expression);
+    Task<IQueryable<T>> GetAllAsync();
+    Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression);
+    Task<T> GetByIdAsync(TId id);
 
-        #endregion
+    #endregion
 
-        #region count
+    #region add
 
-        Task<int> CountAsync();
-        Task<int> CountByConditionAsync(Expression<Func<T, bool>> expression);
+    Task<T> AddAsync(T entity);
+    Task AddAsync(IEnumerable<T> entities);
 
-        #endregion
+    #endregion
 
-        #region exist
+    #region delete
 
-        Task<bool> IsExistAsync(TId id);
+    Task DeleteAsync(T entity);
+    Task DeleteByConditionAsync(Expression<Func<T, bool>> expression);
 
-        #endregion
+    #endregion
 
-        #region save
+    #region count
 
-        Task<bool> SaveAsync();
+    Task<int> CountAsync();
+    Task<int> CountByConditionAsync(Expression<Func<T, bool>> expression);
 
-        #endregion
-    }
+    #endregion
 }

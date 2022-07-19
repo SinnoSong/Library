@@ -1,11 +1,10 @@
-﻿namespace Library.API.Service.Interface
+﻿namespace Library.API.Service.Interface;
+
+public interface IServicesWrapper
 {
-    public interface IServicesWrapper
-    {
-        IBookService Book { get; }
-        ICategoryService Category { get; }
-        ILendConfigService LendConfig { get; }
-        ILendRecordService LendRecord { get; }
-        INoticeService Notice { get; }
-    }
+    IBookService Book { get; }
+    ICategoryService Category { get; }
+    ILendConfigService LendConfig { get; }
+    ILendRecordService LendRecord { get; }
+    INoticeService Notice { get; }
 }

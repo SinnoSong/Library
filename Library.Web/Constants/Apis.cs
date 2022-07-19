@@ -51,4 +51,14 @@ public static class Apis
     public const string SelectYear = "api/DashBoard/year";
 
     #endregion
+
+    #region user
+
+    public const string UpdateUserGrade = "api/User/";
+    public const string GetUsers = "api/User";
+    public const string AddAdministrator = "api/User/Administrator";
+    public const string ChangePassword = "api/User/changePassword/";
+    public const string ChangeEmail = "api/User/changeEmail/";
+
+    #endregion
 }

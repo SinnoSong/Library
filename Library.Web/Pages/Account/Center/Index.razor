@@ -1,0 +1,60 @@
+﻿@page "/account/center"
+@inject IUserService UserService
+@inject MessageService MessageService
+@inject NavigationManager NavigationManager
+
+<PageContainer Title="Users">
+    <Content>
+        <AuthorizeView Roles="SuperAdministrator">
+            <Card>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/account/createAdmin"))">创建管理员</Button>
+            </Card>
+        </AuthorizeView>
+        <Card>
+            <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
+                <FormItem Label="查询管理员">
+                    <Switch @bind-Value="@context.IsAdmin" Checked="@false"></Switch>
+                </FormItem>
+                <FormItem>
+                    <AutoComplete @bind-Value="@context.Grade" Options="@_grades" Placeholder="请选择读者等级">
+                    </AutoComplete>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">
+                        查询
+                    </Button>
+                </FormItem>
+            </Form>
+        </Card>
+    </Content>
+    <ChildContent>
+        <BookTable Books="@_userDtos"></BookTable>
+    </ChildContent>
+</PageContainer>
+
+
+@code {
+    private UserQueryParameters _queryParameters;
+    private readonly List<byte> _grades = new() {1, 2, 3, 4};
+    private List<UserDto> _userDtos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnFinish();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnFinish()
+    {
+        var response = await UserService.GetUsers(_queryParameters);
+        if (response.Success)
+        {
+            _userDtos = response.Data;
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
+    }
+
+}

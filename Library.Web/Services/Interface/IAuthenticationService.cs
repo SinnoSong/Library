@@ -1,14 +1,13 @@
 ﻿using Library.Common.Models;
 using Library.Web.Models;
 
-namespace Library.Web.Services.Interface
+namespace Library.Web.Services.Interface;
+
+public interface IAuthenticationService
 {
-    public interface IAuthenticationService
-    {
-        Task<Response<AuthResponse>> AuthenticateAsync(LoginUserDto loginUser);
+    Task<Response<AuthResponse>> AuthenticateAsync(LoginUserDto loginUser);
 
-        Task Logout();
+    Task Logout();
 
-        Task<Response<bool>> RegisterAsync(RegisterUser registerUser);
-    }
+    Task<Response<bool>> RegisterAsync(RegisterUser registerUser);
 }

@@ -69,7 +69,7 @@
     private Task Delete(Guid bookId)
     {
         var book = _books.First(q => q.Id == bookId);
-        ModalService.Confirm(new ConfirmOptions()
+        ModalService.Confirm(new ConfirmOptions
         {
             Title = "删除书籍",
             Content = $"是否删除Id为：{book.Id}的书籍?",
@@ -85,7 +85,7 @@
                     await MessageService.Error(response.Message);
                 }
             },
-            OkType = "danger",
+            OkType = "danger"
         });
         return Task.CompletedTask;
     }

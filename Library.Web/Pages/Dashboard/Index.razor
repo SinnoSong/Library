@@ -6,13 +6,13 @@
     <Row Type="flex" Gutter="24">
         <AntDesign.Col Span="24" Style="margin-bottom: 24px;">
             <Title Level="4">30天内租借数据</Title>
-            <AntDesign.Charts.Column Data="@_oneMonthDataItems" Config="_visitChartConfig"/>
+            <AntDesign.Charts.Column @ref="_monthChart" Config="_visitChartConfig"/>
         </AntDesign.Col>
     </Row>
     <Row>
         <AntDesign.Col Xl="16" Lg="12" Md="12" Sm="24" Xs="24">
             <Title Level="4">1年内每月租借统计</Title>
-            <AntDesign.Charts.Column Data="@_oneYearItems" Config="_saleChartConfig"/>
+            <AntDesign.Charts.Column @ref="_yearChart" Config="_saleChartConfig"/>
         </AntDesign.Col>
         <AntDesign.Col Xl="8" Lg="12" Md="12" Sm="24" Xs="24">
             <div class="salesRank">
@@ -20,7 +20,7 @@
                     一年内统计数据
                 </h1>
                 <ul class="rankingList">
-                    @foreach (var item in Items)
+                    @foreach (var item in _ranks)
                     {
                         <li key="@item.Title">
                             <span class="rankingItemNumber @(item.Rank <= 3 ? "active" : "")">
@@ -42,41 +42,10 @@
 
 @code {
 
-    private List<ChartDataItem> _oneMonthDataItems = new()
-    {
-        new() {X = "2022-7-17", Y = 20},
-        new() {X = "2022-7-18", Y = 15},
-        new() {X = "2022-7-19", Y = 22},
-        new() {X = "2022-7-20", Y = 9},
-        new() {X = "2022-7-21", Y = 2},
-        new() {X = "2022-7-22", Y = 32},
-        new() {X = "2022-7-23", Y = 15},
-        new() {X = "2022-7-24", Y = 7},
-        new() {X = "2022-7-25", Y = 24},
-        new() {X = "2022-7-26", Y = 13},
-        new() {X = "2022-7-27", Y = 22},
-        new() {X = "2022-7-28", Y = 20},
-        new() {X = "2022-7-29", Y = 15},
-        new() {X = "2022-7-30", Y = 22},
-        new() {X = "2022-8-1", Y = 9},
-        new() {X = "2022-8-2", Y = 2},
-        new() {X = "2022-8-3", Y = 32},
-        new() {X = "2022-8-4", Y = 15},
-        new() {X = "2022-8-5", Y = 7},
-        new() {X = "2022-8-6", Y = 24},
-        new() {X = "2022-8-7", Y = 13},
-        new() {X = "2022-8-8", Y = 22},
-        new() {X = "2022-8-9", Y = 20},
-        new() {X = "2022-8-10", Y = 15},
-        new() {X = "2022-8-11", Y = 22},
-        new() {X = "2022-8-12", Y = 9},
-        new() {X = "2022-8-13", Y = 2},
-        new() {X = "2022-8-14", Y = 32},
-        new() {X = "2022-8-15", Y = 15},
-        new() {X = "2022-8-16", Y = 7},
-    };
+    private IChartComponent _yearChart;
+    private IChartComponent _monthChart;
 
-    private readonly ColumnConfig _visitChartConfig = new ColumnConfig
+    private readonly ColumnConfig _visitChartConfig = new()
     {
         ForceFit = true,
         Padding = "auto",
@@ -84,7 +53,7 @@
         YField = "y"
     };
 
-    private readonly ColumnConfig _saleChartConfig = new ColumnConfig
+    private readonly ColumnConfig _saleChartConfig = new()
     {
         ForceFit = true,
         Padding = "auto",
@@ -92,32 +61,15 @@
         YField = "y"
     };
 
-    // todo 根据每月借阅数量排序
-    private RecordRank[] Items { get; } =
-        {
-            new RecordRank {Rank = 1, Title = "Gongzhuan No.0 shop", Total = "323,234"},
-            new RecordRank {Rank = 2, Title = "Gongzhuan No.1 shop", Total = "323,234"},
-            new RecordRank {Rank = 3, Title = "Gongzhuan No.2 shop", Total = "323,234"},
-            new RecordRank {Rank = 4, Title = "Gongzhuan No.3 shop", Total = "323,234"},
-            new RecordRank {Rank = 5, Title = "Gongzhuan No.4 shop", Total = "323,234"},
-            new RecordRank {Rank = 6, Title = "Gongzhuan No.5 shop", Total = "323,234"},
-            new RecordRank {Rank = 7, Title = "Gongzhuan No.6 shop", Total = "323,234"}
-        };
-
-    private List<ChartDataItem> _oneYearItems = new()
+    private List<RecordRank> _ranks = new()
     {
-        new ChartDataItem {X = "1", Y = 1},
-        new ChartDataItem {X = "2", Y = 2},
-        new ChartDataItem {X = "3", Y = 3},
-        new ChartDataItem {X = "4", Y = 4},
-        new ChartDataItem {X = "5", Y = 5},
-        new ChartDataItem {X = "6", Y = 6},
-        new ChartDataItem {X = "7", Y = 7},
-        new ChartDataItem {X = "8", Y = 8},
-        new ChartDataItem {X = "9", Y = 9},
-        new ChartDataItem {X = "10", Y = 10},
-        new ChartDataItem {X = "11", Y = 11},
-        new ChartDataItem {X = "12", Y = 12},
+        new RecordRank {Rank = 1, Title = "Gongzhuan No.0 shop", Total = "323,234"},
+        new RecordRank {Rank = 2, Title = "Gongzhuan No.1 shop", Total = "323,234"},
+        new RecordRank {Rank = 3, Title = "Gongzhuan No.2 shop", Total = "323,234"},
+        new RecordRank {Rank = 4, Title = "Gongzhuan No.3 shop", Total = "323,234"},
+        new RecordRank {Rank = 5, Title = "Gongzhuan No.4 shop", Total = "323,234"},
+        new RecordRank {Rank = 6, Title = "Gongzhuan No.5 shop", Total = "323,234"},
+        new RecordRank {Rank = 7, Title = "Gongzhuan No.6 shop", Total = "323,234"}
     };
 
     protected override async Task OnInitializedAsync()
@@ -125,7 +77,12 @@
         var response = await DashBoardService.SelectLastYearData();
         if (response.Success)
         {
-            _oneYearItems = response.Data;
+            await _yearChart.ChangeData(response.Data);
+            _ranks = response.Data.OrderByDescending(item => item.Y).Select(item => new RecordRank {Title = item.X, Total = item.Y.ToString()}).ToList();
+            for (var i = 0; i < _ranks.Count; i++)
+            {
+                _ranks[i].Rank = i + 1;
+            }
         }
         else
         {
@@ -134,7 +91,7 @@
         var resp = await DashBoardService.SelectLast30DaysData();
         if (resp.Success)
         {
-            _oneMonthDataItems = resp.Data;
+            await _monthChart.ChangeData(resp.Data);
         }
         else
         {

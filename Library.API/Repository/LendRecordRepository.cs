@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Library.API.Entities;
@@ -28,10 +27,10 @@ public class LendRecordRepository : BaseRepository<LendRecord, Guid>, ILendRecor
     public async Task<List<ChartDataItem>> SelectOneYearCountAsync()
     {
         var dt = DateTime.Now;
-        var thisMonth = dt.AddDays(-(dt.Day) + 1).Date;
+        var thisMonth = dt.AddDays(-dt.Day + 1).Date;
         return await Table
             .Where(record => record.StartTime > thisMonth.AddYears(-1) && record.StartTime < thisMonth)
-            .GroupBy(i => new {Year = i.StartTime.Year, Month = i.StartTime.Month})
+            .GroupBy(i => new {i.StartTime.Year, i.StartTime.Month})
             .OrderBy(key => key.Key.Year).ThenBy(key => key.Key.Month)
             .Select(i => new ChartDataItem {X = i.Key.Year + "-" + i.Key.Month, Y = i.Count()})
             .ToListAsync();

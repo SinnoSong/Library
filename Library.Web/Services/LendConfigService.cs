@@ -8,13 +8,6 @@ namespace Library.Web.Services;
 
 public class LendConfigService : BaseHttpService, ILendConfigService
 {
-    #region field
-
-    private readonly IClient _client;
-    private readonly IMapper _mapper;
-
-    #endregion
-
     public LendConfigService(IClient client, ILocalStorageService localStorage, IMapper mapper) : base(client,
         localStorage)
     {
@@ -114,4 +107,11 @@ public class LendConfigService : BaseHttpService, ILendConfigService
 
         return response;
     }
+
+    #region field
+
+    private readonly IClient _client;
+    private readonly IMapper _mapper;
+
+    #endregion
 }

@@ -1,8 +1,7 @@
-﻿namespace Library.API.Configs
+﻿namespace Library.API.Configs;
+
+public class ApiError
 {
-    public class ApiError
-    {
-        public string Message { get; set; }
-        public string Detail { get; set; }
-    }
+    public string Message { get; set; }
+    public string Detail { get; set; }
 }

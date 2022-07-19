@@ -132,7 +132,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddMvc(options => { options.SuppressAsyncSuffixInActionNames = false; });
 
 
-
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

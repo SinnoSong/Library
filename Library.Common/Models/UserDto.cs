@@ -1,18 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
+namespace Library.Common.Models;
 
-namespace Library.Common.Models
+public class UserDto : UserBase
 {
-    public class UserDto
-    {
-        [Required, MinLength(4)]
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
-        [JsonProperty("email")][EmailAddress] public string Email { get; set; }
-
-        [JsonProperty("password")]
-        [MinLength(6)]
-        public string Password { get; set; }
-    }
+    [JsonProperty("grade")] public byte? Grade { get; set; }
 }

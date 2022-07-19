@@ -1,0 +1,21 @@
+﻿@inject NavigationManager NavigationManager
+
+<Table TItem="UserDto" DataSource="@UserDtos">
+    <AntDesign.Column @bind-Field="@context.UserName" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Grade" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Email" Sortable/>
+    <ActionColumn>
+        <Space>
+            <SpaceItem>
+                <Button Danger OnClick="@(() => NavigationManager.NavigateTo("/account/center/UpdateUserGrade"))">更新用户等级</Button>
+            </SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
+
+@code {
+
+    [Parameter]
+    public List<UserDto> UserDtos { get; set; } = null!;
+
+}

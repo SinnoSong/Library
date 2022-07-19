@@ -2,17 +2,16 @@
 using AutoMapper;
 using Library.Common.Models;
 
-namespace Library.Web.Config
+namespace Library.Web.Config;
+
+public class MapperConfig : Profile
 {
-    public class MapperConfig : Profile
+    public MapperConfig()
     {
-        public MapperConfig()
-        {
-            CreateMap<NoticeNoContentVo, NoticeIconData>()
-                .ForMember(d => d.Datetime, opt => opt.MapFrom(src => src.CreateTime));
-            CreateMap<CategoryDto, CategoryCreateDto>();
-            CreateMap<BookDto, BookUpdateDto>();
-            CreateMap<LendConfigDto, LendConfigCreateDto>();
-        }
+        CreateMap<NoticeNoContentVo, NoticeIconData>()
+            .ForMember(d => d.Datetime, opt => opt.MapFrom(src => src.CreateTime));
+        CreateMap<CategoryDto, CategoryCreateDto>();
+        CreateMap<BookDto, BookUpdateDto>();
+        CreateMap<LendConfigDto, LendConfigCreateDto>();
     }
 }

@@ -3,13 +3,13 @@
 @inject MessageService MessageService
 
 <Table TItem="LendRecordDto" DataSource="Records">
-    <Selection Key="@(context.Id.ToString())" />
-    <AntDesign.Column @bind-Field="@context.Id" Sortable />
-    <AntDesign.Column @bind-Field="@context.BookId" Sortable />
-    <AntDesign.Column @bind-Field="@context.StartTime" Sortable />
-    <AntDesign.Column @bind-Field="@context.EndTime" Sortable />
-    <AntDesign.Column @bind-Field="@context.RealReturnTime" Sortable />
-    <AntDesign.Column @bind-Field="@context.Processor" Sortable />
+    <Selection Key="@(context.Id.ToString())"/>
+    <AntDesign.Column @bind-Field="@context.Id" Sortable/>
+    <AntDesign.Column @bind-Field="@context.BookId" Sortable/>
+    <AntDesign.Column @bind-Field="@context.StartTime" Sortable/>
+    <AntDesign.Column @bind-Field="@context.EndTime" Sortable/>
+    <AntDesign.Column @bind-Field="@context.RealReturnTime" Sortable/>
+    <AntDesign.Column @bind-Field="@context.Processor" Sortable/>
     <ActionColumn>
         <Space>
             <SpaceItem>
@@ -27,7 +27,7 @@
                 if (!context.HasRenew && (DateTime.Now - context.EndTime).Days is < 3 and > 0)
                 {
                     <SpaceItem>
-                        <Button Danger OnClick="@(async() => await OnRenew(context.Id))">续借</Button>
+                        <Button Danger OnClick="@(async () => await OnRenew(context.Id))">续借</Button>
                     </SpaceItem>
                 }
             }
@@ -63,37 +63,13 @@
             {
                 content = $"请读者缴纳违约金：{penalty}元后，进行归还图书操作";
             }
-            ModalService.Confirm(new ConfirmOptions()
-                {
-                    Title = "归还图书",
-                    Content = content,
-                    OnOk = async (e) =>
-                    {
-                        var resp = await LendRecordService.PutAsync(recordId.ToString());
-                        if (resp.Success)
-                        {
-                            await OnInitializedAsync();
-                        }
-                        else
-                        {
-                            await MessageService.Error(resp.Message);
-                        }
-                    },
-                    OkType = "danger",
-                    OkText = "归还图书"
-                });
-        }
-    }
-
-    private Task OnRenew(Guid recordId)
-    {
-        ModalService.Confirm(new ConfirmOptions()
+            ModalService.Confirm(new ConfirmOptions
             {
-                Title = "续借书籍",
-                Content = "是否续借书籍，进行续借会再原归还时间基础上延长 7 天",
-                OnOk = async (e) =>
+                Title = "归还图书",
+                Content = content,
+                OnOk = async e =>
                 {
-                    var resp = await LendRecordService.RenewAsync(recordId.ToString());
+                    var resp = await LendRecordService.PutAsync(recordId.ToString());
                     if (resp.Success)
                     {
                         await OnInitializedAsync();
@@ -106,6 +82,30 @@
                 OkType = "danger",
                 OkText = "归还图书"
             });
+        }
+    }
+
+    private Task OnRenew(Guid recordId)
+    {
+        ModalService.Confirm(new ConfirmOptions
+        {
+            Title = "续借书籍",
+            Content = "是否续借书籍，进行续借会再原归还时间基础上延长 7 天",
+            OnOk = async e =>
+            {
+                var resp = await LendRecordService.RenewAsync(recordId.ToString());
+                if (resp.Success)
+                {
+                    await OnInitializedAsync();
+                }
+                else
+                {
+                    await MessageService.Error(resp.Message);
+                }
+            },
+            OkType = "danger",
+            OkText = "归还图书"
+        });
         return Task.CompletedTask;
     }
 

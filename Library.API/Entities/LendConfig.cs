@@ -2,17 +2,17 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Library.API.Entities
+namespace Library.API.Entities;
+
+public class LendConfig
 {
-    public class LendConfig
-    {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-        [Required]
-        public byte ReaderGrade { get; set; }
-        [Required]
-        public int MaxLendNumber { get; set; }
-        [Required]
-        public int MaxLendDays { get; set; }
-    }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
+
+    [Required] public byte ReaderGrade { get; set; }
+
+    [Required] public int MaxLendNumber { get; set; }
+
+    [Required] public int MaxLendDays { get; set; }
 }

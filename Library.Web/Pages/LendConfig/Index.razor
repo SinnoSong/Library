@@ -50,7 +50,7 @@
     private Task Delete(Guid guid)
     {
         var category = _lendConfigs.First(q => q.Id == guid);
-        ModalService.Confirm(new ConfirmOptions()
+        ModalService.Confirm(new ConfirmOptions
         {
             Title = "删除借阅规则",
             Content = $"是否删除Id为：{category.Id}的借阅规则?",
@@ -66,7 +66,7 @@
                     await MessageService.Error(response.Message);
                 }
             },
-            OkType = "danger",
+            OkType = "danger"
         });
         return Task.CompletedTask;
     }

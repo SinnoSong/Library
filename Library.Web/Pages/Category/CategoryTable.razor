@@ -1,4 +1,4 @@
-﻿<Table TItem="CategoryDto" DataSource="@CategoryDtos" >
+﻿<Table TItem="CategoryDto" DataSource="@CategoryDtos">
     <Selection Key="@(context.Id.ToString())"/>
     <AntDesign.Column @bind-Field="@context.Id" Sortable/>
     <AntDesign.Column @bind-Field="@context.Name" Sortable/>
@@ -22,7 +22,7 @@
 
     [Parameter]
     public EventCallback<Guid> OnDelete { get; set; }
-    
+
     private async Task Delete(Guid guid)
     {
         await OnDelete.InvokeAsync(guid);

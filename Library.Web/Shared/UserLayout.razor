@@ -5,7 +5,7 @@
         <div class="top">
             <div class="header">
                 <a>
-                    <img alt="logo" class="logo" src="assets/logo.svg" />
+                    <img alt="logo" class="logo" src="assets/logo.svg"/>
                     <span class="title">图书管理系统</span>
                 </a>
             </div>
@@ -18,28 +18,29 @@
 
 @code {
 
-    private LinkItem[] Links { get; set; } =
-    {
-        new()
+    private LinkItem[] Links { get; } =
         {
-            Key = "Ant Design Blazor",
-            Title = "Ant Design Blazor",
-            Href = "https://antblazor.com",
-            BlankTarget = true,
-        },
-        new()
-        {
-            Key = "github",
-            Title = (RenderFragment)(@<Icon Type="github" />),
-            Href = "https://github.com/SinnoSong/Library",
-            BlankTarget = true,
-        },
-        new()
-        {
-            Key = "Blazor",
-            Title = "Blazor",
-            Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
-            BlankTarget = true,
-        }
-    };
+            new()
+            {
+                Key = "Ant Design Blazor",
+                Title = "Ant Design Blazor",
+                Href = "https://antblazor.com",
+                BlankTarget = true
+            },
+            new()
+            {
+                Key = "github",
+                Title = (RenderFragment) (@<Icon Type="github"/>),
+                Href = "https://github.com/SinnoSong/Library",
+                BlankTarget = true
+            },
+            new()
+            {
+                Key = "Blazor",
+                Title = "Blazor",
+                Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
+                BlankTarget = true
+            }
+        };
+
 }
