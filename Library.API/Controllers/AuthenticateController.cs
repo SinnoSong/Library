@@ -1,17 +1,17 @@
-﻿using Library.API.Entities;
-using Library.Common.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Library.API.Entities;
+using Library.Common.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace Library.API.Controllers
@@ -36,7 +36,7 @@ namespace Library.API.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> GenerateTokenAsync([FromBody]LoginUserDto loginUser)
+        public async Task<IActionResult> GenerateTokenAsync([FromBody] LoginUserDto loginUser)
         {
             var user = await _userManager.FindByEmailAsync(loginUser.UserName);
             if (user == null)
@@ -120,10 +120,10 @@ namespace Library.API.Controllers
             var user = await _userManager.FindByIdAsync(id.ToString());
             var token = new JwtSecurityToken(Request.Headers.Authorization[0]["Bearer ".Length..]);
             var userName = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)!.Value;
-            if (userName!=user.UserName)
+            if (userName != user.UserName)
             {
                 throw new Exception("请输入自己的ID");
-            }       
+            }
             if (user == null)
             {
                 throw new Exception("此用户不存在");
@@ -135,14 +135,14 @@ namespace Library.API.Controllers
         }
 
         [HttpPut("/changeEmail/{id:guid}")]
-        public async Task<IActionResult> UpdateUserAsync(Guid id, UserEmailChangeDto userEmailChangeDto)
+        public async Task<IActionResult> UpdateUserAsync(Guid id, string newEmail)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
                 throw new Exception("此用户不存在");
             }
-            user.Email = userEmailChangeDto.Email;
+            user.Email = newEmail;
             await _userManager.UpdateAsync(user);
             return Ok();
         }
