@@ -13,11 +13,12 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Library.API.Controllers
 {
     [Route("auth")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     public class AuthenticateController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -34,7 +35,8 @@ namespace Library.API.Controllers
         public IConfiguration Configuration { get; }
 
         [HttpPost("login")]
-        public async Task<IActionResult> GenerateTokenAsync(LoginUserDto loginUser)
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateTokenAsync([FromBody]LoginUserDto loginUser)
         {
             var user = await _userManager.FindByEmailAsync(loginUser.UserName);
             if (user == null)
@@ -81,6 +83,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPost("register", Name = nameof(AddUserAsync))]
+        [AllowAnonymous]
         public async Task<IActionResult> AddUserAsync(RegisterUser registerUser)
         {
             if (registerUser.Grade is > 4 or 0)
@@ -107,6 +110,41 @@ namespace Library.API.Controllers
                 ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault()?.Description);
                 return BadRequest(ModelState);
             }
+        }
+
+
+        [HttpPut("/changePassword/{id:guid}")]
+
+        public async Task<IActionResult> UpdateUserAsync(Guid id, UserPasswordChangeDto userPasswordChangeDto)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            var token = new JwtSecurityToken(Request.Headers.Authorization[0]["Bearer ".Length..]);
+            var userName = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)!.Value;
+            if (userName!=user.UserName)
+            {
+                throw new Exception("请输入自己的ID");
+            }       
+            if (user == null)
+            {
+                throw new Exception("此用户不存在");
+            }
+
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, userPasswordChangeDto.NewPassword);
+            await _userManager.UpdateAsync(user);
+            return NoContent();
+        }
+
+        [HttpPut("/changeEmail/{id:guid}")]
+        public async Task<IActionResult> UpdateUserAsync(Guid id, UserEmailChangeDto userEmailChangeDto)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                throw new Exception("此用户不存在");
+            }
+            user.Email = userEmailChangeDto.Email;
+            await _userManager.UpdateAsync(user);
+            return Ok();
         }
     }
 }
