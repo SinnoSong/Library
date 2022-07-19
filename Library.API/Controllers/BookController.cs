@@ -142,6 +142,7 @@ namespace Library.API.Controllers
             {
                 throw new Exception("category不能为空");
             }
+
             var book = await _bookService.GetByIdAsync(bookId);
             book.CategoryId = cate.Id;
 

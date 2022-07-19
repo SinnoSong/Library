@@ -5,6 +5,7 @@ using Library.API.Service;
 using Library.API.Service.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -55,8 +56,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
 // 添加identityCore，基于user和role
-builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>();
+builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<LibraryDbContext>().AddDefaultTokenProviders();
+;
 // 添加repository包装
 builder.Services.AddScoped<IServicesWrapper, ServicesWrapper>();
 // 添加定时任务
@@ -127,6 +130,8 @@ builder.Services.AddCors(options =>
 });
 // 添加支持名称带async的方法名称
 builder.Services.AddMvc(options => { options.SuppressAsyncSuffixInActionNames = false; });
+
+
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
