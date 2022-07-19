@@ -23,10 +23,10 @@ namespace Library.API.Controllers
             _userManager = userManager;
         }
 
-        [HttpPut("{userID:guid}")]
-        public async Task<IActionResult> PutUserGradeAsync(Guid userID, byte grade)
+        [HttpPut("{userId:guid}")]
+        public async Task<IActionResult> PutUserGradeAsync(Guid userId, byte grade)
         {
-            var user = await _userManager.FindByIdAsync(userID.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (grade is > 4 or 0)
             {
                 throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
