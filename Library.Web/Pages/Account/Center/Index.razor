@@ -13,10 +13,10 @@
         <Card>
             <Form Model="@_queryParameters" Layout="Inline" OnFinish="OnFinish">
                 <FormItem Label="查询管理员">
-                    <Switch @bind-Value="@context.IsAdmin" Checked="@false"></Switch>
+                    <Switch @bind-Value="@context.IsAdmin" Checked="false"></Switch>
                 </FormItem>
                 <FormItem>
-                    <AutoComplete @bind-Value="@context.Grade" Options="@_grades" Placeholder="请选择读者等级">
+                    <AutoComplete @bind-Value="@context.Grade" Options="_grades" Placeholder="请选择读者等级">
                     </AutoComplete>
                 </FormItem>
                 <FormItem>

@@ -1,0 +1,30 @@
+﻿@page "/account/settings"
+@inject IUserService UserService
+
+
+<PageContainer Title="Users">
+    <Content>
+        <AntList TItem="UserInfoListItem" ItemLayout="ListItemLayout.Horizontal" DataSource="_data">
+            <ListItem Actions="_actions">
+                <ListItemMeta Description="@context.Description">
+                    <TitleTemplate>@context.Title</TitleTemplate>
+                </ListItemMeta>
+            </ListItem>
+        </AntList>
+    </Content>
+</PageContainer>
+
+@code {
+
+    private readonly List<UserInfoListItem> _data = new()
+    {
+        new() {Title = "账号密码", Description = "当前账号密码"},
+        new() {Title = "Email", Description = "当前Email"}
+    };
+
+    private static RenderFragment _modify = @<a key="modify">Modify</a>;
+
+    private static RenderFragment _delete = @<a key="modify">修改</a>;
+
+    private readonly RenderFragment[] _actions = {_modify, _delete};
+}

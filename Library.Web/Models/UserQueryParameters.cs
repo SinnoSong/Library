@@ -2,6 +2,6 @@
 
 public class UserQueryParameters : QueryParameters
 {
-    public byte? Grade { get; set; }
-    public bool? IsAdmin { get; set; }
+    public string Grade { get; set; } = "1";
+    public bool IsAdmin { get; set; }
 }

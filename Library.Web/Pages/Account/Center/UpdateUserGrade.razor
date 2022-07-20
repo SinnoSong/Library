@@ -14,12 +14,12 @@
 
     <ChildContent>
         <Card>
-            <Form OnFinish="HandleUpdate">
+            <Form Model="@_userGradeDto" OnFinish="HandleUpdate">
                 <FormItem>
-                    <Input @bind-Value="_userId" Placeholder="请输入用户Id" DefaultValue="context.Title"/>
+                    <Input @bind-Value="@context.UserId" Placeholder="请输入用户Id"/>
                 </FormItem>
-                <FormItem>
-                    <AutoComplete @bind-Value="_grade" Options="@_grades" Placeholder="请选择等级"/>
+                <FormItem Label="请选择等级">
+                    <AutoComplete @bind-Value="@context.Grade" Options="@_grades"/>
                 </FormItem>
                 <FormItem>
                     <Button Type="submit">修改读者等级</Button>
@@ -31,13 +31,13 @@
 </PageContainer>
 
 @code {
-    private Guid _userId;
-    private byte _grade = 1;
+    private UpdateUserGradeDto _userGradeDto;
+
     private readonly List<byte> _grades = new() {1, 2, 3, 4};
 
     private async Task HandleUpdate()
     {
-        var response = await UserService.UpdateUserGrade(_userId, _grade);
+        var response = await UserService.UpdateUserGrade(_userGradeDto.UserId, byte.Parse(_userGradeDto.Grade));
         if (response.Success)
         {
             NavigationManager.NavigateTo("/account/center");

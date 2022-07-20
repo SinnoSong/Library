@@ -42,17 +42,14 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "Administrator,SuperAdministrator")]
-    public async Task<List<UserDto>> GetUsersAsync(byte? grade, bool? isAdmin, int page = 1, int size = 25)
+    public async Task<List<UserDto>> GetUsersAsync(byte? grade, bool isAdmin, int page = 1, int size = 25)
     {
-        switch (grade)
+        if (grade is > 4 or < 0)
         {
-            case null when isAdmin is null:
-                throw new ArgumentException("grade 和 isAdmin 必须有一个参数不为空！");
-            case > 4 or 0:
-                throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
+            throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
         }
 
-        var users = isAdmin == null
+        var users = !isAdmin
             ? _userManager.Users.Where(user => user.Grade != null && user.Grade == grade)
             : _userManager.Users.Where(user => user.Grade == null);
 
