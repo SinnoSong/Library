@@ -1,0 +1,49 @@
+﻿@page "/account/settings/ChangeEmail"
+@using Blazored.LocalStorage
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject MessageService MessageService
+@inject ILocalStorageService LocalStorageService
+
+<PageContainer Title="修改邮箱">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>Account</BreadcrumbItem>
+            <BreadcrumbItem>UpdateUserGrade</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <FormItem Label="新邮箱">
+                <Input @bind-Value="@_newEmail" Placeholder="必须包含大小写数字特殊字符"/>
+            </FormItem>
+            <FormItem>
+                <Button Type="submit" OnClick="HandleClick">修改密码</Button>
+            </FormItem>
+            <Button OnClick="@(() => NavigationManager.NavigateTo("/account/settings"))">返回</Button>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+
+@code {
+    private string _newEmail;
+
+    private async Task HandleClick()
+    {
+        var userId = Guid.Parse(await LocalStorageService.GetItemAsStringAsync("userId"));
+        var response = await UserService.ChangeEmail(userId, _newEmail);
+        if (response.Success)
+        {
+            await MessageService.Info("修改成功！");
+            NavigationManager.NavigateTo("/account/settings");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
+    }
+
+}

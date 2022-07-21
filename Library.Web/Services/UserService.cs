@@ -9,7 +9,7 @@ public class UserService : BaseHttpService, IUserService
 {
     private readonly IClient _client;
 
-    protected UserService(IClient client, ILocalStorageService localStorage) : base(client, localStorage)
+    public UserService(IClient client, ILocalStorageService localStorage) : base(client, localStorage)
     {
         _client = client;
     }

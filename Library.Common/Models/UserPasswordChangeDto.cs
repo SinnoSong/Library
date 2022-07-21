@@ -12,4 +12,8 @@ public class UserPasswordChangeDto
     [JsonProperty("newPassword")]
     [MinLength(6)]
     public string NewPassword { get; set; }
+
+    [Required]
+    [Compare(nameof(NewPassword))]
+    public string ConfirmPassword { get; set; }
 }

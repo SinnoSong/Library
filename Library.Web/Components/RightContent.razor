@@ -1,9 +1,11 @@
 ﻿@using Microsoft.IdentityModel.JsonWebTokens
+@using Blazored.LocalStorage
 @inherits AntDomComponentBase
 @inject INoticeService NoticeService
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavManager
 @inject IMapper Mapper 
+@inject ILocalStorageService LocalStorageService
 
 <Space Class="@ClassMapper.Class" Size="@("24")">
     <SpaceItem>
@@ -69,6 +71,7 @@
     {
         var authenticationState = await AuthProvider.GetAuthenticationStateAsync();
         return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        // return await LocalStorageService.GetItemAsStringAsync("email");
     }
 
     private async Task<List<NoticeIconData>> SetNotices()

@@ -29,6 +29,8 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
                 Success = true
             };
             await _localStorage.SetItemAsStringAsync("accessToken", result.Token);
+            await _localStorage.SetItemAsStringAsync("userId", response.Data.UserId);
+            await _localStorage.SetItemAsStringAsync("email", response.Data.Email);
 
             await _authenticationStateProvider.LoggedIn();
         }

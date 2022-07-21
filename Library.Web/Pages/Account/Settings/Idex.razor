@@ -4,8 +4,15 @@
 
 <PageContainer Title="Users">
     <Content>
-        <AntList TItem="UserInfoListItem" ItemLayout="ListItemLayout.Horizontal" DataSource="_data">
-            <ListItem Actions="_actions">
+        <AntList TItem="UserInfoListItem" ItemLayout="ListItemLayout.Horizontal" DataSource="_passwordData">
+            <ListItem Actions="_modifyPasswordActions">
+                <ListItemMeta Description="@context.Description">
+                    <TitleTemplate>@context.Title</TitleTemplate>
+                </ListItemMeta>
+            </ListItem>
+        </AntList>
+        <AntList TItem="UserInfoListItem" ItemLayout="ListItemLayout.Horizontal" DataSource="_emailData">
+            <ListItem Actions="_modifyEmailActions">
                 <ListItemMeta Description="@context.Description">
                     <TitleTemplate>@context.Title</TitleTemplate>
                 </ListItemMeta>
@@ -16,15 +23,21 @@
 
 @code {
 
-    private readonly List<UserInfoListItem> _data = new()
+    private readonly List<UserInfoListItem> _passwordData = new()
     {
         new() {Title = "账号密码", Description = "当前账号密码"},
+    };
+
+    private readonly List<UserInfoListItem> _emailData = new()
+    {
         new() {Title = "Email", Description = "当前Email"}
     };
 
-    private static RenderFragment _modify = @<a key="modify">Modify</a>;
 
-    private static RenderFragment _delete = @<a key="modify">修改</a>;
+    private static readonly RenderFragment ModifyPassword = @<a href="/account/settings/ChangePassword">修改密码</a>;
 
-    private readonly RenderFragment[] _actions = {_modify, _delete};
+    private static readonly RenderFragment ModifyEmail = @<a href="/account/settings/ChangeEmail">修改邮箱</a>;
+
+    private readonly RenderFragment[] _modifyPasswordActions = {ModifyPassword};
+    private readonly RenderFragment[] _modifyEmailActions = {ModifyEmail};
 }

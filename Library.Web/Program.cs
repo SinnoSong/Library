@@ -22,6 +22,7 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILendConfigService, LendConfigService>();
 builder.Services.AddScoped<ILendRecordService, LendRecordService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<INoticeService, NoticeService>();
 builder.Services.AddScoped<IDashBoardService, DashBoardService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();

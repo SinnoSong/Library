@@ -61,14 +61,14 @@ public class AuthenticateController : ControllerBase
             tokenConfigSection["Issuer"],
             tokenConfigSection["Audience"],
             claims,
-            expires: DateTime.Now.AddMinutes(120),
+            expires: DateTime.UtcNow.AddMinutes(120),
             signingCredentials: signCredential);
         return Ok(new
         {
             userId = user.Id,
             email = user.Email,
             accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-            expiration = TimeZoneInfo.ConvertTimeFromUtc(jwtToken.ValidTo, TimeZoneInfo.Local)
+            expiration = TimeZoneInfo.ConvertTime(jwtToken.ValidTo, TimeZoneInfo.Local)
         });
     }
 

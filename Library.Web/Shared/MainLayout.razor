@@ -27,7 +27,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var menuJson = "[{\"path\":\"/books\",\"name\":\"书籍管理\",\"key\":\"book\"},{\"path\":\"/categories\",\"name\":\"书籍类别管理\",\"key\":\"category\"},{\"path\":\"/lendConfigs\",\"name\":\"借阅规则管理\",\"key\":\"lendConfig\"},{\"path\":\"/lendRecords\",\"name\":\"借阅管理\",\"key\":\"lendRecords\"},{\"path\":\"/dashboard\",\"name\":\"数据统计\",\"key\":\"dashboard\"},{\"path\":\"/account\",\"name\":\"账号管理\",\"key\":\"account\"}]";
+        var menuJson = "[{\"path\":\"/books\",\"name\":\"书籍管理\",\"key\":\"book\"},{\"path\":\"/categories\",\"name\":\"书籍类别管理\",\"key\":\"category\"},{\"path\":\"/lendConfigs\",\"name\":\"借阅规则管理\",\"key\":\"lendConfig\"},{\"path\":\"/lendRecords\",\"name\":\"借阅管理\",\"key\":\"lendRecords\"},{\"path\":\"/dashboard\",\"name\":\"数据统计\",\"key\":\"dashboard\"},{\"path\":\"/account\",\"name\":\"账号管理\",\"key\":\"account\",\"children\":[{\"path\":\"/account/center\",\"name\":\"用户中心\"},{\"path\":\"/account/settings\",\"name\":\"个人信息\"}]}]";
 
         MenuData = JsonConvert.DeserializeObject<MenuDataItem[]>(menuJson);
     }
