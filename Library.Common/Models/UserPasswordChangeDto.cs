@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace Library.Common.Models;
@@ -10,7 +11,7 @@ public class UserPasswordChangeDto
     public string OldPassword { get; set; }
 
     [JsonProperty("newPassword")]
-    [MinLength(6)]
+    [PasswordPropertyText(true)]
     public string NewPassword { get; set; }
 
     [Required]

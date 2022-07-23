@@ -121,7 +121,7 @@ public class Client : IClient
         foreach (var item in response.Content.Headers)
             headers[item.Key] = item.Value;
         var status = (int) response.StatusCode;
-        if (status == 200) return true;
+        if (response.IsSuccessStatusCode) return true;
 
         string? jsonMessage = null;
         string? responseData = null;

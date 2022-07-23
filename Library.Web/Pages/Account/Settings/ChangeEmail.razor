@@ -16,13 +16,20 @@
 
     <ChildContent>
         <Card>
-            <FormItem Label="新邮箱">
-                <Input @bind-Value="@_newEmail" Placeholder="必须包含大小写数字特殊字符"/>
-            </FormItem>
-            <FormItem>
-                <Button Type="submit" OnClick="HandleClick">修改密码</Button>
-            </FormItem>
-            <Button OnClick="@(() => NavigationManager.NavigateTo("/account/settings"))">返回</Button>
+            <Space>
+                <SpaceItem>
+                    <Text>新邮箱地址：</Text>
+                </SpaceItem>
+                <SpaceItem>
+                    <Input @bind-Value="@_newEmail" Placeholder="必须包含大小写数字特殊字符"/>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button Type="submit" OnClick="HandleClick">修改邮箱</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button OnClick="@(() => NavigationManager.NavigateTo("/account/settings"))">返回</Button>
+                </SpaceItem>
+            </Space>
         </Card>
     </ChildContent>
 </PageContainer>
@@ -34,7 +41,7 @@
     private async Task HandleClick()
     {
         var userId = Guid.Parse(await LocalStorageService.GetItemAsStringAsync("userId"));
-        var response = await UserService.ChangeEmail(userId, _newEmail);
+        var response = await UserService.ChangeEmail(userId, Uri.EscapeDataString(_newEmail));
         if (response.Success)
         {
             await MessageService.Info("修改成功！");

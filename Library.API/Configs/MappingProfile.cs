@@ -20,5 +20,6 @@ public class MappingProfile : Profile
         CreateMap<Notice, NoticeDto>().ReverseMap();
         CreateMap<Notice, NoticeNoContentVo>();
         CreateMap<NoticeCreateDto, Notice>();
+        CreateMap<User, UserDto>();
     }
 }

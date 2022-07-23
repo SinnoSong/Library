@@ -12,9 +12,6 @@
     <AntDesign.Column @bind-Field="@context.Processor" Sortable/>
     <ActionColumn>
         <Space>
-            <SpaceItem>
-                <Button Danger OnClick="@(async () => await Delete(context.Id))">归还图书</Button>
-            </SpaceItem>
             @{
                 if (context.RealReturnTime == null)
                 {
@@ -58,8 +55,8 @@
         {
             var content = "是否归还图书？";
             var data = response.Data;
-            var penalty = (data.RealReturnTime - DateTime.Now)!.Value.Days;
-            if (penalty != 0)
+            var penalty = (data.EndTime - DateTime.Now)!.Days;
+            if (penalty >= 0)
             {
                 content = $"请读者缴纳违约金：{penalty}元后，进行归还图书操作";
             }

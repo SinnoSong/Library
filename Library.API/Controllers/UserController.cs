@@ -44,10 +44,7 @@ public class UserController : ControllerBase
     [Authorize(Roles = "Administrator,SuperAdministrator")]
     public async Task<List<UserDto>> GetUsersAsync(byte? grade, bool isAdmin, int page = 1, int size = 25)
     {
-        if (grade is > 4 or < 0)
-        {
-            throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
-        }
+        if (grade is > 4 or < 0) throw new ArgumentException("Grade不合法，只能设置1,2,3,4");
 
         var users = !isAdmin
             ? _userManager.Users.Where(user => user.Grade != null && user.Grade == grade)
@@ -78,7 +75,7 @@ public class UserController : ControllerBase
     }
 
 
-    [HttpPut("/changePassword/{id:guid}")]
+    [HttpPut("changePassword/{id:guid}")]
     public async Task<IActionResult> UpdateUserPasswordAsync(Guid id, UserPasswordChangeDto userPasswordChangeDto)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
@@ -87,13 +84,13 @@ public class UserController : ControllerBase
         if (userName != user.UserName) throw new Exception("请输入自己的ID");
 
         if (user == null) throw new Exception("此用户不存在");
-
-        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, userPasswordChangeDto.NewPassword);
-        await _userManager.UpdateAsync(user);
-        return NoContent();
+        var result = await _userManager.ChangePasswordAsync(user, userPasswordChangeDto.OldPassword,
+            userPasswordChangeDto.NewPassword);
+        if (result.Succeeded) return NoContent();
+        throw new Exception(result.Errors.FirstOrDefault()?.Description ?? "修改密码失败！");
     }
 
-    [HttpPut("/changeEmail/{id:guid}")]
+    [HttpPut("changeEmail/{id:guid}")]
     public async Task<IActionResult> UpdateUserEmailAsync(Guid id, string newEmail)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());

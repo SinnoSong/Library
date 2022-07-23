@@ -31,6 +31,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
             await _localStorage.SetItemAsStringAsync("accessToken", result.Token);
             await _localStorage.SetItemAsStringAsync("userId", response.Data.UserId);
             await _localStorage.SetItemAsStringAsync("email", response.Data.Email);
+            await _localStorage.SetItemAsync("menuPath", response.Data.MenuPath);
 
             await _authenticationStateProvider.LoggedIn();
         }

@@ -1,5 +1,5 @@
-﻿@using Microsoft.IdentityModel.JsonWebTokens
-@using Blazored.LocalStorage
+﻿@using Blazored.LocalStorage
+@using Microsoft.IdentityModel.JsonWebTokens
 @inherits AntDomComponentBase
 @inject INoticeService NoticeService
 @inject AuthenticationStateProvider AuthProvider
@@ -8,20 +8,6 @@
 @inject ILocalStorageService LocalStorageService
 
 <Space Class="@ClassMapper.Class" Size="@("24")">
-    <SpaceItem>
-        <HeaderSearch Class="action search"
-                      Placeholder="Site Search"
-                      DefaultValue="umi ui"/>
-    </SpaceItem>
-    <SpaceItem>
-        <AntDesign.Tooltip Title="@("Help")" Placement="@Placement.Bottom">
-            <Unbound>
-                <span @ref="@context.Current" class="action">
-                    <Icon Type="question-circle" Theme="outline"/>
-                </span>
-            </Unbound>
-        </AntDesign.Tooltip>
-    </SpaceItem>
     <SpaceItem>
         <NoticeIcon ClearText="Empty"
                     ViewMoreText="see more"
@@ -48,7 +34,6 @@
     private int _count = 0;
 
     private AvatarMenuItem[] AvatarMenuItems { get; } = {
-        new() {Key = "center", IconType = "user", Option = "个人中心"},
         new() {Key = "setting", IconType = "setting", Option = "个人设置"},
         new() {IsDivider = true},
         new() {Key = "logout", IconType = "logout", Option = "退出登录"}
@@ -71,7 +56,6 @@
     {
         var authenticationState = await AuthProvider.GetAuthenticationStateAsync();
         return authenticationState.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        // return await LocalStorageService.GetItemAsStringAsync("email");
     }
 
     private async Task<List<NoticeIconData>> SetNotices()

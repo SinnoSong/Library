@@ -28,15 +28,15 @@
         </Card>
     </Content>
     <ChildContent>
-        <BookTable Books="@_userDtos"></BookTable>
+        <UserTable UserDtos="@_userDtos"></UserTable>
     </ChildContent>
 </PageContainer>
 
 
 @code {
-    private UserQueryParameters _queryParameters;
+    private readonly UserQueryParameters _queryParameters = new();
     private readonly List<byte> _grades = new() {1, 2, 3, 4};
-    private List<UserDto> _userDtos;
+    private List<UserDto> _userDtos = new();
 
     protected override async Task OnInitializedAsync()
     {

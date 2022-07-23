@@ -45,7 +45,12 @@ public class AuthenticateController : ControllerBase
 
         var userClaims = await _userManager.GetClaimsAsync(user);
         var userRoles = await _userManager.GetRolesAsync(user);
-        foreach (var roleItem in userRoles) userClaims.Add(new Claim(ClaimTypes.Role, roleItem));
+        var menuPaths = new HashSet<MenuPath>();
+        foreach (var roleItem in userRoles)
+        {
+            userClaims.Add(new Claim(ClaimTypes.Role, roleItem));
+            foreach (var item in Configs.MenuPath.SetMenu(roleItem)) menuPaths.Add(item);
+        }
 
         var claims = new List<Claim>
         {
@@ -68,7 +73,8 @@ public class AuthenticateController : ControllerBase
             userId = user.Id,
             email = user.Email,
             accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-            expiration = TimeZoneInfo.ConvertTime(jwtToken.ValidTo, TimeZoneInfo.Local)
+            expiration = TimeZoneInfo.ConvertTime(jwtToken.ValidTo, TimeZoneInfo.Local),
+            menuPath = menuPaths
         });
     }
 

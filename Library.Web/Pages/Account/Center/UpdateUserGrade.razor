@@ -1,4 +1,4 @@
-﻿@page "/account/center/UpdateUserGrade"
+﻿@page "/account/center/UpdateUserGrade/{id}"
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 @inject MessageService MessageService
@@ -14,30 +14,33 @@
 
     <ChildContent>
         <Card>
-            <Form Model="@_userGradeDto" OnFinish="HandleUpdate">
-                <FormItem>
-                    <Input @bind-Value="@context.UserId" Placeholder="请输入用户Id"/>
-                </FormItem>
-                <FormItem Label="请选择等级">
-                    <AutoComplete @bind-Value="@context.Grade" Options="@_grades"/>
-                </FormItem>
-                <FormItem>
-                    <Button Type="submit">修改读者等级</Button>
-                </FormItem>
-                <Button OnClick="@(() => NavigationManager.NavigateTo("/account/center"))">返回列表</Button>
-            </Form>
+            <Space>
+                <SpaceItem>
+                    <AutoComplete @bind-Value="@_grade" Options="@_grades"/>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button OnClick="HandleUpdate">修改读者等级</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button OnClick="@(() => NavigationManager.NavigateTo("/account/center"))">返回列表</Button>
+                </SpaceItem>
+            </Space>
         </Card>
     </ChildContent>
 </PageContainer>
 
 @code {
-    private UpdateUserGradeDto _userGradeDto;
+
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    private string _grade;
 
     private readonly List<byte> _grades = new() {1, 2, 3, 4};
 
     private async Task HandleUpdate()
     {
-        var response = await UserService.UpdateUserGrade(_userGradeDto.UserId, byte.Parse(_userGradeDto.Grade));
+        var response = await UserService.UpdateUserGrade(new Guid(Id), byte.Parse(_grade));
         if (response.Success)
         {
             NavigationManager.NavigateTo("/account/center");

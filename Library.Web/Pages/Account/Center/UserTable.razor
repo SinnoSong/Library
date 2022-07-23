@@ -6,9 +6,12 @@
     <AntDesign.Column @bind-Field="@context.Email" Sortable/>
     <ActionColumn>
         <Space>
-            <SpaceItem>
-                <Button Danger OnClick="@(() => NavigationManager.NavigateTo("/account/center/UpdateUserGrade"))">更新用户等级</Button>
-            </SpaceItem>
+            @if (context.Grade != null)
+            {
+                <SpaceItem>
+                    <Button Danger OnClick="@(() => NavigationManager.NavigateTo($"/account/center/UpdateUserGrade/{context.Id}"))">更新用户等级</Button>
+                </SpaceItem>
+            }
         </Space>
     </ActionColumn>
 </Table>

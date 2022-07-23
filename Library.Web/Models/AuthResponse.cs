@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Library.Common.Models;
+using Newtonsoft.Json;
 
 namespace Library.Web.Models;
 
@@ -14,4 +15,6 @@ public class AuthResponse
     public string Email { get; set; }
 
     [JsonProperty("expiration")] public DateTime Expiration { get; set; }
+
+    [JsonProperty("menuPath")] public List<MenuPath> MenuPath { get; set; }
 }
