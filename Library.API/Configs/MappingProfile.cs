@@ -17,9 +17,6 @@ public class MappingProfile : Profile
         CreateMap<LendConfigCreateDto, LendConfig>();
         CreateMap<LendRecord, LendRecordDto>().ReverseMap();
         CreateMap<LendRecordCreateDto, LendRecord>();
-        CreateMap<Notice, NoticeDto>().ReverseMap();
-        CreateMap<Notice, NoticeNoContentVo>();
-        CreateMap<NoticeCreateDto, Notice>();
         CreateMap<User, UserDto>();
     }
 }

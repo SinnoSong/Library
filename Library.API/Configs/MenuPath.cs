@@ -1,34 +1,36 @@
 ﻿using System.Collections.Generic;
+using Library.Common.Models;
 
 namespace Library.API.Configs;
 
-public static class MenuPath
+public static class MenuPathResource
 {
-    private static readonly Dictionary<string, Common.Models.MenuPath> menuDatas = SetMenuDatas();
+    private static readonly Dictionary<string, MenuPath> menuDatas = SetMenuDatas();
 
-    private static Dictionary<string, Common.Models.MenuPath> SetMenuDatas()
+    private static Dictionary<string, MenuPath> SetMenuDatas()
     {
-        var result = new Dictionary<string, Common.Models.MenuPath>
+        var result = new Dictionary<string, MenuPath>
         {
-            {"book", new Common.Models.MenuPath("/books", "书籍管理", "book")},
-            {"category", new Common.Models.MenuPath("/categories", "书籍分类管理", "book")},
-            {"lendConfig", new Common.Models.MenuPath("/lendConfigs", "借阅规则管理", "lendConfig")},
-            {"lendRecords", new Common.Models.MenuPath("/lendRecords", "借阅管理", "lendRecords")},
-            {"dashboard", new Common.Models.MenuPath("/dashboard", "数据统计", "dashboard")},
-            {"user_account", new Common.Models.MenuPath("/account/settings", "个人信息", "user_account")}
+            {"book", new MenuPath("/books", "书籍管理", "book")},
+            {"category", new MenuPath("/categories", "书籍分类管理", "categories")},
+            {"lendConfig", new MenuPath("/lendConfigs", "借阅规则管理", "lendConfig")},
+            {"lendRecords", new MenuPath("/lendRecords", "借阅管理", "lendRecords")},
+            {"dashboard", new MenuPath("/dashboard", "数据统计", "dashboard")},
+            {"user_account", new MenuPath("/account/settings", "个人信息", "user_account")},
+            {"notice",new MenuPath("/notice","公告管理","notice") }
         };
-        var accountMenu = new List<Common.Models.MenuPath>
+        var accountMenu = new List<MenuPath>
         {
             new("/account/center", "用户中心"),
             new("/account/settings", "个人信息")
         };
-        result.Add("account", new Common.Models.MenuPath("/account", "账号管理", "account", accountMenu));
+        result.Add("account", new MenuPath("/account", "账号管理", "account", accountMenu));
         return result;
     }
 
-    internal static List<Common.Models.MenuPath> SetMenu(string role)
+    internal static List<MenuPath> SetMenu(string role)
     {
-        var result = new List<Common.Models.MenuPath>();
+        var result = new List<MenuPath>();
         if (role != "User")
         {
             result.Add(menuDatas.GetValueOrDefault("book")!);

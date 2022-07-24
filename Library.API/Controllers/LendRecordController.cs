@@ -73,12 +73,16 @@ public class LendRecordController : ControllerBase
             select = select == null
                 ? record => record.StartTime.Date == DateTime.Parse(returnTime)
                 : select.And(record => record.StartTime.Date == DateTime.Parse(returnTime));
-
+        var users = _userManager.Users.Where(user => user.Grade == null).Select(user => new { id = user.Id, name = user.UserName }).ToDictionary(d => d.id, d => d.name);
         if (select != null) records = records.Where(select);
-
         records = records.Sort(sort, _mappingDict);
-        return await PagedList<LendRecordDto>.CreateAsync(_mapper.ProjectTo<LendRecordDto>(records), page,
-            pageSize);
+
+        var result = await PagedList<LendRecordDto>.CreateAsync(_mapper.ProjectTo<LendRecordDto>(records), page, pageSize);
+        result.ForEach(record => record.Processor = users.GetValueOrDefault(record.Processor.ToLower()) ?? "用户已注销");
+        var books = (await _bookService.GetByConditionAsync(book => result.Select(record => record.BookId).ToList().Contains(book.Id))).ToDictionary(book => book.Id, book => book.Title);
+        result.ForEach(record => record.BookTitle = books.GetValueOrDefault(record.BookId ?? new Guid()) ?? "书籍已删除");
+        result.ForEach(record => record.BookId = null);
+        return result;
     }
 
     [HttpGet("{id:guid}", Name = nameof(GetRecordAsync))]
@@ -124,7 +128,7 @@ public class LendRecordController : ControllerBase
         await _bookService.UpdateAsync(book);
 
         var vo = _mapper.Map<LendRecordDto>(result);
-        return CreatedAtRoute(nameof(GetRecordAsync), new {id = vo.Id}, vo);
+        return CreatedAtRoute(nameof(GetRecordAsync), new { id = vo.Id }, vo);
     }
 
     [HttpPost("reservation")]
@@ -149,7 +153,7 @@ public class LendRecordController : ControllerBase
 
         var result = await _lendRecordService.AddAsync(lendRecord);
         var vo = _mapper.Map<LendRecordDto>(result);
-        return CreatedAtRoute(nameof(GetRecordAsync), new {id = vo.Id}, vo);
+        return CreatedAtRoute(nameof(GetRecordAsync), new { id = vo.Id }, vo);
     }
 
     #endregion

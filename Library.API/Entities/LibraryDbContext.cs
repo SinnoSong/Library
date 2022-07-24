@@ -13,7 +13,6 @@ public class LibraryDbContext : IdentityDbContext<User, Role, string>
     public DbSet<Category> Categories { get; set; }
     public DbSet<LendRecord> LendBookRecords { get; set; }
     public DbSet<LendConfig> LendConfigs { get; set; }
-    public DbSet<Notice> Notices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

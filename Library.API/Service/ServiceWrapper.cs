@@ -12,7 +12,6 @@ public class ServicesWrapper : IServicesWrapper
     private readonly ICategoryService _categoryService = default;
     private readonly ILendConfigService _lendConfigService = default;
     private readonly ILendRecordService _lendRecordService = default;
-    private readonly INoticeService _noticeService = default;
 
     public ServicesWrapper(LibraryDbContext libraryDbContext)
     {
@@ -32,7 +31,4 @@ public class ServicesWrapper : IServicesWrapper
 
     public ILendRecordService LendRecord =>
         _lendRecordService ?? new LendRecordService(new LendRecordRepository(LibraryDbContext));
-
-    public INoticeService Notice =>
-        _noticeService ?? new NoticeService(new BaseRepository<Notice, Guid>(LibraryDbContext));
 }

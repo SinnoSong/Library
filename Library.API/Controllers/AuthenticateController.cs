@@ -49,7 +49,7 @@ public class AuthenticateController : ControllerBase
         foreach (var roleItem in userRoles)
         {
             userClaims.Add(new Claim(ClaimTypes.Role, roleItem));
-            foreach (var item in Configs.MenuPath.SetMenu(roleItem)) menuPaths.Add(item);
+            foreach (var item in Configs.MenuPathResource.SetMenu(roleItem)) menuPaths.Add(item);
         }
 
         var claims = new List<Claim>

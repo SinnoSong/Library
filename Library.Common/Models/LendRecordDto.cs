@@ -16,8 +16,10 @@ public class LendRecordDto
     [JsonProperty("id", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
     public Guid Id { get; set; }
 
-    [JsonProperty("bookId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-    public Guid BookId { get; set; }
+    [JsonProperty("bookId", Required = Required.AllowNull, NullValueHandling = NullValueHandling.Ignore)]
+    public Guid? BookId { get; set; }
+    [JsonProperty("bookTitle", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+    public string BookTitle { get; set; }
 
     [JsonProperty("startTime", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
     public DateTime StartTime { get; set; }

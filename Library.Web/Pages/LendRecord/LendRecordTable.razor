@@ -5,7 +5,7 @@
 <Table TItem="LendRecordDto" DataSource="Records">
     <Selection Key="@(context.Id.ToString())"/>
     <AntDesign.Column @bind-Field="@context.Id" Sortable/>
-    <AntDesign.Column @bind-Field="@context.BookId" Sortable/>
+    <AntDesign.Column @bind-Field="@context.BookTitle" Sortable/>
     <AntDesign.Column @bind-Field="@context.StartTime" Sortable/>
     <AntDesign.Column @bind-Field="@context.EndTime" Sortable/>
     <AntDesign.Column @bind-Field="@context.RealReturnTime" Sortable/>

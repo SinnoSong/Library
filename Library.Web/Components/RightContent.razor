@@ -9,19 +9,6 @@
 
 <Space Class="@ClassMapper.Class" Size="@("24")">
     <SpaceItem>
-        <NoticeIcon ClearText="Empty"
-                    ViewMoreText="see more"
-                    Count="_count"
-                    OnClear="HandleClear"
-                    OnViewMore="HandleViewMore">
-            <NoticeList TabKey="notification"
-                        Title="Notifications"
-                        EmptyText="You have viewed all notifications"
-                        ShowViewMore
-                        Data="_notifications"/>
-        </NoticeIcon>
-    </SpaceItem>
-    <SpaceItem>
         <AvatarDropdown Name="@_userName"
                         MenuItems="@AvatarMenuItems"
                         OnItemSelected="HandleSelectUser"/>
@@ -30,8 +17,6 @@
 
 @code {
     private string? _userName;
-    private List<NoticeIconData> _notifications = new();
-    private int _count = 0;
 
     private AvatarMenuItem[] AvatarMenuItems { get; } = {
         new() {Key = "setting", IconType = "setting", Option = "个人设置"},
@@ -44,7 +29,6 @@
         await base.OnInitializedAsync();
         SetClassMap();
         _userName = await SetUser();
-        _notifications = await SetNotices();
     }
 
     private void SetClassMap()
@@ -83,16 +67,6 @@
                 NavManager.NavigateTo("/user/login");
                 break;
         }
-    }
-
-    private void HandleClear(string key)
-    {
-        _notifications = new List<NoticeIconData>();
-    }
-
-    public static async Task HandleViewMore(string key)
-    {
-        Console.WriteLine("Click on view more");
     }
 
 }

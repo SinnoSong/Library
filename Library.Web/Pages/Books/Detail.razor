@@ -21,7 +21,9 @@
                 <DescriptionsItem Title="简介">@_bookDto.Summary</DescriptionsItem>
                 <DescriptionsItem Title="价格">@_bookDto.Price</DescriptionsItem>
                 <DescriptionsItem Title="isbn">@_bookDto.Isbn</DescriptionsItem>
-                <DescriptionsItem Title="封面">@_bookDto.Image</DescriptionsItem>
+                <DescriptionsItem Title="封面">
+                    <Image Width="200px" Height="200px" Src="@_bookDto.Image"/>
+                </DescriptionsItem>
                 <DescriptionsItem Title="总页数">@_bookDto.Pages</DescriptionsItem>
                 <DescriptionsItem Title="位置">@_bookDto.Location</DescriptionsItem>
             </Descriptions>

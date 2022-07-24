@@ -45,6 +45,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
 
     public async Task Logout()
     {
+        await _localStorage.ClearAsync();
         await _authenticationStateProvider.LoggedOut();
     }
 

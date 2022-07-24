@@ -1,8 +1,6 @@
 ﻿@page "/account/settings"
-@inject IUserService UserService
 
-
-<PageContainer Title="Users">
+<PageContainer Title="个人信息">
     <Content>
         <AntList TItem="UserInfoListItem" ItemLayout="ListItemLayout.Horizontal" DataSource="_passwordData">
             <ListItem Actions="_modifyPasswordActions">

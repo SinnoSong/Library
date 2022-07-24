@@ -6,5 +6,4 @@ public interface IServicesWrapper
     ICategoryService Category { get; }
     ILendConfigService LendConfig { get; }
     ILendRecordService LendRecord { get; }
-    INoticeService Notice { get; }
 }
