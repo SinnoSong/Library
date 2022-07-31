@@ -19,6 +19,14 @@ namespace Library.API.Controllers;
 [Authorize(Roles = "Administrator,SuperAdministrator")]
 public class CategoryController : ControllerBase
 {
+    #region field
+
+    private readonly ICategoryService _categoryService;
+    private readonly IMapper _mapper;
+    private readonly Dictionary<string, PropertyMapping> _mappingDict;
+
+    #endregion
+    
     #region ctor
 
     public CategoryController(IServicesWrapper servicesWrapper, IMapper mapper)
@@ -74,14 +82,6 @@ public class CategoryController : ControllerBase
         await _categoryService.DeleteAsync(category);
         return NoContent();
     }
-
-    #endregion
-
-    #region field
-
-    private readonly ICategoryService _categoryService;
-    private readonly IMapper _mapper;
-    private readonly Dictionary<string, PropertyMapping> _mappingDict;
 
     #endregion
 

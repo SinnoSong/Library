@@ -17,6 +17,13 @@ namespace Library.API.Controllers;
 [Authorize]
 public class LendConfigController : ControllerBase
 {
+    #region field
+
+    private readonly ILendConfigService _lendConfigService;
+    private readonly IMapper _mapper;
+
+    #endregion
+
     #region ctor
 
     public LendConfigController(IServicesWrapper repositoryWrapper, IMapper mapper)
@@ -50,6 +57,7 @@ public class LendConfigController : ControllerBase
     #region Put
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Administrator,SuperAdministrator")]
     public async Task<IActionResult> PutAsync(Guid id, LendConfigCreateDto dto)
     {
         var category = await _lendConfigService.GetByIdAsync(id);
@@ -63,7 +71,8 @@ public class LendConfigController : ControllerBase
 
     #region Delete
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Administrator,SuperAdministrator")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var category = await _lendConfigService.GetByIdAsync(id);
@@ -71,13 +80,6 @@ public class LendConfigController : ControllerBase
         await _lendConfigService.DeleteAsync(category);
         return NoContent();
     }
-
-    #endregion
-
-    #region field
-
-    private readonly ILendConfigService _lendConfigService;
-    private readonly IMapper _mapper;
 
     #endregion
 

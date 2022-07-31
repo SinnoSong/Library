@@ -76,7 +76,7 @@ public interface IClient
 
     Task<bool> ChangePassword(Guid id, UserPasswordChangeDto userPasswordChangeDto);
 
-    Task<bool> AddAdministrator(UserDto userDto);
+    Task<bool> AddAdministrator(RegisterAdmin userDto);
 
     Task<List<UserDto>> GetUsers(UserQueryParameters parameters);
 

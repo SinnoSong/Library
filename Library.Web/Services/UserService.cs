@@ -62,7 +62,7 @@ public class UserService : BaseHttpService, IUserService
         return response;
     }
 
-    public async Task<Response<int>> AddAdministrator(UserDto userDto)
+    public async Task<Response<int>> AddAdministrator(RegisterAdmin userDto)
     {
         var response = new Response<int>();
         try

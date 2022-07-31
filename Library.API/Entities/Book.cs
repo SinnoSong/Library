@@ -23,7 +23,7 @@ public class Book
 
     [Required] [MaxLength(100)] public string Title { get; set; }
 
-    [MaxLength(250)] public string? Summary { get; set; } = null;
+    [MaxLength(250)] public string? Summary { get; set; }
 
     [Column(TypeName = "decimal(18, 2)")] public decimal? Price { get; set; }
 

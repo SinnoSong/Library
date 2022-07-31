@@ -85,7 +85,7 @@ public class LendRecordController : ControllerBase
         return result;
     }
 
-    [HttpGet("{id:guid}", Name = nameof(GetRecordAsync))]
+    [HttpGet("{id}", Name = nameof(GetRecordAsync))]
     public async Task<ActionResult<LendRecordDto>> GetRecordAsync(Guid id)
     {
         var record = await _lendRecordService.GetByIdAsync(id);

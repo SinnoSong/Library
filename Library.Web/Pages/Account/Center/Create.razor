@@ -1,0 +1,57 @@
+﻿@page "/account/createAdmin"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject MessageService MessageService
+
+<PageContainer Title="新增管理员">
+    <Breadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem>User</BreadcrumbItem>
+            <BreadcrumbItem>Create</BreadcrumbItem>
+        </Breadcrumb>
+    </Breadcrumb>
+
+    <ChildContent>
+        <Card>
+            <Form Model="_userRegisterAdmin" OnFinish="HandleBookCreate">
+                <FormItem>
+                    <Input @bind-Value="@_userRegisterAdmin.UserName" Placeholder="请输入用户名称"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_userRegisterAdmin.Email" Placeholder="请输入Email"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_userRegisterAdmin.Password" Placeholder="请输入密码"/>
+                </FormItem>
+                <FormItem>
+                    <Input @bind-Value="@_userRegisterAdmin.ConfirmPassword" Placeholder="请再次输入密码"/>
+                </FormItem>
+                <FormItem>
+                    <Button Type="@ButtonType.Primary" HtmlType="submit">新增管理员</Button>
+                </FormItem>
+                <Button OnClick="@(() => NavigationManager.NavigateTo("/account/center"))">返回列表</Button>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+
+@code {
+
+    private readonly RegisterAdmin _userRegisterAdmin = new();
+
+    private async Task HandleBookCreate()
+    {
+        var response = await UserService.AddAdministrator(_userRegisterAdmin);
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/account/center");
+        }
+        else
+        {
+            await MessageService.Error(response.Message);
+        }
+    }
+
+}

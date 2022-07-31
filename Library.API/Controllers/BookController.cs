@@ -21,6 +21,15 @@ namespace Library.API.Controllers;
 [Authorize]
 public class BookController : ControllerBase
 {
+    #region field
+
+    private readonly IBookService _bookService;
+    private readonly ICategoryService _categoryService;
+    private readonly IMapper _mapper;
+    private readonly Dictionary<string, PropertyMapping> _mappingDict;
+
+    #endregion
+    
     #region ctor
 
     public BookController(IServicesWrapper repositoryWrapper, IMapper mapper)
@@ -88,15 +97,6 @@ public class BookController : ControllerBase
         await _bookService.UpdateAsync(book);
         return NoContent();
     }
-
-    #endregion
-
-    #region field
-
-    private readonly IBookService _bookService;
-    private readonly ICategoryService _categoryService;
-    private readonly IMapper _mapper;
-    private readonly Dictionary<string, PropertyMapping> _mappingDict;
 
     #endregion
 

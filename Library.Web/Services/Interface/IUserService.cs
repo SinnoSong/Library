@@ -11,7 +11,7 @@ public interface IUserService
 
     Task<Response<int>> ChangePassword(Guid id, UserPasswordChangeDto userPasswordChangeDto);
 
-    Task<Response<int>> AddAdministrator(UserDto userDto);
+    Task<Response<int>> AddAdministrator(RegisterAdmin userDto);
 
     Task<Response<List<UserDto>>> GetUsers(UserQueryParameters parameters);
 }

@@ -414,7 +414,7 @@ public class Client : IClient
             JsonConvert.SerializeObject(userPasswordChangeDto));
     }
 
-    public async Task<bool> AddAdministrator(UserDto userDto)
+    public async Task<bool> AddAdministrator(RegisterAdmin userDto)
     {
         var apiUrl = $"{ApplicationUrl}{Apis.AddAdministrator}";
         var accessToken = await _localStorageService.GetAccessTokenAsync();

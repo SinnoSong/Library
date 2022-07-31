@@ -33,7 +33,6 @@ public static class MenuPathResource
         var result = new List<MenuPath>();
         if (role != "User")
         {
-            result.Add(menuDatas.GetValueOrDefault("book")!);
             result.Add(menuDatas.GetValueOrDefault("category")!);
             result.Add(menuDatas.GetValueOrDefault("lendConfig")!);
             result.Add(menuDatas.GetValueOrDefault("dashboard")!);
@@ -43,7 +42,7 @@ public static class MenuPathResource
         {
             result.Add(menuDatas.GetValueOrDefault("user_account")!);
         }
-
+        result.Add(menuDatas.GetValueOrDefault("book")!);
         result.Add(menuDatas.GetValueOrDefault("lendRecords")!);
         return result;
     }
